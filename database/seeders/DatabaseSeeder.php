@@ -72,29 +72,37 @@ class DatabaseSeeder extends Seeder
 
         foreach ($months as $m) {
             $date = Carbon::now('Asia/Manila')->addMonths($m['month']);
-            Payroll::create([
-                'user_id' => $juan->id,
-                'period_start' => (clone $date)->startOfMonth()->toDateString(),
-                'period_end' => (clone $date)->endOfMonth()->toDateString(),
-                'total_hours' => 160,
-                'late_minutes' => 0,
-                'total_deductions' => 0,
-                'gross_pay' => $m['amount'] * 0.6,
-                'net_pay' => $m['amount'] * 0.6,
-                'status' => 'Released'
-            ]);
+            Payroll::firstOrCreate(
+                [
+                    'user_id' => $juan->id,
+                    'period_start' => (clone $date)->startOfMonth()->toDateString(),
+                    'period_end' => (clone $date)->endOfMonth()->toDateString(),
+                ],
+                [
+                    'total_hours' => 160,
+                    'late_minutes' => 0,
+                    'total_deductions' => 0,
+                    'gross_pay' => $m['amount'] * 0.6,
+                    'net_pay' => $m['amount'] * 0.6,
+                    'status' => 'Released'
+                ]
+            );
             
-            Payroll::create([
-                'user_id' => $sarah->id,
-                'period_start' => (clone $date)->startOfMonth()->toDateString(),
-                'period_end' => (clone $date)->endOfMonth()->toDateString(),
-                'total_hours' => 160,
-                'late_minutes' => 45,
-                'total_deductions' => 500,
-                'gross_pay' => $m['amount'] * 0.4,
-                'net_pay' => ($m['amount'] * 0.4) - 500,
-                'status' => 'Released'
-            ]);
+            Payroll::firstOrCreate(
+                [
+                    'user_id' => $sarah->id,
+                    'period_start' => (clone $date)->startOfMonth()->toDateString(),
+                    'period_end' => (clone $date)->endOfMonth()->toDateString(),
+                ],
+                [
+                    'total_hours' => 160,
+                    'late_minutes' => 45,
+                    'total_deductions' => 500,
+                    'gross_pay' => $m['amount'] * 0.4,
+                    'net_pay' => ($m['amount'] * 0.4) - 500,
+                    'status' => 'Released'
+                ]
+            );
         }
     }
 }

@@ -2,17 +2,21 @@
 
 @php
 $classes = [
-    'On-time' => 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50',
-    'Late' => 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50',
-    'Absent' => 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800/50',
-    'admin' => 'bg-indigo-50 text-indigo-700 border-indigo-100',
-    'professor' => 'bg-purple-50 text-purple-700 border-purple-100',
-    'employee' => 'bg-slate-50 text-slate-700 border-slate-100',
+    'On-time' => 'from-emerald-500/20 to-emerald-500/5 text-emerald-400 border-emerald-500/20 shadow-emerald-500/5',
+    'Late' => 'from-amber-500/20 to-amber-500/5 text-amber-400 border-amber-500/20 shadow-amber-500/5',
+    'Absent' => 'from-rose-500/20 to-rose-500/5 text-rose-400 border-rose-500/20 shadow-rose-500/5',
+    'Released' => 'from-indigo-500/20 to-indigo-500/5 text-indigo-400 border-indigo-500/20 shadow-indigo-500/5',
+    'admin' => 'from-white/10 to-white/5 text-white border-white/20',
+    'professor' => 'from-violet-500/20 to-violet-500/5 text-violet-400 border-violet-500/20 shadow-violet-500/5',
+    'employee' => 'from-slate-500/20 to-slate-500/5 text-slate-400 border-slate-500/20 shadow-slate-500/5',
 ];
 
-$selected = $classes[$type] ?? 'bg-slate-50 text-slate-700 border-slate-100';
+$selected = $classes[$type] ?? 'from-slate-500/20 to-slate-500/5 text-slate-400 border-slate-500/20';
 @endphp
 
-<span class="px-3 py-1 text-xs font-bold rounded-full border {{ $selected }} shadow-sm">
+<span class="inline-flex items-center px-2 py-0.5 text-[9px] font-black rounded border bg-gradient-to-br {{ $selected }} shadow-pro transition-all duration-300 hover:brightness-125 uppercase tracking-[0.15em] relative overflow-hidden group">
+    <!-- Tactile Inner Glow -->
+    <span class="absolute inset-x-0 top-0 h-px bg-white/10"></span>
+    <span class="w-1 h-1 rounded-full bg-current mr-1.5 opacity-60 group-hover:scale-150 transition-transform"></span>
     {{ $slot }}
 </span>

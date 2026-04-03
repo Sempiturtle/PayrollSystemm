@@ -22,3 +22,8 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# 3-Layer Architecture
+.tmp/
+credentials.json
+token.json
