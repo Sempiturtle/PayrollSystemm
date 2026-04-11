@@ -5,11 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\AttendanceLog;
 use App\Models\Schedule;
+use App\Imports\ProfessorScheduleImport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Services\PayrollService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 
 class EmployeeController extends Controller
 {
+    public function __construct(
+        private readonly PayrollService $payrollService
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -17,6 +25,19 @@ class EmployeeController extends Controller
     {
         $employees = User::where('role', '!=', 'admin')->get();
         return view('employees.index', compact('employees'));
+    }
+
+    /**
+     * Display the personal attendance history of the logged-in user.
+     */
+    public function history()
+    {
+        $logs = AttendanceLog::where('user_id', auth()->id())
+            ->orderBy('date', 'desc')
+            ->orderBy('time_in', 'desc')
+            ->paginate(15);
+
+        return view('employees.history', compact('logs'));
     }
 
     public function scanner()
@@ -51,12 +72,19 @@ class EmployeeController extends Controller
             'biometric_template' => 'nullable|string|unique:users',
             'hourly_rate' => 'required|numeric',
             'role' => 'required|in:professor,employee',
+            'schedule_file' => 'nullable|mimes:xlsx,xls,csv|max:10240',
         ]);
 
         $password = 'AISAT-' . $validated['employee_id'];
         $validated['password'] = bcrypt($password);
+        unset($validated['schedule_file']);
         
-        User::create($validated);
+        $user = User::create($validated);
+
+        // Handle schedule Excel upload
+        if ($request->hasFile('schedule_file')) {
+            $this->handleScheduleUpload($user, $request->file('schedule_file'));
+        }
 
         return redirect()->route('employees.index')->with('success', "Employee added successfully! Default password is: $password");
     }
@@ -138,6 +166,10 @@ class EmployeeController extends Controller
             // Check-out
             $log->update(['time_out' => $currentTime]);
             
+            // Sync Payroll automatically
+            $period = $this->payrollService->getCurrentPeriod($now);
+            $this->payrollService->syncForUser($user, $period['start'], $period['end']);
+
             return response()->json([
                 'success' => true,
                 'message' => "Goodbye, {$user->name}! Checked out at {$currentTime}.",
@@ -163,7 +195,8 @@ class EmployeeController extends Controller
     public function edit(string $id)
     {
         $employee = User::findOrFail($id);
-        return view('employees.edit', compact('employee'));
+        $schedules = $employee->schedules()->orderByDay()->get();
+        return view('employees.edit', compact('employee', 'schedules'));
     }
 
     /**
@@ -181,9 +214,22 @@ class EmployeeController extends Controller
             'biometric_template' => 'nullable|string|unique:users,biometric_template,' . $id,
             'hourly_rate' => 'required|numeric',
             'role' => 'required|in:professor,employee',
+            'schedule_file' => 'nullable|mimes:xlsx,xls,csv|max:10240',
         ]);
 
+        unset($validated['schedule_file']);
         $employee->update($validated);
+
+        // Handle schedule Excel upload
+        if ($request->hasFile('schedule_file')) {
+            try {
+                $this->handleScheduleUpload($employee, $request->file('schedule_file'));
+                return redirect()->route('employees.edit', $employee->id)->with('success', 'Employee updated & schedule imported successfully!');
+            } catch (\Exception $e) {
+                return redirect()->route('employees.edit', $employee->id)
+                    ->with('warning', 'Employee updated, but schedule import failed: ' . $e->getMessage());
+            }
+        }
 
         return redirect()->route('employees.index')->with('success', 'Employee updated successfully!');
     }
@@ -197,5 +243,96 @@ class EmployeeController extends Controller
         $employee->delete();
 
         return redirect()->route('employees.index')->with('success', 'Employee deleted successfully!');
+    }
+
+    /**
+     * Download the example schedule template Excel.
+     */
+    public function downloadTemplate()
+    {
+        $path = storage_path('app/example_individual_schedule.xlsx');
+
+        if (!file_exists($path)) {
+            // Generate it on the fly if it doesn't exist
+            $this->generateTemplateExcel($path);
+        }
+
+        return response()->download($path, 'schedule_template.xlsx');
+    }
+
+    // ──────────────────────────────────────
+    // Private Helpers
+    // ──────────────────────────────────────
+
+    /**
+     * Process and store an individual professor's schedule Excel.
+     */
+    private function handleScheduleUpload(User $user, UploadedFile $file): void
+    {
+        // Store the file with a clean, identifiable name
+        $filename = "schedules/{$user->employee_id}_schedule.{$file->getClientOriginalExtension()}";
+        $file->storeAs('', $filename);
+
+        // Clear existing schedules for this user before importing
+        Schedule::where('user_id', $user->id)->delete();
+
+        // Import the schedule entries
+        Excel::import(new ProfessorScheduleImport($user->id), $file);
+
+        // Save the file path reference on the user
+        $user->update(['schedule_file' => $filename]);
+    }
+
+    /**
+     * Generate a template Excel file with the expected format.
+     */
+    private function generateTemplateExcel(string $path): void
+    {
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Schedule');
+
+        // Headers
+        $sheet->setCellValue('A1', 'day_of_week');
+        $sheet->setCellValue('B1', 'start_time');
+        $sheet->setCellValue('C1', 'end_time');
+
+        // Example rows
+        $days = [
+            ['Monday',    '08:00', '12:00'],
+            ['Tuesday',   '13:00', '17:00'],
+            ['Wednesday', '08:00', '12:00'],
+            ['Thursday',  '13:00', '17:00'],
+            ['Friday',    '08:00', '12:00'],
+        ];
+
+        foreach ($days as $i => $row) {
+            $r = $i + 2;
+            $sheet->setCellValue("A{$r}", $row[0]);
+            $sheet->setCellValue("B{$r}", $row[1]);
+            $sheet->setCellValue("C{$r}", $row[2]);
+        }
+
+        // Style headers
+        $sheet->getStyle('A1:C1')->applyFromArray([
+            'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '4F46E5'],
+            ],
+        ]);
+
+        foreach (range('A', 'C') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Ensure directory exists
+        $dir = dirname($path);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save($path);
     }
 }

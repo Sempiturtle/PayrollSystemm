@@ -25,9 +25,76 @@
                         <div class="text-xs font-bold text-indigo-200 uppercase tracking-widest mb-1">Employee ID</div>
                         <div class="text-lg font-bold tracking-tighter">{{ $user->employee_id }}</div>
                     </div>
+                    @if($todaySchedule)
+                    <div class="w-px h-10 bg-white/20"></div>
+                    <div>
+                        <div class="text-xs font-bold text-indigo-200 uppercase tracking-widest mb-1">Today's Shift</div>
+                        <div class="text-sm font-bold tracking-tight">
+                            {{ \Carbon\Carbon::parse($todaySchedule->start_time)->format('h:i A') }}
+                            <span class="text-indigo-200">→</span>
+                            {{ \Carbon\Carbon::parse($todaySchedule->end_time)->format('h:i A') }}
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
+
+        <!-- My Weekly Schedule -->
+        @if($mySchedule->count() > 0)
+        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-50 dark:border-slate-800 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 italic">My Weekly Schedule</h3>
+                    <p class="text-xs text-slate-400 mt-1">Your assigned work hours for the week</p>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="font-bold">{{ $mySchedule->sum(fn($s) => $s->scheduled_hours) }}h / week</span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 dark:divide-slate-800">
+                @php
+                    $allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                    $shortDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    $today = now()->format('l');
+                @endphp
+                
+                @foreach($allDays as $i => $day)
+                    @php
+                        $daySchedule = $mySchedule->firstWhere('day_of_week', $day);
+                        $isToday = ($day === $today);
+                    @endphp
+                    <div class="p-4 text-center {{ $isToday ? 'bg-indigo-50 dark:bg-indigo-950/30 ring-2 ring-inset ring-indigo-200 dark:ring-indigo-800' : '' }} transition hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                        <div class="text-[10px] font-bold uppercase tracking-widest {{ $isToday ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400' }} mb-3">
+                            {{ $shortDays[$i] }}
+                            @if($isToday)
+                                <span class="ml-1 inline-block w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                            @endif
+                        </div>
+                        
+                        @if($daySchedule)
+                            <div class="space-y-1">
+                                <div class="text-sm font-bold {{ $isToday ? 'text-indigo-700 dark:text-indigo-300' : 'text-slate-700 dark:text-slate-300' }} tabular-nums">
+                                    {{ \Carbon\Carbon::parse($daySchedule->start_time)->format('h:i A') }}
+                                </div>
+                                <div class="text-slate-300 dark:text-slate-600 text-xs">↓</div>
+                                <div class="text-sm font-bold {{ $isToday ? 'text-indigo-700 dark:text-indigo-300' : 'text-slate-700 dark:text-slate-300' }} tabular-nums">
+                                    {{ \Carbon\Carbon::parse($daySchedule->end_time)->format('h:i A') }}
+                                </div>
+                                <div class="mt-2 text-[10px] font-bold {{ $isToday ? 'text-indigo-500' : 'text-slate-400' }}">
+                                    {{ $daySchedule->scheduled_hours }}h
+                                </div>
+                            </div>
+                        @else
+                            <div class="text-xs text-slate-300 dark:text-slate-600 italic py-4">Off</div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Recent Attendance -->

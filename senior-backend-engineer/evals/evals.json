@@ -1,0 +1,52 @@
+{
+  "skill_name": "senior-backend-engineer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to add a feature where employees can request overtime. An employee submits a request with the date, number of hours, and reason. Their manager needs to approve it before it gets added to the payroll calculation. Can you design the backend for this? We're using Laravel.",
+      "expected_output": "A complete backend implementation including: migration with proper column types (decimal for hours, foreign keys, status enum), an OvertimeRequest model with relationships and scopes, a Form Request for validation, a Service class for business logic, a Policy for authorization (manager-only approval, can't approve own requests), and a RESTful controller. Should use database transactions for the approval flow.",
+      "files": [],
+      "expectations": [
+        "Uses decimal column type for overtime hours, not float or integer",
+        "Includes foreign key constraints with proper cascade rules",
+        "Has a Form Request class for input validation",
+        "Business logic is in a Service class, not the Controller",
+        "Authorization uses a Policy with segregation of duties (manager can't approve own OT)",
+        "Status field uses a PHP Enum or string enum",
+        "Approval operation is wrapped in a database transaction",
+        "Includes proper error handling with custom exceptions"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Our payroll report endpoint is really slow. It joins employees, attendance_logs, payrolls, and deductions tables and it takes about 8 seconds to load for a department of 50 people. Here's the current query:\n\n$payrolls = Payroll::where('pay_period_id', $periodId)\n    ->get();\n\nforeach ($payrolls as $payroll) {\n    $payroll->employee->department;\n    $payroll->deductions;\n    $payroll->attendance_logs;\n}\n\nHow do I fix this?",
+      "expected_output": "Identifies the N+1 query problem, rewrites with eager loading, suggests database indexes, moves aggregation to SQL level, and recommends caching for dashboard display. Should include EXPLAIN analysis guidance and chunking for large datasets.",
+      "files": [],
+      "expectations": [
+        "Identifies the N+1 query problem explicitly",
+        "Rewrites using eager loading with ->with()",
+        "Suggests specific database indexes to add",
+        "Moves aggregation (SUM, COUNT) to SQL rather than PHP loops",
+        "Recommends caching strategy with appropriate TTL",
+        "Mentions using select() to avoid fetching unnecessary columns",
+        "Provides estimated performance improvement reasoning"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We need to build a REST API for our mobile app to let employees check their payslips, view attendance history, and update their profile. We need JWT auth. What's the full backend architecture? Also need role-based access — employees see only their own data, HR sees everyone, admin can modify.",
+      "expected_output": "Complete API architecture with: Sanctum/JWT authentication setup, role-based middleware, versioned API routes, RESTful resource controllers, API Resources for response formatting, proper HTTP status codes, rate limiting on auth endpoints, and consistent error response format.",
+      "files": [],
+      "expectations": [
+        "Uses Laravel Sanctum or a proper JWT package for token auth",
+        "Implements role-based access control with middleware or policies",
+        "API routes are versioned (e.g., /api/v1/)",
+        "Uses API Resource classes for response formatting",
+        "Returns appropriate HTTP status codes (201 for created, 403 for forbidden, etc.)",
+        "Includes rate limiting on authentication endpoints",
+        "Error responses follow a consistent JSON envelope format",
+        "Employees can only access their own records (row-level security)"
+      ]
+    }
+  ]
+}

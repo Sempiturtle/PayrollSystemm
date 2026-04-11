@@ -26,6 +26,16 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        if (!Auth::user()->isAdmin()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Only administrators can log in with a password. Employees must use Google Login.',
+            ]);
+        }
+
         $request->session()->regenerate();
 
         return redirect()->intended(route('dashboard', absolute: false));

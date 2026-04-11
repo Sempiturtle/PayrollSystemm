@@ -2,8 +2,12 @@
 
 @php
 $classes = ($active ?? false)
-    ? 'flex items-center gap-3 px-3 py-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-500/10 rounded-lg transition-all duration-200 shadow-sm border border-indigo-100/50 dark:border-indigo-500/10'
-    : 'flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 rounded-lg transition-all duration-200 group';
+    ? 'flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-white bg-indigo-600/20 rounded-xl transition-all duration-200 border border-indigo-500/10'
+    : 'flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-400 hover:text-white hover:bg-white/[0.06] rounded-xl transition-all duration-200 group';
+
+$iconColor = ($active ?? false)
+    ? 'text-indigo-400'
+    : 'text-slate-500 group-hover:text-slate-300';
 
 $iconPaths = [
     'home' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
@@ -16,8 +20,8 @@ $iconPaths = [
 @endphp
 
 <a {{ $attributes->merge(['class' => $classes]) }}>
-    <svg class="w-4.5 h-4.5 {{ ($active ?? false) ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200' }} transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $iconPaths[$icon] ?? $iconPaths['home'] }}"></path>
+    <svg class="w-[18px] h-[18px] {{ $iconColor }} transition-colors duration-200 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="{{ $iconPaths[$icon] ?? $iconPaths['home'] }}"></path>
     </svg>
-    <span class="tracking-tight-sm">{{ $slot }}</span>
+    <span>{{ $slot }}</span>
 </a>

@@ -70,7 +70,15 @@ class DashboardController extends Controller
                 ->where('date', $today)
                 ->first();
 
-            return view('dashboard_employee', compact('user', 'myLogs', 'myPayrolls', 'todayLog'));
+            // Professor's full weekly schedule
+            $mySchedule = Schedule::forUser($user->id)->orderByDay()->get();
+
+            // Today's specific schedule entry
+            $todaySchedule = Schedule::forUser($user->id)->forDay($dayName)->first();
+
+            return view('dashboard_employee', compact(
+                'user', 'myLogs', 'myPayrolls', 'todayLog', 'mySchedule', 'todaySchedule'
+            ));
         }
     }
 }

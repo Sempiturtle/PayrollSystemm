@@ -26,6 +26,7 @@ class User extends Authenticatable
         'biometric_template',
         'hourly_rate',
         'role',
+        'schedule_file',
     ];
 
     /**
@@ -55,6 +56,11 @@ class User extends Authenticatable
     public function schedules()
     {
         return $this->hasMany(Schedule::class);
+    }
+
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class);
     }
 
     public function attendanceLogs()

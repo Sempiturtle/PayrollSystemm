@@ -7,7 +7,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "^3.1",
         "laravel/framework": "^12.0",
+        "laravel/socialite": "^5.26",
         "laravel/tinker": "^2.10.1",
         "maatwebsite/excel": "^3.1"
     },
@@ -78,6 +80,12 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
+        "audit": {
+            "ignore": [
+                "PKSA-21fb-n1x5-5nf7",
+                "PKSA-2cx9-ynrq-qdk3"
+            ]
+        },
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true

@@ -12,18 +12,20 @@
                     <h3 class="text-3xl font-bold tracking-tight mb-2">Process Payroll</h3>
                     <p class="text-indigo-100 text-sm leading-relaxed">Select a date range to automatically compute hours, late deductions, and total net pay for all active employees.</p>
                 </div>
-                <form action="{{ route('payrolls.generate') }}" method="POST" class="w-full lg:w-auto flex flex-wrap items-end gap-4 bg-white/10 p-6 rounded-3xl border border-white/20">
-                    @csrf
-                    <div class="flex-1 min-w-[150px]">
-                        <label class="block text-[10px] font-bold uppercase tracking-widest text-indigo-200 mb-2">Start Period</label>
-                        <input name="start_date" type="date" required class="w-full bg-indigo-700/50 border-white/30 rounded-xl text-white focus:ring-white">
+                <div class="lg:w-auto flex flex-col sm:flex-row items-center gap-4 bg-white/10 p-6 rounded-3xl border border-white/20">
+                    <div class="text-center sm:text-left">
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-indigo-200 mb-1">Current Cycle</label>
+                        @php
+                            $period = app(App\Services\PayrollService::class)->getCurrentPeriod();
+                        @endphp
+                        <div class="text-white font-bold">{{ Carbon\Carbon::parse($period['start'])->format('M d') }} - {{ Carbon\Carbon::parse($period['end'])->format('M d, Y') }}</div>
                     </div>
-                    <div class="flex-1 min-w-[150px]">
-                        <label class="block text-[10px] font-bold uppercase tracking-widest text-indigo-200 mb-2">End Period</label>
-                        <input name="end_date" type="date" required class="w-full bg-indigo-700/50 border-white/30 rounded-xl text-white focus:ring-white">
-                    </div>
-                    <button class="px-8 py-3 bg-white text-indigo-600 rounded-xl font-bold hover:bg-slate-50 transition shadow-lg">Generate</button>
-                </form>
+                    <form action="{{ route('payrolls.generate') }}" method="POST">
+                        @csrf
+                        <button class="px-8 py-3 bg-white text-indigo-600 rounded-xl font-bold hover:bg-slate-50 transition shadow-lg whitespace-nowrap">Process Current Cycle</button>
+                    </form>
+                </div>
+
             </div>
         </div>
 
@@ -42,6 +44,7 @@
                             <th class="px-8 py-4">Late Deduc.</th>
                             <th class="px-8 py-4">Status</th>
                             <th class="px-8 py-4 text-right">Net Payout</th>
+                            <th class="px-8 py-4 text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -72,6 +75,11 @@
                             </td>
                             <td class="px-8 py-6 text-right">
                                 <span class="text-xl font-bold text-emerald-600 tabular-nums tracking-tighter">₱{{ number_format($payroll->net_pay, 2) }}</span>
+                            </td>
+                            <td class="px-8 py-6 text-center">
+                                <a href="{{ route('payrolls.download', $payroll) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 transition" title="Download PDF">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                </a>
                             </td>
                         </tr>
                         @empty
