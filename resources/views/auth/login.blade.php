@@ -24,7 +24,7 @@
                     </div>
                     <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus 
                            class="block w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 transition-all outline-none saas-shadow-md" 
-                           placeholder="admin@aisat.edu.ph">
+                           placeholder="name@aisat.edu.ph">
                 </div>
                 @if($errors->has('email'))
                     <p class="text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-tight mt-1 pl-1">{{ $errors->first('email') }}</p>

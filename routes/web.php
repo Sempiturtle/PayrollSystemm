@@ -7,6 +7,7 @@ use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\LeaveController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
@@ -38,6 +39,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
         Route::get('/schedules/{user}', [ScheduleController::class, 'show'])->name('schedules.show');
         Route::delete('/schedules', [ScheduleController::class, 'destroy'])->name('schedules.destroy');
+        Route::delete('/schedules/clear-bulk', [ScheduleController::class, 'bulkDestroy'])->name('schedules.bulkDestroy');
+        Route::post('/schedules/bulk-upload', [ScheduleController::class, 'bulkUpload'])->name('schedules.bulkUpload');
+
+        // Holiday Management
+        Route::resource('holidays', HolidayController::class)->only(['index', 'store', 'destroy']);
 
         // Payroll Management
         // Route::get('/payrolls', [PayrollController::class, 'index'])->name('payrolls.index');
@@ -46,12 +52,18 @@ Route::middleware('auth')->group(function () {
 
         // Leave Approvals
         Route::patch('/leaves/{leave}', [LeaveController::class, 'update'])->name('leaves.update');
+        Route::post('/leaves/bulk', [LeaveController::class, 'bulkUpdate'])->name('leaves.bulk');
 
         // Schedule Template Download
         Route::get('/schedule-template', [EmployeeController::class, 'downloadTemplate'])->name('schedule.template');
         // Attendance Routes
         Route::get('/attendance/scanner', [EmployeeController::class, 'scanner'])->name('attendance.scanner');
         Route::post('/attendance/scan', [EmployeeController::class, 'scan'])->name('attendance.scan');
+
+        // Export & Reporting Routes
+        Route::get('/exports/attendance-today', [\App\Http\Controllers\ExportController::class, 'attendanceToday'])->name('exports.attendance-today');
+        Route::get('/exports/payroll-insight', [\App\Http\Controllers\ExportController::class, 'payrollInsight'])->name('exports.payroll-insight');
+        Route::get('/exports/period-summary', [\App\Http\Controllers\ExportController::class, 'periodSummary'])->name('exports.period-summary');
     });
 });
 

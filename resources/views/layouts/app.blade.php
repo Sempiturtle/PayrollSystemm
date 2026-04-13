@@ -5,8 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }} | AISAT College</title>
-        <meta name="description" content="AISAT College Personnel & Payroll Management System">
+        <title>{{ config('app.name', 'AISAT Payroll') }} — High-Level Personnel Management</title>
+        <meta name="description" content="Professional-grade Personnel, Attendance, and Payroll management for AISAT College.">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,30 +57,14 @@
                         @endisset
                     </div>
 
-                    <div class="flex items-center gap-3">
-                        <!-- Search Hint -->
-                        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-400 rounded-lg text-xs cursor-pointer hover:bg-slate-200/80 transition-colors">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            <span>Search...</span>
-                            <kbd class="text-[10px] font-medium bg-white px-1.5 py-0.5 rounded border border-slate-200 text-slate-400 ml-4">⌘K</kbd>
-                        </div>
-
-                        <!-- Notification Bell -->
-                        <button class="relative p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full ring-2 ring-white"></span>
-                        </button>
-
-                        <!-- Divider -->
-                        <div class="w-px h-6 bg-slate-200 hidden sm:block"></div>
-
-                        <!-- User Info -->
+                    <div class="flex items-center gap-4">
+                        <!-- User Profile Action -->
                         <div class="flex items-center gap-3">
                             <div class="text-right hidden sm:block">
-                                <div class="text-sm font-semibold text-slate-700 leading-tight">{{ Auth::user()->name }}</div>
-                                <div class="text-[11px] text-slate-400 capitalize">{{ Auth::user()->role }}</div>
+                                <div class="text-[11px] font-bold text-slate-400 capitalize tabular-nums tracking-widest leading-none mb-1">{{ Auth::user()->role }} Account</div>
+                                <div class="text-sm font-bold text-slate-900 tracking-tight leading-none">{{ Auth::user()->name }}</div>
                             </div>
-                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                            <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xs font-bold shadow-md hover:bg-slate-800 transition-colors cursor-pointer border border-slate-800">
                                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </div>
                         </div>

@@ -35,8 +35,10 @@
 
                 <div class="relative z-10 max-w-lg text-center lg:text-left">
                     <div class="flex items-center gap-4 mb-16 px-1">
-                        <div class="rotate-12 w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-slate-900 font-black text-2xl shadow-2xl saas-shadow-pro">A</div>
-                        <span class="text-3xl font-black tracking-tighter-lg text-white uppercase italic text-glow">Aisat <span class="text-indigo-400">Academy</span></span>
+                        <div class="rotate-12 w-16 h-16 bg-white rounded-3xl flex items-center justify-center p-2 shadow-2xl saas-shadow-pro">
+                            <img src="{{ asset('images/logo.png') }}" alt="AISAT Logo" class="w-full h-full object-contain">
+                        </div>
+                        <span class="text-3xl font-black tracking-tighter-lg text-white uppercase italic text-glow">AISAT <span class="text-indigo-400">College</span></span>
                     </div>
 
                     <h1 class="text-7xl font-black text-white leading-[0.95] mb-8 tracking-tighter-lg drop-shadow-2xl">
@@ -78,15 +80,17 @@
                     <!-- Mobile Center Logo -->
                     <div class="lg:hidden mb-16 flex justify-center">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">A</div>
-                            <span class="text-xl font-bold tracking-tight text-white uppercase italic">Aisat</span>
+                            <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-lg">
+                                <img src="{{ asset('images/logo.png') }}" alt="AISAT Logo" class="w-full h-full object-contain">
+                            </div>
+                            <span class="text-xl font-bold tracking-tight text-white uppercase italic">AISAT</span>
                         </div>
                     </div>
                     
                     {{ $slot }}
 
                     <div class="pt-12 text-center border-t border-white/5 space-y-2 opacity-50">
-                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">&copy; MMXXVI AISAT ACADEMY CENTRAL</p>
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">&copy; MMXXVI AISAT COLLEGE CENTRAL</p>
                         <p class="text-[8px] font-mono text-slate-600 tracking-widest">SECURE RSA-4096 ENCRYPTION ACTIVE</p>
                     </div>
                 </div>

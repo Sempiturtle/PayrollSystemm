@@ -8,14 +8,26 @@ use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
+use App\Models\Leave;
+use App\Models\Holiday;
+use App\Services\PayrollService;
+
 class DashboardController extends Controller
 {
+    protected $payrollService;
+
+    public function __construct(PayrollService $payrollService)
+    {
+        $this->payrollService = $payrollService;
+    }
     public function index()
     {
         $user = auth()->user();
         $now = Carbon::now('Asia/Manila');
         $today = $now->toDateString();
         $dayName = $now->englishDayOfWeek;
+
+        $todayHoliday = \App\Models\Holiday::where('date', $today)->first();
 
         if ($user->isAdmin()) {
             // Admin Stats
@@ -26,18 +38,44 @@ class DashboardController extends Controller
             $expectedToday = Schedule::where('day_of_week', $dayName)->count();
             $absentToday = max(0, $expectedToday - ($presentToday + $lateToday));
 
-            // Chart 1: Department Distribution
-            $deptStats = [
-                'professors' => User::where('role', 'professor')->count(),
-                'staff' => User::where('role', 'employee')->count(),
+            // Chart 1: Attendance Distribution (Donut)
+            $attendanceStats = [
+                'On-time' => $presentToday,
+                'Late' => $lateToday,
+                'Absent' => $absentToday,
             ];
 
-            // Chart 2: Payroll Trends (Last 6 Months)
+            // Chart 2: Department Distribution (Donut - logic preserved for Radial)
+            $deptStats = [
+                'Professors' => User::where('role', 'professor')->count(),
+                'Staff' => User::where('role', 'employee')->count(),
+            ];
+
+            // Chart 3: Payroll Trends (Last 6 Months)
             $payrollTrend = \App\Models\Payroll::selectRaw('SUM(net_pay) as total, MONTHNAME(period_end) as month')
                 ->groupBy('month')
                 ->orderBy('period_end', 'asc')
                 ->limit(6)
                 ->get();
+
+            // Institutional Pulse: Hourly Flow
+            $hourlyFlow = AttendanceLog::where('date', $today)
+                ->selectRaw('HOUR(time_in) as hour, COUNT(*) as count')
+                ->groupBy('hour')
+                ->orderBy('hour')
+                ->pluck('count', 'hour')
+                ->toArray();
+            
+            $hourlyActivities = [];
+            for($i=0; $i<24; $i++) { $hourlyActivities[] = $hourlyFlow[$i] ?? 0; }
+
+            // 7-Day Velocity (Sparklines)
+            $sparklineData = AttendanceLog::where('date', '>', $now->copy()->subDays(7)->toDateString())
+                ->selectRaw('COUNT(*) as count, date')
+                ->groupBy('date')
+                ->orderBy('date')
+                ->pluck('count')
+                ->toArray();
 
             $recentLogs = AttendanceLog::with('user')
                 ->where('date', $today)
@@ -45,14 +83,44 @@ class DashboardController extends Controller
                 ->limit(5)
                 ->get();
 
+            $performerStats = AttendanceLog::select('user_id', \DB::raw('count(*) as count'))
+                ->where('status', 'On-time')
+                ->where('date', '>=', $now->copy()->subDays(30)->toDateString())
+                ->groupBy('user_id')
+                ->orderBy('count', 'desc')
+                ->limit(5)
+                ->with('user')
+                ->get();
+
+            // Intelligence Additions
+            $pendingLeaves = Leave::where('status', 'Pending')->count();
+            $upcomingHolidays = Holiday::where('date', '>', $today)
+                ->orderBy('date', 'asc')
+                ->limit(2)
+                ->get();
+
+            // Total Statutory Managed (Current Month)
+            $statStats = \App\Models\Payroll::whereMonth('period_end', $now->month)
+                ->whereYear('period_end', $now->year)
+                ->selectRaw('SUM(sss_deduction) as sss, SUM(philhealth_deduction) as philhealth, SUM(pagibig_deduction) as pagibig, SUM(tax_deduction) as tax')
+                ->first();
+
             return view('dashboard', compact(
                 'totalEmployees', 
                 'presentToday', 
                 'lateToday', 
                 'absentToday', 
                 'recentLogs',
-                'deptStats',
-                'payrollTrend'
+                'attendanceStats',
+                'payrollTrend',
+                'todayHoliday',
+                'pendingLeaves',
+                'upcomingHolidays',
+                'performerStats',
+                'statStats',
+                'hourlyActivities',
+                'sparklineData',
+                'deptStats'
             ));
         } else {
             // Employee Stats
@@ -76,8 +144,14 @@ class DashboardController extends Controller
             // Today's specific schedule entry
             $todaySchedule = Schedule::forUser($user->id)->forDay($dayName)->first();
 
+            // Intelligence Additions for Employee
+            $upcomingHolidays = Holiday::where('date', '>', $today)
+                ->orderBy('date', 'asc')
+                ->limit(2)
+                ->get();
+
             return view('dashboard_employee', compact(
-                'user', 'myLogs', 'myPayrolls', 'todayLog', 'mySchedule', 'todaySchedule'
+                'user', 'myLogs', 'myPayrolls', 'todayLog', 'mySchedule', 'todaySchedule', 'todayHoliday', 'upcomingHolidays'
             ));
         }
     }

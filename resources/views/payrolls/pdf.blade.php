@@ -6,9 +6,12 @@
     <style>
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.5; }
         .container { width: 100%; margin: 0 auto; max-width: 800px; }
-        .header { text-align: center; border-bottom: 2px solid #4f46e5; padding-bottom: 20px; margin-bottom: 30px; }
-        .header h1 { margin: 0; color: #1e293b; font-size: 28px; }
-        .header p { margin: 5px 0 0; color: #64748b; font-size: 14px; }
+        .header { text-align: left; border-bottom: 2px solid #4f46e5; padding-bottom: 20px; margin-bottom: 30px; }
+        .header table { width: 100%; border-collapse: collapse; }
+        .header .logo { width: 60px; height: 60px; }
+        .header .college-info { padding-left: 15px; }
+        .header h1 { margin: 0; color: #1e293b; font-size: 26px; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; }
+        .header p { margin: 2px 0 0; color: #4f46e5; font-size: 12px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; }
         .info-grid { width: 100%; margin-bottom: 30px; border-collapse: collapse; }
         .info-grid td { padding: 8px 0; vertical-align: top; }
         .info-label { font-weight: bold; color: #64748b; width: 150px; }
@@ -24,8 +27,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Sempiturtle College</h1>
-            <p>Official Employee Payslip</p>
+            <table>
+                <tr>
+                    <td style="width: 60px;">
+                        <img src="{{ public_path('images/logo.png') }}" class="logo" alt="AISAT Logo">
+                    </td>
+                    <td class="college-info">
+                        <h1>AISAT College</h1>
+                        <p>Attendance & Payroll Intelligence — Official Statement</p>
+                    </td>
+                </tr>
+            </table>
         </div>
 
         <table class="info-grid">
@@ -62,33 +74,57 @@
                 <tr>
                     <td>Basic Pay (Total Hours)</td>
                     <td class="amount">{{ number_format($payroll->total_hours, 2) }} hrs</td>
-                    <td class="amount">${{ number_format($payroll->user->hourly_rate, 2) }}/hr</td>
-                    <td class="amount">${{ number_format($payroll->gross_pay, 2) }}</td>
+                    <td class="amount">₱{{ number_format($payroll->user->hourly_rate, 2) }}/hr</td>
+                    <td class="amount">₱{{ number_format($payroll->gross_pay, 2) }}</td>
                 </tr>
                 <tr>
                     <td>Late Deductions</td>
                     <td class="amount">{{ number_format($payroll->late_minutes, 0) }} mins</td>
                     <td class="amount">--</td>
-                    <td class="amount" style="color: #e11d48;">-${{ number_format($payroll->total_deductions, 2) }}</td>
+                    <td class="amount" style="color: #e11d48;">-₱{{ number_format($payroll->total_deductions - ($payroll->sss_deduction + $payroll->philhealth_deduction + $payroll->pagibig_deduction + $payroll->tax_deduction), 2) }}</td>
+                </tr>
+                <tr>
+                    <td>SSS Contribution</td>
+                    <td class="amount">--</td>
+                    <td class="amount">4.5% approx</td>
+                    <td class="amount" style="color: #e11d48;">-₱{{ number_format($payroll->sss_deduction, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>PhilHealth Contribution</td>
+                    <td class="amount">--</td>
+                    <td class="amount">2% approx</td>
+                    <td class="amount" style="color: #e11d48;">-₱{{ number_format($payroll->philhealth_deduction, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Pag-IBIG Contribution</td>
+                    <td class="amount">--</td>
+                    <td class="amount">Fixed</td>
+                    <td class="amount" style="color: #e11d48;">-₱{{ number_format($payroll->pagibig_deduction, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>Withholding Tax (WHT)</td>
+                    <td class="amount">--</td>
+                    <td class="amount">TRAIN Law</td>
+                    <td class="amount" style="color: #e11d48;">-₱{{ number_format($payroll->tax_deduction, 2) }}</td>
                 </tr>
                 <tr class="total-row">
                     <td colspan="3" style="text-align: right;">Gross Pay</td>
-                    <td class="amount">${{ number_format($payroll->gross_pay, 2) }}</td>
+                    <td class="amount">₱{{ number_format($payroll->gross_pay, 2) }}</td>
                 </tr>
                 <tr class="total-row">
                     <td colspan="3" style="text-align: right;">Total Deductions</td>
-                    <td class="amount" style="color: #e11d48;">-${{ number_format($payroll->total_deductions, 2) }}</td>
+                    <td class="amount" style="color: #e11d48;">-₱{{ number_format($payroll->total_deductions, 2) }}</td>
                 </tr>
                 <tr>
                     <td colspan="3" style="text-align: right; background-color: #eef2ff;" class="net-pay">NET PAY</td>
-                    <td class="amount net-pay" style="background-color: #eef2ff;">${{ number_format($payroll->net_pay, 2) }}</td>
+                    <td class="amount net-pay" style="background-color: #eef2ff;">₱{{ number_format($payroll->net_pay, 2) }}</td>
                 </tr>
             </tbody>
         </table>
 
         <div class="footer">
             <p>This is a computer-generated document. No signature is required.</p>
-            <p>&copy; {{ date('Y') }} Sempiturtle College Payroll System. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} AISAT College Payroll Intelligence. All rights reserved.</p>
         </div>
     </div>
 </body>

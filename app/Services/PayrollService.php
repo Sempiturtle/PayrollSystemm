@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class PayrollService
 {
+    public function __construct(
+        protected DeductionService $deductionService
+    ) {}
+
     /**
      * Determine the current fixed payroll period.
      * Cycle 1: 1st - 15th
@@ -38,50 +42,12 @@ class PayrollService
     public function syncForUser(User $user, $startDate, $endDate): Payroll
     {
         return DB::transaction(function () use ($user, $startDate, $endDate) {
-            // 1. Get all attendance logs for the period
+            // 1. Get all base data
             $logs = $user->attendanceLogs()
                 ->whereBetween('date', [$startDate, $endDate])
-                ->get();
+                ->get()
+                ->keyBy(fn($log) => $log->date->toDateString());
 
-            $totalHours = 0;
-            $lateCount = 0;
-            $totalLateMinutes = 0;
-            $processedDays = [];
-
-            foreach ($logs as $log) {
-                $dateStr = $log->date->toDateString();
-                
-                // Calculate hours worked
-                if ($log->time_in && $log->time_out) {
-                    $in = Carbon::parse($dateStr . ' ' . $log->time_in);
-                    $out = Carbon::parse($dateStr . ' ' . $log->time_out);
-                    $totalHours += max(0, $in->diffInSeconds($out) / 3600);
-                }
-
-                if ($log->status === 'Late') {
-                    $lateCount++;
-                    
-                    // Still tracking late minutes for metadata/display
-                    $dayName = $log->date->format('l');
-                    $matchingSchedule = $user->schedules
-                        ->where('day_of_week', $dayName)
-                        ->filter(fn($s) => is_null($s->effective_from) || $s->effective_from <= $log->date)
-                        ->sortBy('start_time')
-                        ->first(function($s) use ($log) {
-                            $logIn = Carbon::parse($log->time_in)->format('H:i:s');
-                            return $logIn >= $s->start_time && $logIn <= $s->end_time;
-                        });
-
-                    if ($matchingSchedule) {
-                        $schedIn = Carbon::parse($dateStr . ' ' . $matchingSchedule->start_time);
-                        $actualIn = Carbon::parse($dateStr . ' ' . $log->time_in);
-                        $totalLateMinutes += max(0, $actualIn->diffInMinutes($schedIn));
-                    }
-                }
-                $processedDays[] = $dateStr;
-            }
-
-            // 2. Add Pay for Approved Leaves (using schedule hours)
             $leaves = $user->leaves()
                 ->where('status', 'Approved')
                 ->where(function($q) use ($startDate, $endDate) {
@@ -90,22 +56,94 @@ class PayrollService
                       ->orWhere(fn($sq) => $sq->where('start_date', '<', $startDate)->where('end_date', '>', $endDate));
                 })->get();
 
-            foreach ($leaves as $leave) {
-                $leaveStart = max(Carbon::parse($leave->start_date), Carbon::parse($startDate));
-                $leaveEnd = min(Carbon::parse($leave->end_date), Carbon::parse($endDate));
+            $holidays = \App\Models\Holiday::whereBetween('date', [$startDate, $endDate])->get()
+                ->keyBy(fn($h) => $h->date->toDateString());
 
-                for ($date = $leaveStart->copy(); $date->lte($leaveEnd); $date->addDay()) {
-                    $currentDateStr = $date->toDateString();
-                    if (in_array($currentDateStr, $processedDays)) continue;
+            $totalHours = 0;
+            $lateCount = 0;
+            $totalLateMinutes = 0;
+            $processedDates = [];
 
-                    $daySchedules = $user->schedules
-                        ->where('day_of_week', $date->format('l'))
-                        ->filter(fn($s) => is_null($s->effective_from) || $s->effective_from <= $currentDateStr);
-                        
+            // 2. Iterate through every day in the period
+            $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
+            
+            foreach ($period as $date) {
+                $dateStr = $date->toDateString();
+                $dayName = $date->format('l');
+
+                // Get user's schedule for this day
+                $daySchedules = $user->schedules
+                    ->where('day_of_week', $dayName)
+                    ->filter(fn($s) => is_null($s->effective_from) || $s->effective_from <= $dateStr);
+
+                // Check for Holiday/Suspension first
+                if (isset($holidays[$dateStr])) {
+                    $holiday = $holidays[$dateStr];
+                    $hasWorked = isset($logs[$dateStr]) && $logs[$dateStr]->time_in && $logs[$dateStr]->time_out;
+
+                    // A. Case: Employee did NOT work
+                    if (!$hasWorked) {
+                        if ($holiday->is_paid) {
+                            foreach ($daySchedules as $sched) {
+                                $totalHours += $sched->scheduled_hours; // 100% pay for unworked holiday
+                            }
+                        }
+                    } 
+                    // B. Case: Employee DID work
+                    else {
+                        /** @var AttendanceLog $log */
+                        $log = $logs[$dateStr];
+                        $in = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_in);
+                        $out = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_out);
+                        $workHours = max(0, $in->diffInSeconds($out) / 3600);
+
+                        $multiplier = $holiday->is_double_pay ? 2 : 1;
+                        $totalHours += ($workHours * $multiplier);
+
+                        // Optional: Still check for lateness if they worked on a holiday? 
+                        // For now we follow the user's specific pay request.
+                        if ($log->status === 'Late') {
+                            $lateCount++;
+                        }
+                    }
+
+                    continue; // Skip standard processing for this day
+                }
+
+                // Check for Attendance Logs
+                if (isset($logs[$dateStr])) {
+                    $log = $logs[$dateStr];
+                    
+                    if ($log->time_in && $log->time_out) {
+                        $in = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_in);
+                        $out = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_out);
+                        $totalHours += max(0, $in->diffInSeconds($out) / 3600);
+                    }
+
+                    if ($log->status === 'Late') {
+                        $lateCount++;
+                        $matchingSchedule = $daySchedules
+                            ->sortBy('start_time')
+                            ->first(function($s) use ($log) {
+                                $logIn = \Carbon\Carbon::parse($log->time_in)->format('H:i:s');
+                                return $logIn >= $s->start_time && $logIn <= $s->end_time;
+                            });
+
+                        if ($matchingSchedule) {
+                            $schedIn = \Carbon\Carbon::parse($dateStr . ' ' . $matchingSchedule->start_time);
+                            $actualIn = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_in);
+                            $totalLateMinutes += max(0, $actualIn->diffInMinutes($schedIn));
+                        }
+                    }
+                    continue;
+                }
+
+                // Check for Approved Leaves
+                $isOnLeave = $leaves->contains(fn($l) => $dateStr >= $l->start_date && $dateStr <= $l->end_date);
+                if ($isOnLeave) {
                     foreach ($daySchedules as $sched) {
                         $totalHours += $sched->scheduled_hours;
                     }
-                    $processedDays[] = $currentDateStr;
                 }
             }
 
@@ -116,14 +154,22 @@ class PayrollService
             // NEW RULE: 1 hour deduction per late instance
             $lateDeduction = $lateCount * $hourlyRate;
             
-            $netPay = max(0, $grossPay - $lateDeduction);
+            // Calculate Statutory Deductions
+            $statutory = $this->deductionService->computeAll($grossPay);
+            
+            $totalDeductions = $lateDeduction + $statutory['total'];
+            $netPay = max(0, $grossPay - $totalDeductions);
 
             return Payroll::updateOrCreate(
                 ['user_id' => $user->id, 'period_start' => $startDate, 'period_end' => $endDate],
                 [
                     'total_hours' => $totalHours,
-                    'late_minutes' => $totalLateMinutes, // Keep minutes for display info
-                    'total_deductions' => $lateDeduction,
+                    'late_minutes' => $totalLateMinutes,
+                    'sss_deduction' => $statutory['sss'],
+                    'philhealth_deduction' => $statutory['philhealth'],
+                    'pagibig_deduction' => $statutory['pagibig'],
+                    'tax_deduction' => $statutory['tax'],
+                    'total_deductions' => $totalDeductions,
                     'gross_pay' => $grossPay,
                     'net_pay' => $netPay,
                     'status' => 'Draft',

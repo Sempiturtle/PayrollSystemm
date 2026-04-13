@@ -45,11 +45,47 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Delete all schedules (admin reset).
+     * Delete schedules for selected employees.
      */
-    public function destroy()
+    public function bulkDestroy(Request $request)
     {
-        Schedule::truncate();
-        return redirect()->route('schedules.index')->with('success', 'All schedules have been cleared.');
+        $request->validate(['user_ids' => 'required|array', 'user_ids.*' => 'exists:users,id']);
+        
+        \DB::transaction(function() use ($request) {
+            Schedule::whereIn('user_id', $request->user_ids)->delete();
+            User::whereIn('id', $request->user_ids)->update(['schedule_file' => null]);
+        });
+
+        return redirect()->route('schedules.index')->with('success', count($request->user_ids) . ' schedules cleared.');
+    }
+
+    /**
+     * Batch upload a single schedule to multiple employees.
+     */
+    public function bulkUpload(Request $request)
+    {
+        $request->validate([
+            'user_ids'      => 'required|array',
+            'user_ids.*'    => 'exists:users,id',
+            'schedule_file' => 'required|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        $users = User::whereIn('id', $request->user_ids)->get();
+        $file = $request->file('schedule_file');
+
+        \DB::transaction(function() use ($users, $file) {
+            foreach ($users as $user) {
+                // Clear existing
+                Schedule::where('user_id', $user->id)->delete();
+                
+                // Import (using the same library as EmployeeController)
+                \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\ProfessorScheduleImport($user->id), $file);
+                
+                // Update file reference
+                $user->update(['schedule_file' => 'bulk_assigned_' . now()->format('YmdHis')]);
+            }
+        });
+
+        return redirect()->route('schedules.index')->with('success', 'Schedule applied to ' . $users->count() . ' employees.');
     }
 }

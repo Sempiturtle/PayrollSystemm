@@ -1,170 +1,196 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AISAT College | Attendance & Payroll System</title>
+    <title>AISAT College | Attendance & Payroll Intelligence</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        body { font-family: 'Outfit', sans-serif; }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-    </style>
 </head>
-<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
-    <!-- Navbar -->
-    <nav class="fixed w-full z-50 glass-card px-6 py-4 flex justify-between items-center shadow-sm">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg ring-4 ring-indigo-50">A</div>
-            <span class="text-xl font-bold tracking-tight text-slate-800">AISAT <small class="text-indigo-600 font-medium tracking-normal text-sm">ATTENDANCE</small></span>
-        </div>
-        <div>
-            @if (Route::has('login'))
-                <div class="space-x-4">
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="px-6 py-2.5 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition shadow-md">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="px-6 py-2.5 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition shadow-md">Enter Portal</a>
-                    @endauth
+<body class="bg-slate-50 text-slate-900 font-['Inter'] antialiased overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center transition-all duration-500 bg-white/70 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <div class="flex items-center gap-3 group cursor-pointer">
+                <div class="w-12 h-12 rounded-xl bg-white p-1 shadow-md group-hover:scale-110 transition-transform">
+                    <img src="{{ asset('images/logo.png') }}" alt="AISAT Logo" class="w-full h-full object-contain overflow-hidden">
                 </div>
-            @endif
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold tracking-tighter text-slate-900 uppercase italic leading-none">AISAT <small class="text-indigo-600 font-medium tracking-normal text-[10px] block">COLLEGE</small></span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-8">
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="#features" class="text-sm font-semibold text-slate-500 hover:text-indigo-600 transition-colors">Features</a>
+                    <a href="#" class="text-sm font-semibold text-slate-500 hover:text-indigo-600 transition-colors">Resources</a>
+                </div>
+                <div>
+                    @if (Route::has('login'))
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="px-6 py-2.5 bg-slate-900 text-white rounded-full font-bold text-sm hover:bg-slate-800 transition shadow-lg shadow-slate-200">Go to Dashboard</a>
+                        @else
+                            <a href="{{ route('login') }}" class="px-6 py-2.5 bg-indigo-600 text-white rounded-full font-bold text-sm hover:bg-indigo-500 transition shadow-lg shadow-indigo-200">Enter Portal</a>
+                        @endauth
+                    @endif
+                </div>
+            </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="relative pt-32 pb-20 px-6 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div class="absolute -top-40 -right-40 w-96 h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse"></div>
-        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" style="animation-delay: 2s"></div>
-        
-        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
-            <div class="flex-1 text-center lg:text-left">
-                <h1 class="text-5xl lg:text-7xl font-bold leading-tight text-slate-900 mb-6">
-                    Streamline Campus <span class="text-indigo-600">Attendance</span> & <span class="text-indigo-600">Payroll</span>
-                </h1>
-                <p class="text-lg text-slate-600 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                    Designed specifically for AISAT College. A secure, rule-based system utilizing RFID and Biometric authentication for 100% accurate time tracking and automated payroll integration.
-                </p>
-                <div class="flex flex-wrap justify-center lg:justify-start gap-4">
-                    <a href="{{ route('login') }}" class="px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:bg-indigo-700 transition shadow-xl hover:scale-105 active:scale-95">
-                        Launch System
-                    </a>
-                    <a href="#features" class="px-8 py-4 bg-white text-slate-700 border border-slate-200 rounded-xl font-bold text-lg hover:bg-slate-50 transition">
-                        Explore Features
-                    </a>
-                </div>
-                <div class="mt-10 flex items-center justify-center lg:justify-start gap-8 opacity-60">
-                    <div class="flex flex-col">
-                        <span class="text-2xl font-bold text-slate-900">100%</span>
-                        <span class="text-sm font-medium">Real-time Data</span>
-                    </div>
-                    <div class="w-px h-8 bg-slate-300"></div>
-                    <div class="flex flex-col">
-                        <span class="text-2xl font-bold text-slate-900">Manila</span>
-                        <span class="text-sm font-medium">Synced Time</span>
-                    </div>
-                    <div class="w-px h-8 bg-slate-300"></div>
-                    <div class="flex flex-col">
-                        <span class="text-2xl font-bold text-slate-900">Secure</span>
-                        <span class="text-sm font-medium">Biometric Auth</span>
-                    </div>
-                </div>
+    <!-- Hero Section (Premium Dark Mode) -->
+    <section class="relative min-h-screen pt-40 pb-20 mesh-gradient-bg flex flex-col items-center justify-center overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-600/20 rounded-full blur-[120px] opacity-50"></div>
+            <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-in">
+                <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                <span class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em]">Next-Gen Payroll Engine Active</span>
             </div>
-            <div class="flex-1 relative">
-                <div class="relative z-10 p-4 bg-indigo-100 rounded-3xl shadow-2xl">
-                    <div class="bg-white rounded-2xl p-6 shadow-sm overflow-hidden">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="font-bold text-indigo-900 lg:text-xl">Daily Report Overview</h3>
-                            <span class="px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-lg">{{ date('M d, Y') }}</span>
-                        </div>
-                        <div class="space-y-4">
-                            <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-xl">
-                                <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center font-bold">✓</div>
-                                <div class="flex-1">
-                                    <h4 class="font-semibold text-sm">Professor Juan Dela Cruz</h4>
-                                    <p class="text-xs text-slate-500">Checked in at 7:45 AM (On-time)</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-xl">
-                                <div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center font-bold">!</div>
-                                <div class="flex-1">
-                                    <h4 class="font-semibold text-sm">Admin Sarah Smith</h4>
-                                    <p class="text-xs text-slate-500">Checked in at 8:15 AM (Late - 15m)</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+            <h1 class="text-6xl md:text-8xl font-black mb-8 leading-[0.95] tracking-tighter-lg hero-gradient-text text-glow-indigo">
+                Intelligence <br/> Behind <span class="text-indigo-400">Attendance.</span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed">
+                Experience the transition from manual logs to biometric precision. AISAT's integrated engine automates time-tracking, leaves, and payroll in real-time.
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-4 mb-24">
+                <a href="{{ route('login') }}" class="px-10 py-5 bg-white text-slate-950 rounded-2xl font-black text-lg hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_-10px_rgba(255,255,255,0.3)]">
+                    Launch Identity Terminal
+                </a>
+                <a href="#features" class="px-10 py-5 bg-slate-900 text-white border border-white/10 rounded-2xl font-bold text-lg hover:bg-slate-800 transition-all">
+                    System Overview
+                </a>
+            </div>
+
+            <!-- Product Reveal (Mockup) -->
+            <div class="relative w-full max-w-5xl mx-auto perspective-1000">
+                <div class="relative z-10 rounded-3xl p-2 bg-gradient-to-br from-white/10 to-white/5 border border-white/20 shadow-2xl floating-element">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2426&ixlib=rb-4.0.3" alt="System Preview" class="rounded-2xl w-full h-auto shadow-2xl grayscale-[20%] Contrast-[110%]">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                </div>
+                <!-- Ambient Glow Behind Image -->
+                <div class="absolute -inset-10 bg-indigo-600/30 rounded-[100px] blur-[100px] -z-10 animate-pulse"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack / Stats -->
+    <section class="py-20 bg-white border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+                <div class="space-y-1">
+                    <div class="text-4xl font-black text-slate-900 tracking-tighter">100<span class="text-indigo-600">%</span></div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Real-time Sync</div>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-4xl font-black text-slate-900 tracking-tighter">2s</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Auth Speed</div>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-4xl font-black text-slate-900 tracking-tighter">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Manual Errors</div>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-4xl font-black text-slate-900 tracking-tighter">RSA</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Encryption</div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section id="features" class="py-24 bg-white px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <span class="text-indigo-600 font-bold tracking-widest uppercase text-sm">System Core</span>
-                <h2 class="text-4xl font-bold mt-2 text-slate-900">Professional Grade Infrastructure</h2>
+    <section id="features" class="py-32 bg-slate-50 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-24">
+                <span class="text-indigo-600 font-black tracking-widest uppercase text-[11px] mb-4 block">Engine Core</span>
+                <h2 class="text-5xl font-black text-slate-900 tracking-tighter mb-6">Designed for Excellence.</h2>
+                <p class="text-slate-500 max-w-xl mx-auto font-medium">Built with professional Laravel architecture to ensure speed, security, and scalability for AISAT College.</p>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Card 1 -->
-                <div class="p-8 group bg-slate-50 rounded-3xl hover:bg-white hover:shadow-2xl transition duration-300 border border-transparent hover:border-indigo-100">
-                    <div class="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition">
-                        <svg class="w-8 h-8 font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                <div class="group p-8 bg-white rounded-[2.5rem] border border-slate-200/60 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                    <div class="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white mb-8 shadow-xl shadow-indigo-100 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 3v1m0 0c.851 0 1.673.1 2.459.29m0 0a10.016 10.016 0 011.094 9.71m3.44 2.04l-.054-.09a10.003 10.003 0 010-19.142m0 19.142A10.002 10.002 0 0120 13v-1"></path></svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-slate-900 tracking-tight">RFID Integration</h3>
-                    <p class="text-slate-600 leading-relaxed text-sm">Secure, contactless attendance logging using industry-standard RFID technology for instant verification.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-slate-900 tracking-tight">Biometric Core</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed font-medium">Advanced fingerprint and RFID integration ensuring that attendance is verified, secure, and irrefutable.</p>
                 </div>
 
                 <!-- Card 2 -->
-                <div class="p-8 group bg-slate-50 rounded-3xl hover:bg-white hover:shadow-2xl transition duration-300 border border-transparent hover:border-indigo-100">
-                    <div class="w-14 h-14 bg-pink-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition">
-                        <svg class="w-8 h-8 font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 3v1c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 3v1m0 0c.851 0 1.673.1 2.459.29m0 0A10.016 10.016 0 0115.353 10H14a3 3 0 00-2.828 4M12 11c0 3.517 1.009 6.799 2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 3v1m0 0c.851 0 1.673.1 2.459.29m0 0a10.016 10.016 0 011.094 9.71m3.44 2.04l-.054-.09a10.003 10.003 0 010-19.142m0 19.142A10.002 10.002 0 0120 13v-1M12 11c0 3.517 1.009 6.799 2.753 9.571m0 0c.851 0 1.673.1 2.459.29m0 0a10.016 10.016 0 011.094 9.71m-1.094-9.71A10.016 10.016 0 0018 11.29"></path></svg>
+                <div class="group p-8 bg-white rounded-[2.5rem] border border-slate-200/60 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                    <div class="w-14 h-14 bg-slate-900 rounded-2xl flex items-center justify-center text-white mb-8 shadow-xl shadow-slate-100 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-slate-900 tracking-tight">Biometric Fallback</h3>
-                    <p class="text-slate-600 leading-relaxed text-sm">Advanced fingerprint recognition as a secondary authentication method when cards are unavailable.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-slate-900 tracking-tight">Payroll Engine</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed font-medium">Automated computation based on precise attendance data, including late deductions, bonuses, and tax logic.</p>
                 </div>
 
                 <!-- Card 3 -->
-                <div class="p-8 group bg-slate-50 rounded-3xl hover:bg-white hover:shadow-2xl transition duration-300 border border-transparent hover:border-indigo-100">
-                    <div class="w-14 h-14 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition">
-                        <svg class="w-8 h-8 font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div class="group p-8 bg-white rounded-[2.5rem] border border-slate-200/60 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                    <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-indigo-50 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-slate-900 tracking-tight">Rule-Based Logic</h3>
-                    <p class="text-slate-600 leading-relaxed text-sm">Automated evaluation against uploaded Excel schedules using Asia/Manila server time.</p>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="p-8 group bg-slate-50 rounded-3xl hover:bg-white hover:shadow-2xl transition duration-300 border border-transparent hover:border-indigo-100">
-                    <div class="w-14 h-14 bg-slate-800 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition">
-                        <svg class="w-8 h-8 font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-slate-900 tracking-tight">Payroll Insight</h3>
-                    <p class="text-slate-600 leading-relaxed text-sm">Integrated computation of late deductions and absences directly into payroll reports.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-slate-900 tracking-tight">Schedule Matrix</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed font-medium">Dynamic Excel-based schedule importing with per-professor customization to match unique campus workflows.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-slate-50 py-12 px-6 border-t border-slate-200">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-slate-500 text-sm">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 bg-indigo-600 rounded text-white flex items-center justify-center font-bold text-xs shadow-sm">A</div>
-                <span class="font-bold text-slate-800">AISAT College</span>
+    <footer class="bg-slate-950 pt-24 pb-12 px-6 overflow-hidden relative">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-12 mb-20">
+                <div class="max-w-sm">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-white p-1">
+                            <img src="{{ asset('images/logo.png') }}" alt="AISAT Logo" class="w-full h-full object-contain">
+                        </div>
+                        <span class="text-2xl font-black tracking-tighter text-white italic uppercase">AISAT <small class="text-indigo-400 font-bold block text-[10px]">COLLEGE</small></span>
+                    </div>
+                    <p class="text-slate-500 text-sm leading-relaxed font-medium">Leading the digital transformation of educational administration through secure biometric intelligence and automated payroll systems.</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-2 gap-16">
+                    <div>
+                        <h4 class="text-white font-bold text-xs uppercase tracking-widest mb-6">Platform</h4>
+                        <ul class="space-y-4 text-slate-500 text-sm font-medium">
+                            <li><a href="#" class="hover:text-indigo-400 transition">Attendance Terminal</a></li>
+                            <li><a href="#" class="hover:text-indigo-400 transition">Payroll Matrix</a></li>
+                            <li><a href="#" class="hover:text-indigo-400 transition">Leave Engine</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold text-xs uppercase tracking-widest mb-6">Support</h4>
+                        <ul class="space-y-4 text-slate-500 text-sm font-medium">
+                            <li><a href="#" class="hover:text-indigo-400 transition">IT Department</a></li>
+                            <li><a href="#" class="hover:text-indigo-400 transition">Admin Portal</a></li>
+                            <li><a href="#" class="hover:text-indigo-400 transition">Security Protocol</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <p>&copy; {{ date('Y') }} AISAT College. All rights reserved.</p>
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-indigo-600 transition">Contact Admin</a>
-                <a href="#" class="hover:text-indigo-600 transition">User Policy</a>
+
+            <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between gap-6">
+                <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">&copy; {{ date('Y') }} AISAT College Dasmariñas Campus. Engineered for Excellence.</p>
+                <div class="flex gap-8 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+                    <a href="#" class="hover:text-indigo-400 transition">Privacy Cipher</a>
+                    <a href="#" class="hover:text-indigo-400 transition">Terms of Service</a>
+                </div>
             </div>
         </div>
+        <!-- Subtle Glow in Footer -->
+        <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-indigo-600/10 rounded-full blur-[100px]"></div>
     </footer>
 </body>
 </html>

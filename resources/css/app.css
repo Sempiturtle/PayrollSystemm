@@ -4,91 +4,133 @@
 
 @layer base {
     :root {
-        --brand-primary: 99 102 241;    /* indigo-500 */
-        --brand-accent: 79 70 229;      /* indigo-600 */
-        --surface-primary: 255 255 255;
-        --surface-secondary: 248 250 252; /* slate-50 */
-        --border-default: 226 232 240;   /* slate-200 */
+        /* Senior Developer Palette (Stripe/Vercel inspired) */
+        --brand-primary: 79 70 229;     /* Indigo 600 */
+        --brand-accent: 99 102 241;      /* Indigo 500 */
+        --slate-primary: 15 23 42;       /* Slate 900 */
+        --slate-secondary: 71 85 105;    /* Slate 600 */
+        
+        /* Surface & Interaction */
+        --bg-main: 248 250 252;          /* Slate 50 */
+        --surface-card: 255 255 255;
+        --border-refined: 226 232 240 / 0.6; /* Slate 200 soft */
     }
 
     body {
-        @apply font-sans antialiased text-slate-800 bg-slate-50 selection:bg-indigo-500/20 selection:text-indigo-900;
+        @apply font-['Inter'] antialiased text-slate-800 bg-slate-50 selection:bg-indigo-500/10 selection:text-indigo-900;
+        letter-spacing: -0.01em;
+    }
+
+    /* ── High-Level Utilities ── */
+    .mesh-gradient-bg {
+        background-color: #020617;
+        background-image: 
+            radial-gradient(at 0% 0%, hsla(243, 75%, 35%, 0.15) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, hsla(263, 70%, 35%, 0.15) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, hsla(243, 75%, 35%, 0.1) 0px, transparent 50%),
+            radial-gradient(at 0% 100%, hsla(263, 70%, 35%, 0.1) 0px, transparent 50%);
+    }
+
+    .text-glow-indigo {
+        text-shadow: 0 0 20px rgba(79, 70, 229, 0.4);
+    }
+
+    .glass-dark {
+        @apply bg-slate-900/40 backdrop-blur-xl border border-white/5;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-['Outfit'] tracking-tight text-slate-900;
     }
 
     [x-cloak] { display: none !important; }
 }
 
 @layer components {
-    /* ── Card System ── */
-    .card {
-        @apply bg-white rounded-2xl border border-slate-200/80 shadow-card transition-all duration-300;
+    /* ── Senior Card (High-Fidelity) ── */
+    .card-modern {
+        @apply bg-white rounded-[1.25rem] border border-slate-200/60 shadow-sm transition-all duration-300;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.02), 0 1px 2px -1px rgb(0 0 0 / 0.03), 0 4px 6px -1px rgb(0 0 0 / 0.02);
     }
-    .card:hover {
-        @apply shadow-card-hover border-slate-200;
-    }
-
-    /* ── Stat Card ── */
-    .stat-card {
-        @apply bg-white rounded-2xl border border-slate-200/80 shadow-card p-6 transition-all duration-300 relative overflow-hidden;
-    }
-    .stat-card:hover {
-        @apply shadow-card-hover -translate-y-0.5;
+    .card-modern:hover {
+        @apply border-slate-300/60 -translate-y-0.5;
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.04);
     }
 
-    /* ── Glass Header ── */
-    .glass-header {
-        @apply bg-white/80 backdrop-blur-xl border-b border-slate-200/60;
+    /* ── Metric Box (Stripe Style) ── */
+    .stat-high-level {
+        @apply card-modern p-6 flex flex-col justify-between min-h-[140px];
+    }
+    .stat-label {
+        @apply text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1;
+    }
+    .stat-value {
+        @apply text-3xl font-bold text-slate-900 tracking-tighter;
     }
 
-    /* ── Sidebar ── */
-    .sidebar-shell {
-        @apply bg-slate-900 text-slate-300;
+    /* ── Sidebar (Refined Light) ── */
+    .sidebar-refined {
+        @apply bg-white border-r border-slate-200/60;
     }
 
-    /* ── Data Table ── */
-    .data-table {
-        @apply w-full text-left;
+    /* ── Pro Data Table ── */
+    .pro-table-wrapper {
+        @apply card-modern overflow-hidden;
     }
-    .data-table thead {
-        @apply bg-slate-50/80 border-b border-slate-200/60;
+    .pro-table {
+        @apply w-full text-left border-collapse;
     }
-    .data-table thead th {
-        @apply px-6 py-3.5 text-[11px] font-semibold text-slate-500 uppercase tracking-wider;
+    .pro-table thead {
+        @apply bg-slate-50/50 border-b border-slate-100;
     }
-    .data-table tbody tr {
-        @apply border-b border-slate-100 hover:bg-slate-50/50 transition-colors duration-150;
+    .pro-table th {
+        @apply px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest;
     }
-    .data-table tbody td {
-        @apply px-6 py-4;
+    .pro-table tbody tr {
+        @apply border-b border-slate-50 hover:bg-slate-50/40 transition-all duration-200;
     }
-
-    /* ── Section Header ── */
-    .section-header {
-        @apply flex items-center justify-between px-6 py-5 border-b border-slate-100;
-    }
-    .section-title {
-        @apply text-sm font-semibold text-slate-800 tracking-tight;
-    }
-    .section-subtitle {
-        @apply text-xs text-slate-400 mt-0.5;
+    .pro-table td {
+        @apply px-6 py-4 text-sm text-slate-600;
     }
 
-    /* ── Badge Base ── */
-    .badge {
-        @apply inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold rounded-full;
+    /* ── High-Level Buttons ── */
+    .btn-action {
+        @apply px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98];
+    }
+    .btn-action-primary {
+        @apply btn-action bg-slate-900 text-white hover:bg-slate-800 shadow-sm hover:shadow-md;
+    }
+    .btn-action-indigo {
+        @apply btn-action bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm shadow-indigo-200 hover:shadow-indigo-300;
+    }
+    .btn-action-secondary {
+        @apply btn-action bg-white text-slate-700 border border-slate-200 hover:bg-slate-50;
     }
 
-    /* ── Button ── */
-    .btn-primary {
-        @apply px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-all duration-200 hover:shadow-md active:scale-[0.98];
-    }
-    .btn-secondary {
-        @apply px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-xl border border-slate-200 shadow-soft transition-all duration-200;
+    /* ── Modern Badge ── */
+    .badge-modern {
+        @apply inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider;
     }
 }
 
 @layer utilities {
-    .tracking-tighter-lg {
-        letter-spacing: -0.05em;
+    .text-balance {
+        text-wrap: balance;
+    }
+    .glass-surface {
+        @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-sm;
+    }
+
+    .hero-gradient-text {
+        @apply text-transparent bg-clip-text bg-gradient-to-br from-white via-white/90 to-slate-400;
+    }
+
+    .floating-element {
+        animation: floating 6s ease-in-out infinite;
+    }
+
+    @keyframes floating {
+        0%, 100% { transform: translateY(0) rotate(0); }
+        50% { transform: translateY(-20px) rotate(2deg); }
     }
 }

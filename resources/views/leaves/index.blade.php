@@ -24,7 +24,58 @@
             </div>
         @endif
 
-        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div x-data="{ 
+            selected: [],
+            allSelected: false,
+            toggleAll() {
+                this.allSelected = !this.allSelected;
+                if (this.allSelected) {
+                    this.selected = Array.from(document.querySelectorAll('input[name=\'leave_ids[]\']')).map(el => el.value);
+                } else {
+                    this.selected = [];
+                }
+            }
+        }" class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden relative">
+            
+            {{-- Bulk Actions Toolbar --}}
+            @if(auth()->user()->isAdmin())
+            <div x-show="selected.length > 0" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] bg-slate-900 text-white px-8 py-4 rounded-[2rem] shadow-2xl flex items-center gap-6 border border-slate-700/50 backdrop-blur-xl">
+                <div class="flex items-center gap-3 pr-6 border-r border-slate-700">
+                    <span class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold" x-text="selected.length"></span>
+                    <span class="text-sm font-bold uppercase tracking-widest text-slate-400">Selected</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <form action="{{ route('leaves.bulk') }}" method="POST" class="inline">
+                        @csrf
+                        <template x-for="id in selected" :key="id">
+                            <input type="hidden" name="leave_ids[]" :value="id">
+                        </template>
+                        <input type="hidden" name="status" value="Approved">
+                        <button type="submit" class="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition active:scale-95 shadow-lg shadow-emerald-500/20">
+                            Approve Batch
+                        </button>
+                    </form>
+                    <form action="{{ route('leaves.bulk') }}" method="POST" class="inline">
+                        @csrf
+                        <template x-for="id in selected" :key="id">
+                            <input type="hidden" name="leave_ids[]" :value="id">
+                        </template>
+                        <input type="hidden" name="status" value="Rejected">
+                        <button type="submit" class="px-5 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition active:scale-95 shadow-lg shadow-rose-500/20">
+                            Reject Batch
+                        </button>
+                    </form>
+                    <button @click="selected = []; allSelected = false" class="text-xs font-bold text-slate-400 hover:text-white transition uppercase tracking-widest ml-2">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+            @endif
+
             <div class="p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 italic tracking-tight">Leave Requests</h3>
@@ -96,6 +147,9 @@
                     <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[11px]">
                         <tr>
                             @if(auth()->user()->isAdmin())
+                                <th class="px-8 py-4 w-4">
+                                    <input type="checkbox" @click="toggleAll" :checked="allSelected" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                                </th>
                                 <th class="px-8 py-4">Employee</th>
                             @endif
                             <th class="px-8 py-4">Type</th>
@@ -109,8 +163,13 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
                         @forelse($leaves as $leave)
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition shadow-sm" :class="selected.includes('{{ $leave->id }}') ? 'bg-indigo-50/30 dark:bg-indigo-900/10' : ''">
                                 @if(auth()->user()->isAdmin())
+                                    <td class="px-8 py-4">
+                                        @if($leave->status === 'Pending')
+                                            <input type="checkbox" name="leave_ids[]" value="{{ $leave->id }}" x-model="selected" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                                        @endif
+                                    </td>
                                     <td class="px-8 py-4">
                                         <div class="font-bold text-slate-900 dark:text-slate-100">{{ $leave->user->name }}</div>
                                         <div class="text-xs text-slate-400">{{ $leave->user->employee_id }}</div>
@@ -166,7 +225,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ auth()->user()->isAdmin() ? 6 : 5 }}" class="px-8 py-12 text-center text-slate-500">
+                                <td colspan="{{ auth()->user()->isAdmin() ? 7 : 5 }}" class="px-8 py-12 text-center text-slate-500">
                                     No leave requests found.
                                 </td>
                             </tr>

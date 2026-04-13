@@ -67,4 +67,29 @@ class LeaveController extends Controller
         $statusColor = $request->status === 'Approved' ? 'success' : 'error';
         return redirect()->route('leaves.index')->with($statusColor, "Leave request marked as {$request->status}.");
     }
+
+    /**
+     * Batch update multiple leaves.
+     */
+    public function bulkUpdate(Request $request)
+    {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'leave_ids' => 'required|array',
+            'leave_ids.*' => 'exists:leaves,id',
+            'status'    => 'required|string|in:Approved,Rejected',
+        ]);
+
+        \DB::transaction(function () use ($request) {
+            Leave::whereIn('id', $request->leave_ids)->update([
+                'status' => $request->status,
+            ]);
+        });
+
+        $statusColor = $request->status === 'Approved' ? 'success' : 'error';
+        return redirect()->route('leaves.index')->with($statusColor, "Batch operation complete: " . count($request->leave_ids) . " requests {$request->status}.");
+    }
 }
