@@ -10,6 +10,7 @@ php artisan view:cache
 echo "Running migrations..."
 php artisan migrate --force
 
-# Start FrankenPHP
+# Start FrankenPHP using php-server mode
+# We use exec to replace the shell process with the server process
 echo "Starting FrankenPHP..."
-frankenphp run --config /etc/caddy/Caddyfile --adapter caddyfile --env PORT=$PORT
+exec frankenphp php-server --port "$PORT" --root public/
