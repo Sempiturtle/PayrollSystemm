@@ -72,6 +72,12 @@ class EmployeeController extends Controller
             'biometric_template' => 'nullable|string|unique:users',
             'hourly_rate' => 'required|numeric',
             'role' => 'required|in:professor,employee',
+            'tin_id' => 'nullable|string|max:255',
+            'sss_num' => 'nullable|string|max:255',
+            'philhealth_id' => 'nullable|string|max:255',
+            'pagibig_num' => 'nullable|string|max:255',
+            'sick_leave_credits' => 'nullable|numeric|min:0',
+            'vacation_leave_credits' => 'nullable|numeric|min:0',
             'schedule_file' => 'nullable|mimes:xlsx,xls,csv|max:10240',
         ]);
 
@@ -131,10 +137,16 @@ class EmployeeController extends Controller
 
         $log = AttendanceLog::where('user_id', $user->id)
                             ->where('date', $today)
+                            ->orderBy('created_at', 'desc')
                             ->first();
 
-        if (!$log) {
-            // Check-in
+        // Double-scan protection (cooldown: 5 minutes)
+        if ($log && $log->created_at->diffInMinutes($now) < 5) {
+            return response()->json(['success' => false, 'message' => 'Duplicate scan detected. Please wait a few minutes.'], 400);
+        }
+
+        if (!$log || $log->time_out) {
+            // Check-in (New Session)
             $gracePeriodMinutes = 15;
             $startTime = Carbon::parse($today . ' ' . $schedule->start_time);
             $graceTime = (clone $startTime)->addMinutes($gracePeriodMinutes);
@@ -152,7 +164,7 @@ class EmployeeController extends Controller
             $message = "Welcome, {$user->name}!";
             if ($status === 'Late') {
                 $minsLate = $now->diffInMinutes($startTime);
-                $message .= " You are logged as Late ({$minsLate} mins).";
+                $message .= " Logged as Late ({$minsLate} mins).";
             } else {
                 $message .= " Checked in On-time.";
             }
@@ -162,8 +174,8 @@ class EmployeeController extends Controller
                 'message' => $message,
                 'time' => $currentTime
             ]);
-        } else if (!$log->time_out) {
-            // Check-out
+        } else {
+            // Check-out (Close Session)
             $log->update(['time_out' => $currentTime]);
             
             // Sync Payroll automatically
@@ -176,8 +188,6 @@ class EmployeeController extends Controller
                 'time' => $currentTime
             ]);
         }
-
-        return response()->json(['success' => false, 'message' => 'Already recorded check-in and check-out for today'], 400);
     }
 
     /**
@@ -214,6 +224,12 @@ class EmployeeController extends Controller
             'biometric_template' => 'nullable|string|unique:users,biometric_template,' . $id,
             'hourly_rate' => 'required|numeric',
             'role' => 'required|in:professor,employee',
+            'tin_id' => 'nullable|string|max:255',
+            'sss_num' => 'nullable|string|max:255',
+            'philhealth_id' => 'nullable|string|max:255',
+            'pagibig_num' => 'nullable|string|max:255',
+            'sick_leave_credits' => 'nullable|numeric|min:0',
+            'vacation_leave_credits' => 'nullable|numeric|min:0',
             'schedule_file' => 'nullable|mimes:xlsx,xls,csv|max:10240',
         ]);
 

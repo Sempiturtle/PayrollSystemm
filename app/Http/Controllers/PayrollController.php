@@ -64,4 +64,18 @@ class PayrollController extends Controller
         $filename = 'payslip_' . $payroll->user->name . '_' . $payroll->period_end . '.pdf';
         return $pdf->download(str_replace(' ', '_', strtolower($filename)));
     }
+
+    /**
+     * Finalize (Lock) the payroll record.
+     */
+    public function finalize(Payroll $payroll)
+    {
+        if (!auth()->user()->isAdmin()) {
+            abort(403);
+        }
+
+        $payroll->update(['status' => 'Finalized']);
+
+        return redirect()->back()->with('success', 'Payroll record for ' . $payroll->user->name . ' has been finalized and locked.');
+    }
 }

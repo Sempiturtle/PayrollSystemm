@@ -9,6 +9,8 @@ $styles = [
     'admin'     => 'bg-slate-100 text-slate-700 ring-1 ring-slate-200/60',
     'professor' => 'bg-violet-50 text-violet-700 ring-1 ring-violet-200/60',
     'employee'  => 'bg-sky-50 text-sky-700 ring-1 ring-sky-200/60',
+    'finalized' => 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-300',
+    'draft'     => 'bg-slate-100 text-slate-600 ring-1 ring-slate-200',
 ];
 
 $dotColors = [
@@ -19,6 +21,8 @@ $dotColors = [
     'admin'     => 'bg-slate-500',
     'professor' => 'bg-violet-500',
     'employee'  => 'bg-sky-500',
+    'finalized' => 'bg-emerald-600',
+    'draft'     => 'bg-slate-400',
 ];
 
 $selected = $styles[$type] ?? 'bg-slate-100 text-slate-600 ring-1 ring-slate-200/60';

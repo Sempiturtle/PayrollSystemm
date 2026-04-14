@@ -38,6 +38,10 @@
                     Personnel Directory
                 </x-sidebar-link>
 
+                <x-sidebar-link :href="route('attendance.index')" :active="request()->routeIs('attendance.*')" icon="attendance">
+                    Presence Master List
+                </x-sidebar-link>
+
                 <x-sidebar-link :href="route('schedules.index')" :active="request()->routeIs('schedules.*')" icon="calendar">
                     Schedule Matrix
                 </x-sidebar-link>
@@ -61,12 +65,20 @@
                 <x-sidebar-link :href="route('attendance.history')" :active="request()->routeIs('attendance.history')" icon="calendar">
                     Presence History
                 </x-sidebar-link>
+                <x-sidebar-link :href="route('performance.index')" :active="request()->routeIs('performance.index')" icon="chart">
+                    Performance Analytics
+                </x-sidebar-link>
                 <x-sidebar-link :href="route('payrolls.index')" :active="request()->routeIs('payrolls.index')" icon="currency">
                     My Disbursements
                 </x-sidebar-link>
-
+                <x-sidebar-link :href="route('fiscal.index')" :active="request()->routeIs('fiscal.index')" icon="document">
+                    Fiscal Summary (YTD)
+                </x-sidebar-link>
                 <x-sidebar-link :href="route('leaves.index')" :active="request()->routeIs('leaves.*')" icon="calendar">
                     Leave Management
+                </x-sidebar-link>
+                <x-sidebar-link :href="route('profile.records')" :active="request()->routeIs('profile.records')" icon="user">
+                    My Profile
                 </x-sidebar-link>
             @endif
         </div>
@@ -76,6 +88,12 @@
             @if(Auth::user()->isAdmin())
                 <x-sidebar-link :href="route('attendance.scanner')" :active="request()->routeIs('attendance.scanner')" icon="scanner">
                     Identity Terminal
+                </x-sidebar-link>
+                <x-sidebar-link :href="route('admins.index')" :active="request()->routeIs('admins.*')" icon="users">
+                    Manage Admins
+                </x-sidebar-link>
+                <x-sidebar-link :href="route('settings.index')" :active="request()->routeIs('settings.*')" icon="settings">
+                    System Configurations
                 </x-sidebar-link>
             @endif
         </div>

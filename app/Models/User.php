@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, \App\Traits\LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +27,12 @@ class User extends Authenticatable
         'hourly_rate',
         'role',
         'schedule_file',
+        'tin_id',
+        'sss_id',
+        'philhealth_id',
+        'pagibig_id',
+        'sick_leave_credits',
+        'vacation_leave_credits',
     ];
 
     /**

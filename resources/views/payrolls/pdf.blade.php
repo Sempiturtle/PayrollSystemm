@@ -123,7 +123,12 @@
         </table>
 
         <div class="footer">
-            <p>This is a computer-generated document. No signature is required.</p>
+            <p style="margin-bottom: 10px; font-weight: bold; color: #475569;">
+                DOCUMENT VERIFICATION FINGERPRINT (DIGITAL SEAL)<br>
+                <span style="font-family: monospace; font-size: 10px; color: #6366f1; background: #f5f3ff; padding: 4px 8px; border-radius: 4px;">{{ $payroll->getVerificationFingerprint() }}</span>
+            </p>
+            <p>This is a computer-generated document secured via AISAT Integrity Hash. No signature is required. <br>
+            Verification of this hash can be performed by the Finance Department against the system ledger.</p>
             <p>&copy; {{ date('Y') }} AISAT College Payroll Intelligence. All rights reserved.</p>
         </div>
     </div>

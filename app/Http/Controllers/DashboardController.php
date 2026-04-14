@@ -102,7 +102,7 @@ class DashboardController extends Controller
             // Total Statutory Managed (Current Month)
             $statStats = \App\Models\Payroll::whereMonth('period_end', $now->month)
                 ->whereYear('period_end', $now->year)
-                ->selectRaw('SUM(sss_deduction) as sss, SUM(philhealth_deduction) as philhealth, SUM(pagibig_deduction) as pagibig, SUM(tax_deduction) as tax')
+                ->selectRaw('SUM(sss_deduction) as sss, SUM(philhealth_deduction) as philhealth, SUM(pagibig_deduction) as pagibig, SUM(tax_deduction) as tax, COUNT(CASE WHEN status = "Finalized" THEN 1 END) as finalized_count, COUNT(CASE WHEN status = "Draft" THEN 1 END) as draft_count')
                 ->first();
 
             return view('dashboard', compact(
@@ -150,8 +150,30 @@ class DashboardController extends Controller
                 ->limit(2)
                 ->get();
 
+            // REAL-TIME Hardening: Current Cycle Live Awareness
+            $period = $this->payrollService->getCurrentPeriod($now);
+            $cycleLogs = AttendanceLog::where('user_id', $user->id)
+                ->whereBetween('date', [$period['start'], $period['end']])
+                ->get();
+            
+            $cycleStats = [
+                'current_hours' => 0,
+                'current_lates' => $cycleLogs->where('status', 'Late')->count(),
+                'start' => Carbon::parse($period['start'])->format('M d'),
+                'end' => Carbon::parse($period['end'])->format('M d'),
+            ];
+
+            foreach($cycleLogs as $log) {
+                if($log->time_in && $log->time_out) {
+                    $in = Carbon::parse($log->date->toDateString().' '.$log->time_in);
+                    $out = Carbon::parse($log->date->toDateString().' '.$log->time_out);
+                    $cycleStats['current_hours'] += max(0, $in->diffInSeconds($out) / 3600);
+                }
+            }
+
             return view('dashboard_employee', compact(
-                'user', 'myLogs', 'myPayrolls', 'todayLog', 'mySchedule', 'todaySchedule', 'todayHoliday', 'upcomingHolidays'
+                'user', 'myLogs', 'myPayrolls', 'todayLog', 'mySchedule', 
+                'todaySchedule', 'todayHoliday', 'upcomingHolidays', 'cycleStats'
             ));
         }
     }

@@ -42,11 +42,21 @@ class PayrollService
     public function syncForUser(User $user, $startDate, $endDate): Payroll
     {
         return DB::transaction(function () use ($user, $startDate, $endDate) {
+            // 0. Check for Locking (Bulletproofing)
+            $existing = Payroll::where('user_id', $user->id)
+                ->where('period_start', $startDate)
+                ->where('period_end', $endDate)
+                ->first();
+                
+            if ($existing && $existing->status === 'Finalized') {
+                return $existing; // Do not modify finalized records
+            }
+
             // 1. Get all base data
             $logs = $user->attendanceLogs()
                 ->whereBetween('date', [$startDate, $endDate])
                 ->get()
-                ->keyBy(fn($log) => $log->date->toDateString());
+                ->groupBy(fn($log) => $log->date->toDateString());
 
             $leaves = $user->leaves()
                 ->where('status', 'Approved')
@@ -62,7 +72,6 @@ class PayrollService
             $totalHours = 0;
             $lateCount = 0;
             $totalLateMinutes = 0;
-            $processedDates = [];
 
             // 2. Iterate through every day in the period
             $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
@@ -79,60 +88,62 @@ class PayrollService
                 // Check for Holiday/Suspension first
                 if (isset($holidays[$dateStr])) {
                     $holiday = $holidays[$dateStr];
-                    $hasWorked = isset($logs[$dateStr]) && $logs[$dateStr]->time_in && $logs[$dateStr]->time_out;
+                    $dayLogs = $logs->get($dateStr, collect());
+                    $hasWorked = $dayLogs->isNotEmpty();
 
                     // A. Case: Employee did NOT work
                     if (!$hasWorked) {
                         if ($holiday->is_paid) {
                             foreach ($daySchedules as $sched) {
-                                $totalHours += $sched->scheduled_hours; // 100% pay for unworked holiday
+                                $totalHours += $sched->scheduled_hours;
                             }
                         }
                     } 
-                    // B. Case: Employee DID work
+                    // B. Case: Employee DID work (Multi-session support)
                     else {
-                        /** @var AttendanceLog $log */
-                        $log = $logs[$dateStr];
-                        $in = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_in);
-                        $out = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_out);
-                        $workHours = max(0, $in->diffInSeconds($out) / 3600);
+                        foreach ($dayLogs as $log) {
+                            if ($log->time_in && $log->time_out) {
+                                $in = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_in);
+                                $out = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_out);
+                                $workHours = max(0, $in->diffInSeconds($out) / 3600);
 
-                        $multiplier = $holiday->is_double_pay ? 2 : 1;
-                        $totalHours += ($workHours * $multiplier);
+                                $multiplier = $holiday->is_double_pay ? 2 : 1;
+                                $totalHours += ($workHours * $multiplier);
+                            }
 
-                        // Optional: Still check for lateness if they worked on a holiday? 
-                        // For now we follow the user's specific pay request.
-                        if ($log->status === 'Late') {
-                            $lateCount++;
+                            if ($log->status === 'Late') {
+                                $lateCount++;
+                            }
                         }
                     }
-
-                    continue; // Skip standard processing for this day
+                    continue; 
                 }
 
-                // Check for Attendance Logs
-                if (isset($logs[$dateStr])) {
-                    $log = $logs[$dateStr];
+                // Check for Attendance Logs (Multi-session support)
+                if ($logs->has($dateStr)) {
+                    $dayLogs = $logs->get($dateStr);
                     
-                    if ($log->time_in && $log->time_out) {
-                        $in = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_in);
-                        $out = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_out);
-                        $totalHours += max(0, $in->diffInSeconds($out) / 3600);
-                    }
+                    foreach ($dayLogs as $log) {
+                        if ($log->time_in && $log->time_out) {
+                            $in = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_in);
+                            $out = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_out);
+                            $totalHours += max(0, $in->diffInSeconds($out) / 3600);
+                        }
 
-                    if ($log->status === 'Late') {
-                        $lateCount++;
-                        $matchingSchedule = $daySchedules
-                            ->sortBy('start_time')
-                            ->first(function($s) use ($log) {
-                                $logIn = \Carbon\Carbon::parse($log->time_in)->format('H:i:s');
-                                return $logIn >= $s->start_time && $logIn <= $s->end_time;
-                            });
+                        if ($log->status === 'Late') {
+                            $lateCount++;
+                            $matchingSchedule = $daySchedules
+                                ->sortBy('start_time')
+                                ->first(function($s) use ($log) {
+                                    $logIn = \Carbon\Carbon::parse($log->time_in)->format('H:i:s');
+                                    return $logIn >= $s->start_time && $logIn <= $s->end_time;
+                                });
 
-                        if ($matchingSchedule) {
-                            $schedIn = \Carbon\Carbon::parse($dateStr . ' ' . $matchingSchedule->start_time);
-                            $actualIn = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_in);
-                            $totalLateMinutes += max(0, $actualIn->diffInMinutes($schedIn));
+                            if ($matchingSchedule) {
+                                $schedIn = \Carbon\Carbon::parse($dateStr . ' ' . $matchingSchedule->start_time);
+                                $actualIn = \Carbon\Carbon::parse($dateStr . ' ' . $log->time_in);
+                                $totalLateMinutes += max(0, $actualIn->diffInMinutes($schedIn));
+                            }
                         }
                     }
                     continue;
@@ -147,17 +158,28 @@ class PayrollService
                 }
             }
 
-            // 3. Final Calculations
+            // 3. Final Calculations & Hardening
             $hourlyRate = $user->hourly_rate ?? 0;
             $grossPay = $totalHours * $hourlyRate;
             
-            // NEW RULE: 1 hour deduction per late instance
+            // 1 hour deduction per late instance
             $lateDeduction = $lateCount * $hourlyRate;
             
-            // Calculate Statutory Deductions
+            // Calculate Statutory Deductions using dynamic settings
             $statutory = $this->deductionService->computeAll($grossPay);
             
+            /** 
+             * FISCAL HARDENING: Capture current settings snapshot 
+             * This proves the exact math used even if settings change next year.
+             */
+            $snapshot = \App\Models\SystemSetting::all()->pluck('value', 'key')->toArray();
+            
             $totalDeductions = $lateDeduction + $statutory['total'];
+            
+            /** 
+             * FISCAL HARDENING: Zero-Floor Logic
+             * Net pay cannot be negative even with extreme deductions.
+             */
             $netPay = max(0, $grossPay - $totalDeductions);
 
             return Payroll::updateOrCreate(
@@ -173,6 +195,7 @@ class PayrollService
                     'gross_pay' => $grossPay,
                     'net_pay' => $netPay,
                     'status' => 'Draft',
+                    'calculation_snapshot' => $snapshot,
                 ]
             );
         });

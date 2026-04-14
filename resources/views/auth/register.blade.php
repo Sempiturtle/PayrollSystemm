@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="mb-10">
-        <h2 class="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tighter">Join the Academy</h2>
+        <h2 class="text-3xl font-bold text-white tracking-tighter">Join the Academy</h2>
         <p class="text-sm font-medium text-slate-500 mt-2">Create your personnel credentials.</p>
     </div>
 

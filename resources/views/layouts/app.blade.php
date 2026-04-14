@@ -8,6 +8,9 @@
         <title>{{ config('app.name', 'AISAT Payroll') }} — High-Level Personnel Management</title>
         <meta name="description" content="Professional-grade Personnel, Attendance, and Payroll management for AISAT College.">
 
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,18 +77,41 @@
                 <!-- Page Content -->
                 <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50">
                     <div class="max-w-7xl mx-auto space-y-6">
-                        <!-- Session Messages -->
-                        @if (session('success'))
-                            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl flex items-center gap-3 shadow-soft animate-in">
-                                <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 flex-shrink-0">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        <!-- Premium Toast Notifications -->
+                        <div x-data="{ 
+                            show: {{ session('success') ? 'true' : 'false' }},
+                            message: '{{ session('success') }}',
+                            type: 'success',
+                            init() {
+                                if(this.show) setTimeout(() => this.show = false, 5000)
+                            }
+                        }"
+                        x-show="show"
+                        x-transition:enter="transition ease-out duration-300 transform"
+                        x-transition:enter-start="translate-y-[-20px] opacity-0"
+                        x-transition:enter-end="translate-y-0 opacity-100"
+                        x-transition:leave="transition ease-in duration-200 transform"
+                        x-transition:leave-start="translate-y-0 opacity-100"
+                        x-transition:leave-end="translate-y-[-20px] opacity-0"
+                        class="fixed top-6 right-6 z-[100] max-w-sm w-full pointer-events-auto"
+                        style="display: none;">
+                            <div class="bg-white/90 backdrop-blur-xl border border-emerald-100 shadow-2xl shadow-emerald-200/50 rounded-2xl p-4 flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-200 shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
-                                <span class="text-sm font-medium">{{ session('success') }}</span>
+                                <div class="flex-1">
+                                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-0.5">Notification</h4>
+                                    <p class="text-sm font-bold text-slate-800" x-text="message"></p>
+                                </div>
+                                <button @click="show = false" class="text-slate-300 hover:text-slate-500 transition">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
                             </div>
-                        @endif
+                        </div>
 
+                        <!-- Error Banner (Kept static for priority) -->
                         @if (session('error') || $errors->any())
-                            <div class="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl space-y-2 shadow-soft">
+                            <div class="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl space-y-2 shadow-soft animate-in">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 flex-shrink-0">
                                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>

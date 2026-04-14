@@ -2,49 +2,55 @@
 
 namespace App\Services;
 
+use App\Models\SystemSetting;
+
 /**
  * DeductionService handles the computation of Philippine statutory contributions and taxes.
- * Based on current Phil-Gov standards (simplified for institutional demonstration).
+ * Based on current Phil-Gov standards (Dynamic via SystemSettings).
  */
 class DeductionService
 {
     /**
-     * SSS Contribution (approx 4.5% employee share)
+     * SSS Contribution
      */
     public function calculateSSS(float $grossPay): float
     {
-        // Simple approximate calculation based on monthly salary credit
-        // In production, this would use a lookup table.
         if ($grossPay <= 0) return 0;
         
-        $sssRate = 0.045; 
+        $sssRate = SystemSetting::get('sss_rate', 0.045); 
+        $maxContribution = SystemSetting::get('sss_max_contribution', 1125);
+        
         $contribution = $grossPay * $sssRate;
         
-        return min(1125, $contribution); // Max cap for employee share
+        return min($maxContribution, $contribution);
     }
 
     /**
-     * PhilHealth Contribution (approx 2% employee share)
+     * PhilHealth Contribution
      */
     public function calculatePhilHealth(float $grossPay): float
     {
         if ($grossPay <= 0) return 0;
         
-        $phRate = 0.02; 
+        $phRate = SystemSetting::get('philhealth_rate', 0.02); 
+        $maxContribution = SystemSetting::get('philhealth_max_contribution', 1000);
+        
         $contribution = $grossPay * $phRate;
         
-        return min(1000, $contribution); // Max cap
+        return min($maxContribution, $contribution);
     }
 
     /**
-     * Pag-IBIG Contribution (usually fixed 100 or 200)
+     * Pag-IBIG Contribution
      */
     public function calculatePagIBIG(float $grossPay): float
     {
         if ($grossPay <= 0) return 0;
         
-        // Fixed rate for salaries above 1,500
-        return ($grossPay > 1500) ? 200.00 : 100.00;
+        $fixedAmount = SystemSetting::get('pagibig_fixed_amount', 200);
+        $threshold = SystemSetting::get('pagibig_threshold', 1500);
+        
+        return ($grossPay > $threshold) ? (float)$fixedAmount : (float)($fixedAmount / 2);
     }
 
     /**
@@ -53,17 +59,20 @@ class DeductionService
     public function calculateTax(float $grossPay, float $statutoryTotal): float
     {
         $taxableIncome = $grossPay - $statutoryTotal;
+        $threshold1 = SystemSetting::get('tax_threshold_1', 20833);
         
-        if ($taxableIncome <= 20833) {
+        if ($taxableIncome <= $threshold1) {
             return 0; // Below threshold
         }
 
+        $rate2 = SystemSetting::get('tax_rate_2', 0.15);
         if ($taxableIncome <= 33333) {
-            return ($taxableIncome - 20833) * 0.15;
+            return ($taxableIncome - $threshold1) * $rate2;
         }
 
+        $rate3 = SystemSetting::get('tax_rate_3', 0.20);
         if ($taxableIncome <= 66667) {
-            return 1875 + ($taxableIncome - 33333) * 0.20;
+            return 1875 + ($taxableIncome - 33333) * $rate3;
         }
 
         if ($taxableIncome <= 166667) {

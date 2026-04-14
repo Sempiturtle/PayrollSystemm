@@ -100,14 +100,29 @@
             <div class="stat-high-level group p-10 bg-slate-950 text-white shadow-2xl overflow-hidden relative border-none flex flex-col justify-between">
                 <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/30 to-transparent"></div>
                 <div class="stat-label flex items-center justify-between relative z-10">
-                    <span class="italic text-indigo-400 font-black">Fiscal Velocity</span>
-                    <svg class="w-4 h-4 text-indigo-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="italic text-indigo-400 font-black">Fiscal Processing</span>
+                    <svg class="w-4 h-4 text-indigo-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                 </div>
-                <div class="mt-8 flex items-baseline gap-2 relative z-10">
-                    <div class="stat-value text-4xl tracking-tighter tabular-nums">₱{{ number_format(($statStats->tax + $statStats->sss + $statStats->philhealth + $statStats->pagibig) / 1000, 1) }}K</div>
-                    <span class="text-[10px] font-bold text-indigo-400/60 uppercase tracking-widest italic font-mono">Managed Monthly</span>
+                <div class="mt-8 relative z-10">
+                    <div class="flex items-baseline gap-2">
+                        <div class="stat-value text-4xl tracking-tighter tabular-nums">{{ $statStats->finalized_count }}</div>
+                        <span class="text-[10px] font-bold text-indigo-400/60 uppercase tracking-widest italic font-mono">Finalized</span>
+                    </div>
+                    <div class="mt-1 flex items-center gap-2">
+                        <div class="w-full bg-indigo-900/50 h-1 rounded-full overflow-hidden">
+                            @php 
+                                $totalRows = ($statStats->finalized_count + $statStats->draft_count) ?: 1;
+                                $percent = ($statStats->finalized_count / $totalRows) * 100;
+                            @endphp
+                            <div class="bg-indigo-400 h-full" style="width: {{ $percent }}%"></div>
+                        </div>
+                        <span class="text-[9px] font-black tabular-nums">{{ round($percent) }}%</span>
+                    </div>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 h-20 opacity-40 group-hover:opacity-100 transition-opacity duration-700">
+                <div class="mt-4 flex items-center justify-between relative z-10">
+                    <div class="text-[9px] font-bold text-indigo-300/40 uppercase tracking-widest">{{ $statStats->draft_count }} Pending Drafts</div>
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 h-10 opacity-40 group-hover:opacity-100 transition-opacity duration-700">
                     <div id="sparklineVelocity"></div>
                 </div>
             </div>
