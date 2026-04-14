@@ -15,6 +15,9 @@ php artisan db:seed --force
 echo "Configuring Nginx to listen on port ${PORT:-10000}..."
 sed -i "s/LISTEN_PORT/${PORT:-10000}/g" /etc/nginx/http.d/default.conf
 
+# Pre-cleanup the socket to prevent conflicts
+rm -f /tmp/php.sock
+
 # Start Supervisor (which starts Nginx and PHP-FPM)
-echo "Starting Supervisor..."
+echo "Starting Supervisor Services..."
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

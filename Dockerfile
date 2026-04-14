@@ -30,11 +30,6 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     pdo_mysql \
     opcache
 
-# Configure PHP-FPM to use a Unix socket and increase limits
-RUN sed -i 's/^listen = .*/listen = \/run\/php-fpm.sock/g' /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i 's/;listen.mode = 0660/listen.mode = 0666/g' /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i 's/^;pm.max_children = .*/pm.max_children = 20/g' /usr/local/etc/php-fpm.d/www.conf
-
 # Copy project files
 WORKDIR /app
 COPY . .
@@ -44,17 +39,18 @@ COPY --from=build /app/public/build ./public/build
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Permissions
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
-    && chmod -R 775 /app/storage /app/bootstrap/cache
-
-# Fix line endings for Windows users
-RUN sed -i 's/\r$//' docker/run.sh && chmod +x docker/run.sh
-
-# Setup Nginx and Supervisor
+# Configuration
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
+
+# Set correct permissions
+RUN chown -R www-data:www-data /app \
+    && chmod -R 775 /app/storage /app/bootstrap/cache
+
+# Fix line endings and permissions for run.sh
+RUN sed -i 's/\r$//' docker/run.sh && chmod +x docker/run.sh
 
 # Expose the Render port
 EXPOSE 10000
