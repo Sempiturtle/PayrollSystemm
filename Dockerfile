@@ -5,28 +5,16 @@ COPY . .
 RUN npm install && npm run build
 
 # Production stage
-FROM dunglas/frankenphp:1.3-php8.4-alpine AS production
+# webdevops/php-nginx is a robust, production-ready image for Laravel
+FROM webdevops/php-nginx:8.2-alpine AS production
 
-# Install system dependencies
-RUN apk add --no-cache \
-    libzip-dev \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    freetype-dev \
-    icu-dev \
-    oniguruma-dev \
-    mysql-client \
-    bash
+# Configuration for webdevops image
+ENV WEB_DOCUMENT_ROOT=/app/public
+ENV PHP_MEMORY_LIMIT=256M
+ENV PHP_MAX_EXECUTION_TIME=60
 
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-    gd \
-    zip \
-    intl \
-    bcmath \
-    pdo_mysql \
-    opcache
+# Install necessary system dependencies for Laravel 12
+RUN apk add --no-cache mysql-client bash
 
 # Copy project files
 WORKDIR /app
@@ -37,19 +25,17 @@ COPY --from=build /app/public/build ./public/build
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Fix line endings for Windows users and set permissions
-RUN sed -i 's/\r$//' docker/run.sh && chmod +x docker/run.sh
+# Set permissions
+RUN chown -R application:application storage bootstrap/cache
+RUN chmod -R 775 storage bootstrap/cache
 
-# Set permissions for storage/cache
-RUN chown -R www-data:www-data storage bootstrap/cache
+# Copy custom PHP configuration
+COPY docker/php.ini /opt/docker/etc/php/php.ini
 
-# Environment optimizations
-ENV PHP_INI_SCAN_DIR=":$PHP_INI_SCAN_DIR"
-COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
+# Expose port (Render uses 8080 or the $PORT variable)
+EXPOSE 80
+ENV PORT=80
 
-# Expose port
-EXPOSE 8080
-ENV PORT=8080
-
-# Run script using absolute path
+# Run script
+RUN chmod +x docker/run.sh
 ENTRYPOINT ["/app/docker/run.sh"]

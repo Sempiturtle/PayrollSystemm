@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Clear and cache Laravel configuration and routes
 echo "Caching configuration and routes..."
@@ -10,7 +10,6 @@ php artisan view:cache
 echo "Running migrations..."
 php artisan migrate --force
 
-# Start FrankenPHP using php-server mode
-# We use exec to replace the shell process with the server process
-echo "Starting FrankenPHP..."
-exec frankenphp php-server --port "$PORT" --root public/
+# Start the webdevops entrypoint (Nginx + PHP-FPM)
+echo "Starting Nginx and PHP-FPM..."
+exec /opt/docker/bin/entrypoint.sh supervisord
