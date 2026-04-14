@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Clear and cache Laravel configuration and routes
 echo "Caching configuration and routes..."

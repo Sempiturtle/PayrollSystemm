@@ -37,7 +37,10 @@ COPY --from=build /app/public/build ./public/build
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Set permissions
+# Fix line endings for Windows users and set permissions
+RUN sed -i 's/\r$//' docker/run.sh && chmod +x docker/run.sh
+
+# Set permissions for storage/cache
 RUN chown -R www-data:www-data storage bootstrap/cache
 
 # Environment optimizations
@@ -48,6 +51,5 @@ COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
 EXPOSE 8080
 ENV PORT=8080
 
-# Run script
-RUN chmod +x docker/run.sh
-ENTRYPOINT ["docker/run.sh"]
+# Run script using absolute path
+ENTRYPOINT ["/app/docker/run.sh"]
