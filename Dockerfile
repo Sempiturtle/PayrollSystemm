@@ -6,7 +6,7 @@ RUN npm install && npm run build
 
 # Production stage
 # webdevops/php-nginx is a robust, production-ready image for Laravel
-FROM webdevops/php-nginx:8.2-alpine AS production
+FROM webdevops/php-nginx:8.3-alpine AS production
 
 # Configuration for webdevops image
 ENV WEB_DOCUMENT_ROOT=/app/public
