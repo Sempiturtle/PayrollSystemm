@@ -30,9 +30,10 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     pdo_mysql \
     opcache
 
-# Configure PHP-FPM to use a Unix socket
-RUN sed -i 's/listen = 9000/listen = \/var\/run\/php-fpm.sock/g' /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i 's/;listen.mode = 0660/listen.mode = 0666/g' /usr/local/etc/php-fpm.d/www.conf
+# Configure PHP-FPM to use a Unix socket and increase limits
+RUN sed -i 's/^listen = .*/listen = \/run\/php-fpm.sock/g' /usr/local/etc/php-fpm.d/www.conf \
+    && sed -i 's/;listen.mode = 0660/listen.mode = 0666/g' /usr/local/etc/php-fpm.d/www.conf \
+    && sed -i 's/^;pm.max_children = .*/pm.max_children = 20/g' /usr/local/etc/php-fpm.d/www.conf
 
 # Copy project files
 WORKDIR /app
