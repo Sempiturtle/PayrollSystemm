@@ -57,7 +57,7 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
 
 # Expose the Render port
-EXPOSE 80
-ENV PORT=80
+EXPOSE 10000
+ENV PORT=10000
 
 ENTRYPOINT ["/app/docker/run.sh"]
