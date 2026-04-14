@@ -11,6 +11,6 @@ echo "Running migrations and seeders..."
 php artisan migrate --force
 php artisan db:seed --force
 
-# Start the webdevops entrypoint (Nginx + PHP-FPM)
-echo "Starting Nginx and PHP-FPM..."
-exec /opt/docker/bin/entrypoint.sh supervisord
+# Start Supervisor (which starts Nginx and PHP-FPM)
+echo "Starting Supervisor..."
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
