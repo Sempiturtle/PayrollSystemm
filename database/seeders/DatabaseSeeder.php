@@ -45,8 +45,13 @@ class DatabaseSeeder extends Seeder
             'hourly_rate' => 350.00,
         ]);
 
-        // 2. Schedules
-        $this->call(ScheduleSeeder::class);
+        // 2. Schedules and System Data
+        $this->call([
+            ScheduleSeeder::class,
+            HolidaySeeder::class,
+            ProfessorScheduleSeeder::class,
+            SystemSettingsSeeder::class,
+        ]);
 
         // 3. Sample Attendance Logs (Today)
         $today = Carbon::now('Asia/Manila')->toDateString();
