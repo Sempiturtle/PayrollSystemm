@@ -5,7 +5,7 @@
      x-transition:leave="transition ease-in duration-300"
      x-transition:leave-start="translate-x-0"
      x-transition:leave-end="-translate-x-full"
-     class="sidebar-refined w-64 min-h-screen hidden lg:flex lg:flex-col fixed left-0 top-0 z-40">
+     class="sidebar-refined w-64 h-screen hidden lg:flex lg:flex-col fixed left-0 top-0 z-40">
     
     <!-- Sidebar Header -->
     <div class="h-16 px-6 border-b border-slate-100 flex items-center gap-3">
@@ -139,7 +139,7 @@
          x-transition:leave="transition ease-in duration-300 transform"
          x-transition:leave-start="translate-x-0"
          x-transition:leave-end="-translate-x-full"
-         class="relative w-80 max-w-[calc(100%-3rem)] min-h-screen bg-white flex flex-col shadow-2xl">
+         class="relative w-80 max-w-[calc(100%-3rem)] h-screen bg-white flex flex-col shadow-2xl">
         
         <div class="h-16 px-6 border-b border-slate-50 flex justify-between items-center">
             <div class="flex items-center gap-2.5">
