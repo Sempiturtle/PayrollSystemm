@@ -121,8 +121,8 @@
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="text-xs font-bold text-slate-700">
-                                    {{ $audit->user->name ?? 'System' }} {{ strtolower($audit->event) }} a 
-                                    <span class="text-indigo-600 uppercase tracking-tighter">{{ class_basename($audit->auditable_type) }}</span>
+                                    {{ $audit->user->name ?? 'System' }} {{ strtolower($audit->event ?? 'updated') }} a 
+                                    <span class="text-indigo-600 uppercase tracking-tighter">{{ $audit->auditable_type ? class_basename($audit->auditable_type) : 'Record' }}</span>
                                 </div>
                                 <div class="text-[10px] text-slate-400 mt-0.5">{{ $audit->created_at->diffForHumans() }} • IP: {{ $audit->ip_address }}</div>
                             </div>
