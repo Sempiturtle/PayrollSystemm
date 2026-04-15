@@ -182,7 +182,14 @@
                     </a>
                 @endforeach
             @else
-                @foreach(['attendance.history' => 'My Attendance', 'payrolls.index' => 'My Payouts', 'leaves.index' => 'My Leaves'] as $route => $label)
+                @foreach([
+                    'attendance.history' => 'My Attendance', 
+                    'payrolls.index' => 'My Payouts', 
+                    'leaves.index' => 'My Leaves',
+                    'performance.index' => 'Performance Analytics',
+                    'fiscal.index' => 'Fiscal Summary',
+                    'profile.records' => 'My Profile'
+                ] as $route => $label)
                     <a href="{{ route($route) }}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-2xl transition-all">
                         {{ $label }}
                     </a>
