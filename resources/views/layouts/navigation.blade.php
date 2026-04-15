@@ -167,7 +167,16 @@
             <div class="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Workspace</div>
 
             @if(Auth::user()->isAdmin())
-                @foreach(['employees.index' => 'Personnel', 'schedules.index' => 'Schedules', 'payrolls.index' => 'Payroll', 'leaves.index' => 'Leaves', 'holidays.index' => 'Holidays'] as $route => $label)
+                @foreach([
+                    'employees.index' => 'Personnel', 
+                    'schedules.index' => 'Schedules', 
+                    'payrolls.index' => 'Payroll', 
+                    'leaves.index' => 'Leaves', 
+                    'holidays.index' => 'Holidays',
+                    'admin.discrepancies.index' => 'Correction Requests',
+                    'admins.index' => 'Manage Admins',
+                    'settings.index' => 'System Settings'
+                ] as $route => $label)
                     <a href="{{ route($route) }}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-2xl transition-all">
                         {{ $label }}
                     </a>
