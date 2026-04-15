@@ -52,9 +52,9 @@ class DashboardController extends Controller
             ];
 
             // Chart 3: Payroll Trends (Last 6 Months)
-            $payrollTrend = \App\Models\Payroll::selectRaw('SUM(net_pay) as total, MONTHNAME(period_end) as month')
+            $payrollTrend = \App\Models\Payroll::selectRaw('SUM(net_pay) as total, MONTHNAME(period_end) as month, MAX(period_end) as sort_date')
                 ->groupBy('month')
-                ->orderBy('period_end', 'asc')
+                ->orderBy('sort_date', 'asc')
                 ->limit(6)
                 ->get();
 
