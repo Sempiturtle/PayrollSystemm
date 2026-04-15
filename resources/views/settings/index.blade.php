@@ -86,12 +86,12 @@
                                                     <input type="number" step="any" 
                                                            name="settings[{{ $setting->key }}]" 
                                                            value="{{ $setting->value }}" 
-                                                           class="bg-slate-50 border-slate-100 rounded-xl text-sm focus:ring-indigo-500 w-full transition">
+                                                           class="bg-slate-50 border-slate-100 rounded-2xl text-sm font-black text-slate-800 focus:ring-2 focus:ring-indigo-500 w-full px-5 py-3.5 transition-all outline-none">
                                                 @else
                                                     <input type="text" 
                                                            name="settings[{{ $setting->key }}]" 
                                                            value="{{ $setting->value }}" 
-                                                           class="bg-slate-50 border-slate-100 rounded-xl text-sm focus:ring-indigo-500 w-full transition">
+                                                           class="bg-slate-50 border-slate-100 rounded-2xl text-sm font-black text-slate-800 focus:ring-2 focus:ring-indigo-500 w-full px-5 py-3.5 transition-all outline-none">
                                                 @endif
                                                 <p class="text-[10px] text-slate-400 italic">Key: {{ $setting->key }}</p>
                                             </div>
