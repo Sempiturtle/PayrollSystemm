@@ -62,7 +62,7 @@ Route::middleware('auth')->group(function () {
 
         // Settings & Configurations
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
-        Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
+        Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
         Route::resource('admins', \App\Http\Controllers\AdminManagementController::class)->except(['show']);
         Route::get('/audit-logs', \App\Http\Controllers\AuditLogController::class)->name('audit-logs.index');
 
