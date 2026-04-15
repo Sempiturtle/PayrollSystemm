@@ -14,6 +14,46 @@
                         <p class="text-sm text-slate-400">Manage statutory rates, tax brackets, and basic institutional identity.</p>
                     </div>
 
+                    {{-- Manual Parameter Creation (New) --}}
+                    <div x-data="{ showForm: false }" class="mb-12">
+                        <button @click="showForm = !showForm" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-2">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
+                            Add New Manual Parameter
+                        </button>
+
+                        <div x-show="showForm" x-collapse class="mt-4 p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+                            <form action="{{ route('settings.store') }}" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                @csrf
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Label (Display Name)</label>
+                                    <input type="text" name="label" placeholder="e.g., SSS Rate" class="w-full bg-white border-slate-100 rounded-xl text-sm focus:ring-indigo-500">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Storage Key (Unique)</label>
+                                    <input type="text" name="key" placeholder="e.g., sss_rate" class="w-full bg-white border-slate-100 rounded-xl text-sm focus:ring-indigo-500">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Initial Value</label>
+                                    <input type="text" name="value" placeholder="0.045" class="w-full bg-white border-slate-100 rounded-xl text-sm focus:ring-indigo-500">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Group</label>
+                                    <select name="group" class="w-full bg-white border-slate-100 rounded-xl text-sm focus:ring-indigo-500">
+                                        <option value="statutory">Statutory</option>
+                                        <option value="tax">Tax</option>
+                                        <option value="institutional">Institutional Identity</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" name="type" value="string">
+                                <div class="md:col-span-2 flex justify-end pt-2">
+                                    <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition">
+                                        Define Parameter
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
                     <form action="{{ route('settings.update') }}" method="POST">
                         @csrf
                         @method('PATCH')

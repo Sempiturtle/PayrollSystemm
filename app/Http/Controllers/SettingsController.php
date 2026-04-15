@@ -35,6 +35,21 @@ class SettingsController extends Controller
             }
         }
 
-        return redirect()->route('settings.index')->with('success', 'System settings updated successfully.');
+    /**
+     * Store a new system setting parameter.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'key' => 'required|unique:system_settings,key|alpha_dash',
+            'label' => 'required',
+            'value' => 'required',
+            'type' => 'required|in:string,decimal,integer,boolean',
+            'group' => 'required|in:statutory,tax,institutional',
+        ]);
+
+        SystemSetting::create($validated);
+        
+        return redirect()->route('settings.index')->with('success', 'New system parameter created successfully.');
     }
 }

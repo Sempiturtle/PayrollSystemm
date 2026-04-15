@@ -60,6 +60,10 @@
                 <x-sidebar-link :href="route('holidays.index')" :active="request()->routeIs('holidays.*')" icon="calendar">
                     Academic Calendar
                 </x-sidebar-link>
+
+                <x-sidebar-link :href="route('admin.discrepancies.index')" :active="request()->routeIs('admin.discrepancies.*')" icon="alert">
+                    Correction Requests
+                </x-sidebar-link>
             @else
                 <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Personal Workspace</div>
                 <x-sidebar-link :href="route('attendance.history')" :active="request()->routeIs('attendance.history')" icon="calendar">
