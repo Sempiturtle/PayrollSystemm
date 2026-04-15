@@ -34,6 +34,8 @@ class SettingsController extends Controller
                 Cache::forget("setting_{$key}");
             }
         }
+        return redirect()->route('settings.index')->with('success', 'System settings updated successfully.');
+    }
 
     /**
      * Store a new system setting parameter.
