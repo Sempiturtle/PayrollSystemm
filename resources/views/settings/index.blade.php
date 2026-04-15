@@ -23,9 +23,9 @@
 
                         <form action="{{ route('settings.sync') }}" method="POST">
                             @csrf
-                            <button type="submit" class="text-xs font-bold text-slate-400 hover:text-slate-600 flex items-center gap-2">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                                Load Recommended Defaults
+                            <button type="submit" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-2 group transition-colors">
+                                <svg class="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                Load Recommended Default Parameters
                             </button>
                         </form>
                     </div>
@@ -71,7 +71,7 @@
                         <div class="space-y-12">
                             @foreach($settings as $group => $items)
                                 <section class="space-y-6">
-                                    <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] border-l-2 border-indigo-500 pl-3">
+                                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-l-2 border-indigo-500 pl-4 py-0.5">
                                         {{ ucfirst($group) }} Parameters
                                     </h4>
                                     
@@ -86,12 +86,12 @@
                                                     <input type="number" step="any" 
                                                            name="settings[{{ $setting->key }}]" 
                                                            value="{{ $setting->value }}" 
-                                                           class="bg-slate-50 border-slate-100 rounded-2xl text-sm font-black text-slate-800 focus:ring-2 focus:ring-indigo-500 w-full px-5 py-3.5 transition-all outline-none">
+                                                           class="bg-slate-50/50 border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-full px-6 py-3 transition-all outline-none shadow-sm focus:shadow-md">
                                                 @else
                                                     <input type="text" 
                                                            name="settings[{{ $setting->key }}]" 
                                                            value="{{ $setting->value }}" 
-                                                           class="bg-slate-50 border-slate-100 rounded-2xl text-sm font-black text-slate-800 focus:ring-2 focus:ring-indigo-500 w-full px-5 py-3.5 transition-all outline-none">
+                                                           class="bg-slate-50/50 border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-full px-6 py-3 transition-all outline-none shadow-sm focus:shadow-md">
                                                 @endif
                                                 <p class="text-[10px] text-slate-400 italic">Key: {{ $setting->key }}</p>
                                             </div>

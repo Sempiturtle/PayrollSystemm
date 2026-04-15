@@ -24,7 +24,7 @@ class SettingsController extends Controller
     {
         $validated = $request->validate([
             'settings' => 'required|array',
-            'settings.*' => 'required',
+            'settings.*' => 'present',
         ]);
 
         foreach ($validated['settings'] as $key => $value) {
