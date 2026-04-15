@@ -68,32 +68,42 @@
                         @csrf
                         @method('PATCH')
 
-                        <div class="space-y-12">
+                        <div class="space-y-16">
                             @foreach($settings as $group => $items)
                                 <section class="space-y-6">
-                                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-l-2 border-indigo-500 pl-4 py-0.5">
-                                        {{ ucfirst($group) }} Parameters
-                                    </h4>
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <h4 class="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em]">
+                                            {{ $group }} Parameters
+                                        </h4>
+                                        <div class="h-px flex-1 bg-slate-100"></div>
+                                    </div>
                                     
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    <div class="divide-y divide-slate-50 border-y border-slate-50">
                                         @foreach($items as $setting)
-                                            <div class="flex flex-col gap-1.5">
-                                                <label class="text-xs font-bold text-slate-700 tracking-tight">
-                                                    {{ $setting->label }}
-                                                </label>
+                                            <div class="flex flex-col md:flex-row md:items-center justify-between py-6 group hover:bg-slate-50/50 transition-colors px-4 -mx-4 rounded-xl">
+                                                <div class="space-y-1 mb-4 md:mb-0">
+                                                    <label class="text-sm font-bold text-slate-800 tracking-tight">
+                                                        {{ $setting->label }}
+                                                    </label>
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></span>
+                                                        <code class="text-[10px] text-slate-400 font-mono tracking-tighter">{{ $setting->key }}</code>
+                                                    </div>
+                                                </div>
                                                 
-                                                @if($setting->type === 'decimal' || $setting->type === 'integer')
-                                                    <input type="number" step="any" 
-                                                           name="settings[{{ $setting->key }}]" 
-                                                           value="{{ $setting->value }}" 
-                                                           class="bg-slate-50/50 border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-full px-6 py-3 transition-all outline-none shadow-sm focus:shadow-md">
-                                                @else
-                                                    <input type="text" 
-                                                           name="settings[{{ $setting->key }}]" 
-                                                           value="{{ $setting->value }}" 
-                                                           class="bg-slate-50/50 border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-full px-6 py-3 transition-all outline-none shadow-sm focus:shadow-md">
-                                                @endif
-                                                <p class="text-[10px] text-slate-400 italic">Key: {{ $setting->key }}</p>
+                                                <div class="w-full md:w-72">
+                                                    @if($setting->type === 'decimal' || $setting->type === 'integer')
+                                                        <input type="number" step="any" 
+                                                               name="settings[{{ $setting->key }}]" 
+                                                               value="{{ $setting->value }}" 
+                                                               class="bg-white border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 w-full px-5 py-3 transition-all outline-none shadow-sm">
+                                                    @else
+                                                        <input type="text" 
+                                                               name="settings[{{ $setting->key }}]" 
+                                                               value="{{ $setting->value }}" 
+                                                               class="bg-white border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 w-full px-5 py-3 transition-all outline-none shadow-sm">
+                                                    @endif
+                                                </div>
                                             </div>
                                         @endforeach
                                     </div>
