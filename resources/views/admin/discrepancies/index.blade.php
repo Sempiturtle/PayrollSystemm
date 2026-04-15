@@ -42,8 +42,10 @@
                                     </div>
                                 </td>
                                 <td class="px-10 py-6">
-                                    <div class="text-sm font-black text-slate-700">#{{ $report->payroll_id }}</div>
-                                    <div class="text-[9px] font-bold text-slate-400 uppercase italic">{{ $report->payroll->period_end->format('M Y') }}</div>
+                                    <div class="text-sm font-black text-slate-700">#{{ $report->payroll_id ?? 'N/A' }}</div>
+                                    <div class="text-[9px] font-bold text-slate-400 uppercase italic">
+                                        {{ $report->payroll?->period_end?->format('M Y') ?? 'Unknown Period' }}
+                                    </div>
                                 </td>
                                 <td class="px-10 py-6">
                                     <div class="text-xs text-slate-600 font-medium max-w-xs truncate">{{ $report->description }}</div>
