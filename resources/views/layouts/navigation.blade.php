@@ -143,7 +143,7 @@
          x-transition:leave="transition ease-in duration-300 transform"
          x-transition:leave-start="translate-x-0"
          x-transition:leave-end="-translate-x-full"
-         class="relative w-80 max-w-[calc(100%-3rem)] h-screen bg-white flex flex-col shadow-2xl">
+         class="fixed left-0 top-0 w-80 max-w-[calc(100%-3rem)] h-[100dvh] bg-white flex flex-col shadow-2xl z-50">
         
         <div class="h-16 px-6 border-b border-slate-50 flex justify-between items-center">
             <div class="flex items-center gap-2.5">

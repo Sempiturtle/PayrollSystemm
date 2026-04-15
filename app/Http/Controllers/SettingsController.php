@@ -54,4 +54,35 @@ class SettingsController extends Controller
         
         return redirect()->route('settings.index')->with('success', 'New system parameter created successfully.');
     }
+
+    /**
+     * Populate standard default slots for easy manual configuration.
+     */
+    public function syncDefaults()
+    {
+        $defaults = [
+            // Statutory
+            ['key' => 'sss_rate', 'label' => 'SSS Employee Rate', 'value' => '0', 'group' => 'statutory', 'type' => 'decimal'],
+            ['key' => 'sss_max_contribution', 'label' => 'SSS Max Employee Contribution', 'value' => '0', 'group' => 'statutory', 'type' => 'decimal'],
+            ['key' => 'philhealth_rate', 'label' => 'PhilHealth Employee Rate', 'value' => '0', 'group' => 'statutory', 'type' => 'decimal'],
+            ['key' => 'philhealth_max_contribution', 'label' => 'PhilHealth Max Contribution', 'value' => '0', 'group' => 'statutory', 'type' => 'decimal'],
+            ['key' => 'pagibig_fixed_amount', 'label' => 'Pag-IBIG Monthly Contribution', 'value' => '0', 'group' => 'statutory', 'type' => 'decimal'],
+            ['key' => 'pagibig_threshold', 'label' => 'Pag-IBIG Salary Threshold', 'value' => '0', 'group' => 'statutory', 'type' => 'decimal'],
+            
+            // Tax
+            ['key' => 'tax_threshold_1', 'label' => 'Tax Free Threshold (Monthly)', 'value' => '0', 'group' => 'tax', 'type' => 'decimal'],
+            ['key' => 'tax_rate_2', 'label' => 'Tax Rate Bracket 2 (15%)', 'value' => '0', 'group' => 'tax', 'type' => 'decimal'],
+            ['key' => 'tax_rate_3', 'label' => 'Tax Rate Bracket 3 (20%)', 'value' => '0', 'group' => 'tax', 'type' => 'decimal'],
+            
+            // Institutional
+            ['key' => 'currency_symbol', 'label' => 'Currency Symbol', 'value' => '₱', 'group' => 'institutional', 'type' => 'string'],
+            ['key' => 'institution_name', 'label' => 'Institution Name', 'value' => 'AISAT', 'group' => 'institutional', 'type' => 'string'],
+        ];
+
+        foreach ($defaults as $data) {
+            SystemSetting::firstOrCreate(['key' => $data['key']], $data);
+        }
+
+        return redirect()->route('settings.index')->with('success', 'Standard parameter slots loaded successfully! You can now edit the values.');
+    }
 }

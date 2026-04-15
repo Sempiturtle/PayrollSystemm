@@ -64,6 +64,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
         Route::post('/settings/create', [SettingsController::class, 'store'])->name('settings.store');
+        Route::post('/settings/sync', [SettingsController::class, 'syncDefaults'])->name('settings.sync');
         Route::resource('admins', \App\Http\Controllers\AdminManagementController::class)->except(['show']);
         Route::get('/audit-logs', \App\Http\Controllers\AuditLogController::class)->name('audit-logs.index');
 
