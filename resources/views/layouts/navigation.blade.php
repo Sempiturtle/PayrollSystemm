@@ -157,44 +157,87 @@
             </button>
         </div>
 
-        <div class="flex-1 p-6 space-y-2 overflow-y-auto">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-white bg-slate-900 rounded-2xl shadow-lg">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                Dashboard
-            </a>
-            
-            <div class="h-6"></div>
-            <div class="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Workspace</div>
+        <div class="flex-1 p-6 space-y-8 overflow-y-auto">
+            {{-- Overview Section --}}
+            <div class="space-y-1">
+                <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Intelligence</div>
+                <x-sidebar-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" icon="home">
+                    Overview
+                </x-sidebar-link>
+            </div>
 
-            @if(Auth::user()->isAdmin())
-                @foreach([
-                    'employees.index' => 'Personnel', 
-                    'schedules.index' => 'Schedules', 
-                    'payrolls.index' => 'Payroll', 
-                    'leaves.index' => 'Leaves', 
-                    'holidays.index' => 'Holidays',
-                    'admin.discrepancies.index' => 'Correction Requests',
-                    'admins.index' => 'Manage Admins',
-                    'settings.index' => 'System Settings'
-                ] as $route => $label)
-                    <a href="{{ route($route) }}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-2xl transition-all">
-                        {{ $label }}
-                    </a>
-                @endforeach
-            @else
-                @foreach([
-                    'attendance.history' => 'My Attendance', 
-                    'payrolls.index' => 'My Payouts', 
-                    'leaves.index' => 'My Leaves',
-                    'performance.index' => 'Performance Analytics',
-                    'fiscal.index' => 'Fiscal Summary',
-                    'profile.records' => 'My Profile'
-                ] as $route => $label)
-                    <a href="{{ route($route) }}" class="flex items-center gap-3 px-4 py-3 text-sm font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-2xl transition-all">
-                        {{ $label }}
-                    </a>
-                @endforeach
-            @endif
+            {{-- Management Section --}}
+            <div class="space-y-1">
+                @if(Auth::user()->isAdmin())
+                    <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Organization</div>
+                    
+                    <x-sidebar-link :href="route('employees.index')" :active="request()->routeIs('employees.*')" icon="users">
+                        Personnel Directory
+                    </x-sidebar-link>
+
+                    <x-sidebar-link :href="route('attendance.index')" :active="request()->routeIs('attendance.*')" icon="attendance">
+                        Presence Master List
+                    </x-sidebar-link>
+
+                    <x-sidebar-link :href="route('schedules.index')" :active="request()->routeIs('schedules.*')" icon="calendar">
+                        Schedule Matrix
+                    </x-sidebar-link>
+
+                    <x-sidebar-link :href="route('payrolls.index')" :active="request()->routeIs('payrolls.*')" icon="currency">
+                        Disbursement History
+                    </x-sidebar-link>
+
+                    <div class="h-4"></div>
+                    <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Policies</div>
+
+                    <x-sidebar-link :href="route('leaves.index')" :active="request()->routeIs('leaves.*')" icon="calendar">
+                        Leave Requests
+                    </x-sidebar-link>
+
+                    <x-sidebar-link :href="route('holidays.index')" :active="request()->routeIs('holidays.*')" icon="calendar">
+                        Academic Calendar
+                    </x-sidebar-link>
+
+                    <x-sidebar-link :href="route('admin.discrepancies.index')" :active="request()->routeIs('admin.discrepancies.*')" icon="alert">
+                        Correction Requests
+                    </x-sidebar-link>
+                @else
+                    <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Personal Workspace</div>
+                    <x-sidebar-link :href="route('attendance.history')" :active="request()->routeIs('attendance.history')" icon="calendar">
+                        Presence History
+                    </x-sidebar-link>
+                    <x-sidebar-link :href="route('performance.index')" :active="request()->routeIs('performance.index')" icon="chart">
+                        Performance Analytics
+                    </x-sidebar-link>
+                    <x-sidebar-link :href="route('payrolls.index')" :active="request()->routeIs('payrolls.index')" icon="currency">
+                        My Disbursements
+                    </x-sidebar-link>
+                    <x-sidebar-link :href="route('fiscal.index')" :active="request()->routeIs('fiscal.index')" icon="document">
+                        Fiscal Summary (YTD)
+                    </x-sidebar-link>
+                    <x-sidebar-link :href="route('leaves.index')" :active="request()->routeIs('leaves.*')" icon="calendar">
+                        Leave Management
+                    </x-sidebar-link>
+                    <x-sidebar-link :href="route('profile.records')" :active="request()->routeIs('profile.records')" icon="user">
+                        My Profile
+                    </x-sidebar-link>
+                @endif
+            </div>
+
+            <div class="space-y-1">
+                <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Configurations</div>
+                @if(Auth::user()->isAdmin())
+                    <x-sidebar-link :href="route('attendance.scanner')" :active="request()->routeIs('attendance.scanner')" icon="scanner">
+                        Identity Terminal
+                    </x-sidebar-link>
+                    <x-sidebar-link :href="route('admins.index')" :active="request()->routeIs('admins.*')" icon="users">
+                        Manage Admins
+                    </x-sidebar-link>
+                    <x-sidebar-link :href="route('settings.index')" :active="request()->routeIs('settings.*')" icon="settings">
+                        System Configurations
+                    </x-sidebar-link>
+                @endif
+            </div>
 
             <div class="pt-6 border-t border-slate-50 mt-6">
                 <form method="POST" action="{{ route('logout') }}">

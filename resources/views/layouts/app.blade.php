@@ -63,7 +63,7 @@
                     <div class="flex items-center gap-4">
                         <!-- User Profile Action -->
                         <div class="flex items-center gap-3">
-                            <div class="text-right hidden sm:block">
+                            <div class="text-right">
                                 <div class="text-[11px] font-bold text-slate-400 capitalize tabular-nums tracking-widest leading-none mb-1">{{ Auth::user()->role }} Account</div>
                                 <div class="text-sm font-bold text-slate-900 tracking-tight leading-none">{{ Auth::user()->name }}</div>
                             </div>
