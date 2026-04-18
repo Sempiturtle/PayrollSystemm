@@ -7,19 +7,19 @@
         </div>
     </x-slot>
 
-    <div class="space-y-8 animate-in-up">
+    <div class="space-y-4 animate-in-up">
         <!-- Dashboard Header -->
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 class="text-3xl font-black text-slate-900 tracking-tighter">Executive <span class="text-indigo-600">Overview</span></h1>
-                    <p class="text-slate-500 mt-1 font-medium text-sm italic">Intelligence-driven indicators for campus personnel and cycles.</p>
+                    <h1 class="text-xs font-black text-slate-900 tracking-tighter">Executive <span class="text-indigo-600">Overview</span></h1>
+                    <p class="text-slate-500 mt-1 font-medium text-xs italic">Intelligence-driven indicators for campus personnel and cycles.</p>
                 </div>
                 
-                <div class="flex items-center gap-6">
+                <div class="flex items-center gap-4">
                     <div class="hidden lg:flex items-center gap-4 px-6 py-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
                         <div class="text-right">
                             <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Manila Terminal</div>
-                            <div class="text-sm font-black text-slate-900 tabular-nums leading-none">
+                            <div class="text-xs font-black text-slate-900 tabular-nums leading-none">
                                 <span x-data="{ time: '' }" x-init="setInterval(() => { 
                                     time = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }) 
                                 }, 1000)" x-text="time || '00:00:00'"></span>
@@ -41,12 +41,12 @@
         @if($todayHoliday)
             <div class="glass-surface p-5 rounded-[2rem] flex items-center justify-between border-indigo-200/50 bg-indigo-50/10">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-100">
+                    <div class="w-12 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
                     <div>
                         <div class="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em] mb-1">Active Holiday</div>
-                        <div class="text-base font-bold text-slate-800 tracking-tight">{{ $todayHoliday->name }} <span class="text-slate-400 italic font-medium">({{ $todayHoliday->type }})</span></div>
+                        <div class="text-xs font-bold text-slate-800 tracking-tight">{{ $todayHoliday->name }} <span class="text-slate-400 italic font-medium">({{ $todayHoliday->type }})</span></div>
                     </div>
                 </div>
                 <div class="hidden sm:block text-[10px] font-black text-indigo-600 bg-white border border-indigo-100 px-4 py-2 rounded-xl italic uppercase tracking-widest">Double Pay Logic Engaged</div>
@@ -54,14 +54,14 @@
         @endif
 
         {{-- Top Metrics --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="stat-high-level group p-10 bg-white shadow-xl shadow-slate-100/10 flex flex-col justify-between overflow-hidden relative">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="stat-high-level group p-5 bg-white shadow-xl shadow-slate-100/10 flex flex-col justify-between overflow-hidden relative">
                 <div class="stat-label flex items-center justify-between relative z-10">
                     <span class="italic text-slate-400">Total Personnel</span>
                     <svg class="w-4 h-4 text-slate-300 group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 </div>
                 <div class="mt-8 flex items-baseline gap-2 relative z-10">
-                    <div class="stat-value text-5xl tracking-tighter">{{ $totalEmployees }}</div>
+                    <div class="stat-value text-xs tracking-tighter">{{ $totalEmployees }}</div>
                     <span class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">+1 (30d)</span>
                 </div>
                 <div class="absolute bottom-0 left-0 right-0 h-16 opacity-30 group-hover:opacity-100 transition-opacity duration-700">
@@ -69,13 +69,13 @@
                 </div>
             </div>
 
-            <div class="stat-high-level group p-10 bg-white shadow-xl shadow-slate-100/10 flex flex-col justify-between overflow-hidden relative border-l-4 border-l-emerald-500">
+            <div class="stat-high-level group p-5 bg-white shadow-xl shadow-slate-100/10 flex flex-col justify-between overflow-hidden relative border-l-4 border-l-emerald-500">
                 <div class="stat-label flex items-center justify-between relative z-10">
                     <span class="italic text-slate-400">Operational Presence</span>
                     <svg class="w-4 h-4 text-slate-300 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 </div>
                 <div class="mt-8 flex items-baseline gap-2 relative z-10">
-                    <div class="stat-value text-5xl tracking-tighter text-emerald-600">{{ $totalEmployees > 0 ? round(($presentToday / $totalEmployees) * 100) : 0 }}%</div>
+                    <div class="stat-value text-xs tracking-tighter text-emerald-600">{{ $totalEmployees > 0 ? round(($presentToday / $totalEmployees) * 100) : 0 }}%</div>
                     <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest italic font-mono">{{ $presentToday }} Active</span>
                 </div>
                 <div class="absolute bottom-0 left-0 right-0 h-16 opacity-30 group-hover:opacity-100 transition-opacity duration-700">
@@ -83,13 +83,13 @@
                 </div>
             </div>
 
-            <div class="stat-high-level group p-10 bg-white shadow-xl shadow-slate-100/10 flex flex-col justify-between overflow-hidden relative">
+            <div class="stat-high-level group p-5 bg-white shadow-xl shadow-slate-100/10 flex flex-col justify-between overflow-hidden relative">
                 <div class="stat-label flex items-center justify-between relative z-10">
                     <span class="italic text-slate-400">Strategic Workflow</span>
                     <svg class="w-4 h-4 text-slate-300 group-hover:text-rose-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 </div>
                 <div class="mt-8 flex items-baseline gap-2 relative z-10">
-                    <div class="stat-value text-5xl tracking-tighter {{ $pendingLeaves > 0 ? 'text-rose-600' : 'text-slate-300' }}">{{ $pendingLeaves }}</div>
+                    <div class="stat-value text-xs tracking-tighter {{ $pendingLeaves > 0 ? 'text-rose-600' : 'text-slate-300' }}">{{ $pendingLeaves }}</div>
                     <span class="text-[10px] font-bold text-rose-400 uppercase tracking-widest italic font-mono">Pending Cycle</span>
                 </div>
                 <div class="absolute bottom-0 left-0 right-0 h-16 opacity-30 group-hover:opacity-100 transition-opacity duration-700">
@@ -97,7 +97,7 @@
                 </div>
             </div>
 
-            <div class="stat-high-level group p-10 bg-slate-950 text-white shadow-2xl overflow-hidden relative border-none flex flex-col justify-between">
+            <div class="stat-high-level group p-5 bg-slate-950 text-white shadow-2xl overflow-hidden relative border-none flex flex-col justify-between">
                 <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/30 to-transparent"></div>
                 <div class="stat-label flex items-center justify-between relative z-10">
                     <span class="italic text-indigo-400 font-black">Fiscal Processing</span>
@@ -105,7 +105,7 @@
                 </div>
                 <div class="mt-8 relative z-10">
                     <div class="flex items-baseline gap-2">
-                        <div class="stat-value text-4xl tracking-tighter tabular-nums">{{ $statStats->finalized_count }}</div>
+                        <div class="stat-value text-xs tracking-tighter tabular-nums">{{ $statStats->finalized_count }}</div>
                         <span class="text-[10px] font-bold text-indigo-400/60 uppercase tracking-widest italic font-mono">Finalized</span>
                     </div>
                     <div class="mt-1 flex items-center gap-2">
@@ -130,14 +130,14 @@
 
 
         {{-- Row 2: Operational & Visual Intelligence --}}
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-stretch">
             {{-- Attendance Distribution (Donut) --}}
             <div class="xl:col-span-4 card-modern flex flex-col h-full overflow-hidden shadow-xl shadow-slate-100/10">
-                <div class="p-10 border-b border-slate-50">
+                <div class="p-5 border-b border-slate-50">
                     <h3 class="text-xs font-black text-emerald-600 uppercase tracking-[0.2em] italic">Operational Snapshot</h3>
                     <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Live Presence Flow</p>
                 </div>
-                <div class="p-10 flex-1 flex flex-col justify-between">
+                <div class="p-5 flex-1 flex flex-col justify-between">
                     <div id="attendanceDonut" class="flex justify-center"></div>
                     <div class="grid grid-cols-3 gap-2 border-t border-slate-50 pt-8 mt-6">
                         <div class="text-center">
@@ -158,7 +158,7 @@
 
             {{-- Institutional Pulse (Hourly Flow Area Chart) --}}
             <div class="xl:col-span-8 card-modern flex flex-col h-full overflow-hidden shadow-xl shadow-slate-100/10 border-l border-slate-50/50">
-                <div class="p-10 border-b border-slate-50 flex items-center justify-between">
+                <div class="p-5 border-b border-slate-50 flex items-center justify-between">
                     <div>
                         <h3 class="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] italic">Institutional Pulse</h3>
                         <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Hourly Authentication Stream (Today)</p>
@@ -175,14 +175,14 @@
         </div>
 
         {{-- Row 3: Performance & Streams --}}
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-stretch">
             {{-- Performance Leaderboard --}}
             <div class="xl:col-span-4 card-modern flex flex-col h-full overflow-hidden shadow-xl shadow-slate-100/10">
-                <div class="p-10 border-b border-slate-50">
+                <div class="p-5 border-b border-slate-50">
                     <h3 class="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] italic">Elite Performers</h3>
                     <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Attendance Consistency</p>
                 </div>
-                <div class="p-10 flex-1 space-y-8">
+                <div class="p-5 flex-1 space-y-4">
                     @forelse($performerStats as $performer)
                         <div class="flex items-center justify-between group cursor-pointer hover:bg-slate-50 p-2 -m-2 rounded-xl transition-all">
                             <div class="flex items-center gap-3">
@@ -190,7 +190,7 @@
                                     {{ substr($performer->user->name, 0, 1) }}
                                 </div>
                                 <div>
-                                    <div class="text-sm font-bold text-slate-800 tracking-tight">{{ $performer->user->name }}</div>
+                                    <div class="text-xs font-bold text-slate-800 tracking-tight">{{ $performer->user->name }}</div>
                                     <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{{ $performer->user->role }}</div>
                                 </div>
                             </div>
@@ -207,7 +207,7 @@
 
             {{-- Authentication Logs --}}
             <div class="xl:col-span-8 card-modern flex flex-col h-full overflow-hidden shadow-xl shadow-slate-100/10">
-                <div class="p-10 border-b border-slate-50 flex items-center justify-between">
+                <div class="p-5 border-b border-slate-50 flex items-center justify-between">
                     <div>
                         <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] italic">Live Authentication Stream</h3>
                         <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Institutional Security Log</p>
@@ -235,13 +235,13 @@
                                                 {{ substr($log->user->name, 0, 1) }}
                                             </div>
                                             <div>
-                                                <div class="text-sm font-black text-slate-900 tracking-tight">{{ $log->user->name }}</div>
+                                                <div class="text-xs font-black text-slate-900 tracking-tight">{{ $log->user->name }}</div>
                                                 <div class="text-[9px] font-bold text-indigo-500 uppercase tracking-widest leading-none mt-1">{{ $log->user->role }}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-10 py-6">
-                                        <div class="text-sm font-black text-slate-600 tabular-nums">
+                                        <div class="text-xs font-black text-slate-600 tabular-nums">
                                             {{ \Carbon\Carbon::parse($log->time_in)->format('h:i:s') }} <span class="text-[10px] text-slate-400 uppercase italic">{{ \Carbon\Carbon::parse($log->time_in)->format('A') }}</span>
                                         </div>
                                     </td>
@@ -253,7 +253,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="3" class="text-center py-20 text-slate-300 italic text-sm font-bold tracking-widest uppercase opacity-40 italic">Awaiting Terminal Signal...</td></tr>
+                                <tr><td colspan="3" class="text-center py-20 text-slate-300 italic text-xs font-bold tracking-widest uppercase opacity-40 italic">Awaiting Terminal Signal...</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -262,21 +262,21 @@
         </div>
 
         {{-- Row 4: Modern Intelligence (Radials) --}}
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch pt-4">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-stretch pt-4">
             <div class="xl:col-span-12 card-modern flex flex-col h-full overflow-hidden shadow-xl shadow-slate-100/10">
-                <div class="p-10 border-b border-slate-100 bg-slate-50/20">
+                <div class="p-5 border-b border-slate-100 bg-slate-50/20">
                     <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] italic">Personnel Dynamic Analysis</h3>
                     <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Departmental Capacity & Flux</p>
                 </div>
-                <div class="p-10 grid grid-cols-1 md:grid-cols-2 items-center gap-16">
+                <div class="p-5 grid grid-cols-1 md:grid-cols-2 items-center gap-16">
                     <div id="capacityRadial" class="flex justify-center"></div>
                     <div class="space-y-12">
-                        <p class="text-sm font-medium text-slate-500 italic leading-relaxed">Automated mapping of personnel distribution across academic and operational units based on role-based access streams.</p>
-                        <div class="grid grid-cols-2 gap-8">
+                        <p class="text-xs font-medium text-slate-500 italic leading-relaxed">Automated mapping of personnel distribution across academic and operational units based on role-based access streams.</p>
+                        <div class="grid grid-cols-2 gap-4">
                             @foreach($deptStats as $role => $count)
                                 <div class="group">
                                     <div class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 group-hover:text-indigo-600 transition-colors">{{ $role }} Stream</div>
-                                    <div class="text-3xl font-black text-slate-900 tabular-nums tracking-tighter">{{ $count }} <span class="text-xs text-slate-300 font-bold uppercase ml-1 italic">Active</span></div>
+                                    <div class="text-xs font-black text-slate-900 tabular-nums tracking-tighter">{{ $count }} <span class="text-xs text-slate-300 font-bold uppercase ml-1 italic">Active</span></div>
                                 </div>
                             @endforeach
                         </div>

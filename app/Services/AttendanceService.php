@@ -9,6 +9,24 @@ use Illuminate\Support\Collection;
 class AttendanceService
 {
     /**
+     * Identify a user based on biometric or RFID data.
+     */
+    public function resolveUserByBiometric(string $identifier, string $source = 'RFID'): ?\App\Models\User
+    {
+        $query = \App\Models\User::query();
+
+        if ($source === 'Biometric') {
+            return $query->where('fingerprint_id', $identifier)
+                        ->orWhere('biometric_template', $identifier)
+                        ->first();
+        }
+
+        return $query->where('rfid_card_num', $identifier)
+                    ->orWhere('employee_id', $identifier)
+                    ->first();
+    }
+
+    /**
      * Fetch filtered attendance logs with necessary relations.
      */
     public function getFilteredLogs(array $filters): Collection

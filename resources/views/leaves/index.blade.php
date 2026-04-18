@@ -35,7 +35,7 @@
                     this.selected = [];
                 }
             }
-        }" class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden relative">
+        }" class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden relative">
             
             {{-- Bulk Actions Toolbar --}}
             @if(auth()->user()->isAdmin())
@@ -76,7 +76,7 @@
             </div>
             @endif
 
-            <div class="p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 italic tracking-tight">Leave Requests</h3>
                     <p class="text-sm text-slate-500 mt-1">
@@ -96,11 +96,11 @@
                             <!-- Overlay -->
                             <div class="fixed inset-0 transition-opacity bg-slate-900/75 dark:bg-slate-900/90 backdrop-blur-sm" @click="showModal = false"></div>
 
-                            <div class="relative inline-block w-full text-left align-bottom transition-all transform bg-white dark:bg-slate-900 rounded-3xl shadow-xl sm:my-8 sm:align-middle sm:max-w-lg overflow-hidden border border-slate-100 dark:border-slate-800" @click.away="showModal = false">
+                            <div class="relative inline-block w-full text-left align-bottom transition-all transform bg-white dark:bg-slate-900 rounded-xl shadow-xl sm:my-8 sm:align-middle sm:max-w-lg overflow-hidden border border-slate-100 dark:border-slate-800" @click.away="showModal = false">
                                 <form action="{{ route('leaves.store') }}" method="POST">
                                     @csrf
                                     <div class="px-8 pt-8 pb-6">
-                                        <h3 class="text-2xl font-black text-slate-900 dark:text-slate-100 italic tracking-tight mb-6">New Request</h3>
+                                        <h3 class="text-xl font-black text-slate-900 dark:text-slate-100 italic tracking-tight mb-6">New Request</h3>
                                         
                                         <div class="space-y-5">
                                             <div>

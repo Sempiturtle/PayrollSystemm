@@ -3,8 +3,8 @@
         My Attendance History
     </x-slot>
 
-    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div class="p-8 border-b border-slate-50 dark:border-slate-800">
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div class="p-4 border-b border-slate-50 dark:border-slate-800">
             <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 italic tracking-tight">Personal Attendance Logs</h3>
             <p class="text-sm text-slate-500 mt-1">Review your check-in and check-out history.</p>
         </div>
@@ -63,7 +63,7 @@
                     <tr>
                         <td colspan="5" class="px-8 py-12 text-center">
                             <div class="flex flex-col items-center">
-                                <svg class="w-12 h-12 text-slate-200 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <svg class="w-12 h-10 text-slate-200 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 <p class="text-slate-400 font-bold tracking-tight">No attendance records found yet.</p>
                             </div>
                         </td>

@@ -15,13 +15,13 @@
         <!-- Top Stats Row -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Punctuality Score -->
-            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm overflow-hidden relative group transition-all hover:shadow-md">
+            <div class="bg-white rounded-xl p-6 border border-slate-100 shadow-sm overflow-hidden relative group transition-all hover:shadow-md">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Punctuality Score</h3>
                     <span class="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-lg border border-emerald-100">Last 30 Days</span>
                 </div>
                 <div class="flex items-end gap-3">
-                    <span class="text-4xl font-extrabold text-slate-900 tracking-tight">{{ $punctualityScore }}%</span>
+                    <span class="text-xl font-extrabold text-slate-900 tracking-tight">{{ $punctualityScore }}%</span>
                     <div class="mb-1.5">
                         @if($punctualityScore >= 95)
                             <span class="text-[10px] font-bold text-emerald-500 uppercase">Excellent</span>
@@ -41,15 +41,15 @@
             </div>
 
             <!-- Reliability Widget -->
-            <div class="bg-slate-900 rounded-3xl p-6 shadow-xl relative overflow-hidden group">
+            <div class="bg-slate-900 rounded-xl p-6 shadow-xl relative overflow-hidden group">
                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-all"></div>
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Shift Reliability</h3>
-                <div class="text-3xl font-bold text-white mb-2">Institutional Grade</div>
+                <div class="text-xl font-bold text-white mb-2">Institutional Grade</div>
                 <p class="text-xs text-slate-400 leading-relaxed font-medium">Your attendance fingerprint is verified against AISAT's immutable blockchain-style audit logs for academic defense integrity.</p>
             </div>
 
             <!-- Active Goals -->
-            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm transition-all hover:shadow-md">
+            <div class="bg-white rounded-xl p-6 border border-slate-100 shadow-sm transition-all hover:shadow-md">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Current Milestone</h3>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center text-xs font-bold">
@@ -67,7 +67,7 @@
         </div>
 
         <!-- Attendance Trends Chart -->
-        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-8">
+        <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-4">
             <div class="flex items-center justify-between mb-8">
                 <div>
                     <h3 class="text-lg font-bold text-slate-900 leading-none mb-1">Attendance Intensity</h3>
@@ -79,12 +79,12 @@
                 </div>
             </div>
 
-            <div class="h-64 flex items-end gap-4 md:gap-8 px-4">
+            <div class="h-64 flex items-end gap-4 md:gap-4 px-4">
                 @php $maxHours = collect($trends)->pluck('hours')->max() ?: 160; @endphp
                 @foreach($trends as $trend)
                     <div class="flex-1 flex flex-col items-center group relative">
                         <!-- Tooltip -->
-                        <div class="absolute -top-10 scale-0 group-hover:scale-100 transition-transform bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded inline-block whitespace-nowrap z-10">
+                        <div class="absolute -top-5 scale-0 group-hover:scale-100 transition-transform bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded inline-block whitespace-nowrap z-10">
                             {{ $trend['hours'] }} Hours
                         </div>
                         
@@ -103,7 +103,7 @@
         </div>
 
         <!-- Footnote for Defense -->
-        <div class="p-6 bg-indigo-600 rounded-3xl text-white shadow-xl shadow-indigo-100 flex flex-col md:flex-row items-center gap-6">
+        <div class="p-6 bg-indigo-600 rounded-xl text-white shadow-xl shadow-indigo-100 flex flex-col md:flex-row items-center gap-6">
             <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shrink-0">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
             </div>

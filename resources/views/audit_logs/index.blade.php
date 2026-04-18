@@ -7,10 +7,10 @@
         </div>
     </x-slot>
 
-    <div class="space-y-8 animate-in-up">
+    <div class="space-y-4 animate-in-up">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-black text-slate-900 tracking-tighter">Event <span class="text-rose-600">Trace</span></h1>
+                <h1 class="text-xl font-black text-slate-900 tracking-tighter">Event <span class="text-rose-600">Trace</span></h1>
                 <p class="text-slate-500 mt-1 font-medium text-sm italic">Immutable record of administrative actions and high-value system changes.</p>
             </div>
             <div class="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 rounded-full border border-rose-100">

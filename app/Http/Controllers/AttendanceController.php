@@ -6,9 +6,11 @@ use App\Http\Requests\StoreAttendanceRequest;
 use App\Http\Requests\UpdateAttendanceRequest;
 use App\Models\AttendanceLog;
 use App\Models\User;
+use App\Models\AuditLog;
 use App\Services\AttendanceService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
@@ -37,11 +39,24 @@ class AttendanceController extends Controller
     {
         $log = AttendanceLog::create($request->validated());
 
+        // Secure Audit Log Integration
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'auditable_type' => AttendanceLog::class,
+            'auditable_id' => $log->id,
+            'event' => 'created (Admin Manual)',
+            'old_values' => [],
+            'new_values' => $log->toArray(),
+            'url' => $request->fullUrl(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
         // Sync Payroll
         $period = $this->payrollService->getCurrentPeriod($log->date);
         $this->payrollService->syncForUser($log->user, $period['start'], $period['end']);
 
-        return redirect()->route('attendance.index')->with('success', 'Attendance record added manually.');
+        return redirect()->route('attendance.index')->with('success', 'Attendance record added manually and secured in audit trail.');
     }
 
     /**
@@ -49,23 +64,51 @@ class AttendanceController extends Controller
      */
     public function update(UpdateAttendanceRequest $request, AttendanceLog $attendanceLog)
     {
+        $oldValues = $attendanceLog->toArray();
         $attendanceLog->update($request->validated());
+
+        // Secure Audit Log Integration
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'auditable_type' => AttendanceLog::class,
+            'auditable_id' => $attendanceLog->id,
+            'event' => 'updated (Admin Discrepancy Fix)',
+            'old_values' => $oldValues,
+            'new_values' => $attendanceLog->fresh()->toArray(),
+            'url' => $request->fullUrl(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
 
         // Sync Payroll
         $period = $this->payrollService->getCurrentPeriod($attendanceLog->date);
         $this->payrollService->syncForUser($attendanceLog->user, $period['start'], $period['end']);
 
-        return redirect()->route('attendance.index')->with('success', 'Attendance record adjusted successfully.');
+        return redirect()->route('attendance.index')->with('success', 'Attendance record adjusted successfully and secured in audit trail.');
     }
 
     /**
      * Remove an incorrect attendance log.
      */
-    public function destroy(AttendanceLog $attendanceLog)
+    public function destroy(Request $request, AttendanceLog $attendanceLog)
     {
+        $oldValues = $attendanceLog->toArray();
         $attendanceLog->delete();
 
-        return redirect()->route('attendance.index')->with('success', 'Attendance record removed.');
+        // Secure Audit Log Integration
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'auditable_type' => AttendanceLog::class,
+            'auditable_id' => $oldValues['id'],
+            'event' => 'deleted (Admin Voided)',
+            'old_values' => $oldValues,
+            'new_values' => [],
+            'url' => $request->fullUrl(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
+        return redirect()->route('attendance.index')->with('success', 'Attendance record permanently voided. Incident logged.');
     }
 
     /**

@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'employee_id',
         'rfid_card_num',
+        'fingerprint_id',
         'biometric_template',
         'hourly_rate',
         'role',

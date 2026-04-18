@@ -18,6 +18,10 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
+Route::post('/attendance/scan', [EmployeeController::class, 'scan'])->name('attendance.scan');
+Route::get('/attendance/check-command', [EmployeeController::class, 'checkCommand'])->name('attendance.check-command');
+Route::post('/attendance/complete-enroll', [EmployeeController::class, 'completeEnroll'])->name('attendance.complete-enroll');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -40,6 +44,7 @@ Route::middleware('auth')->group(function () {
     
     // Discrepancy reporting
     Route::post('/discrepancies', [\App\Http\Controllers\DiscrepancyReportController::class, 'store'])->name('discrepancies.store');
+    Route::get('/my-disputes', [\App\Http\Controllers\DiscrepancyReportController::class, 'myDisputes'])->name('discrepancies.mine');
 
     // Admin Only Routes
     Route::middleware('admin')->group(function () {
@@ -86,7 +91,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/attendance/export', [AttendanceController::class, 'export'])->name('attendance.export');
 
         Route::get('/attendance/scanner', [EmployeeController::class, 'scanner'])->name('attendance.scanner');
-        Route::post('/attendance/scan', [EmployeeController::class, 'scan'])->name('attendance.scan');
+
+        // Integrated Biometric Enrollment
+        Route::post('/employees/{employee}/enroll', [EmployeeController::class, 'enrollRequest'])->name('employees.enroll');
+        Route::get('/biometrics/actions/{action}', [EmployeeController::class, 'checkEnrollStatus'])->name('biometrics.status');
 
         // Export & Reporting Routes
         Route::get('/exports/attendance-today', [\App\Http\Controllers\ExportController::class, 'attendanceToday'])->name('exports.attendance-today');

@@ -4,8 +4,8 @@
     </x-slot>
 
     <div class="max-w-3xl mx-auto mt-8">
-        <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
-            <div class="p-8 border-b border-slate-50 dark:border-slate-800 text-center">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-50 dark:border-slate-800 text-center">
                 <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 italic tracking-tight">Profile Adjustment</h3>
                 <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-2">Editing: {{ $employee->name }}</p>
             </div>
@@ -25,14 +25,14 @@
                 </div>
             @endif
 
-            <form action="{{ route('employees.update', $employee) }}" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
+            <form action="{{ route('employees.update', $employee) }}" method="POST" enctype="multipart/form-data" class="p-4 space-y-4">
                 @csrf
                 @method('PATCH')
                 
                 <div class="space-y-6">
                     <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Basic Information</div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Full Name</label>
                             <input type="text" name="name" value="{{ $employee->name }}" required class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium">
@@ -47,7 +47,7 @@
                 <div class="space-y-6">
                     <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">System Credentials</div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Employee ID</label>
                             <input type="text" name="employee_id" value="{{ $employee->employee_id }}" required class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-bold tracking-widest text-indigo-600">
@@ -56,8 +56,62 @@
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">RFID Tag Num</label>
                             <input type="text" name="rfid_card_num" value="{{ $employee->rfid_card_num }}" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium">
                         </div>
+                        <div class="space-y-2" x-data="{ 
+                            isEnrolling: false, 
+                            status: '', 
+                            pollInterval: null,
+                            startEnroll() {
+                                this.isEnrolling = true;
+                                this.status = 'Initiating...';
+                                fetch('{{ route('employees.enroll', $employee) }}', {
+                                    method: 'POST',
+                                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    this.status = 'Waiting for Finger...';
+                                    this.pollEnrollment(data.action_id);
+                                });
+                            },
+                            pollEnrollment(actionId) {
+                                this.pollInterval = setInterval(() => {
+                                    fetch(`/biometrics/actions/${actionId}`)
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        if (data.status === 'success') {
+                                            clearInterval(this.pollInterval);
+                                            this.status = 'Success! Reloading...';
+                                            setTimeout(() => window.location.reload(), 1500);
+                                        } else if (data.status === 'failed') {
+                                            clearInterval(this.pollInterval);
+                                            this.isEnrolling = false;
+                                            alert('Enrollment failed. Please try again.');
+                                        } else if (data.status === 'expired') {
+                                            clearInterval(this.pollInterval);
+                                            this.isEnrolling = false;
+                                        }
+                                    });
+                                }, 3000);
+                            }
+                        }">
+                            <div class="flex items-center justify-between">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Fingerprint ID (Hardware)</label>
+                                <button type="button" 
+                                        @click="startEnroll" 
+                                        x-show="!isEnrolling"
+                                        class="text-[10px] font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-lg hover:bg-indigo-100 transition flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                                    Enroll Now
+                                </button>
+                                <div x-show="isEnrolling" class="flex items-center gap-2">
+                                    <div class="w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></div>
+                                    <span class="text-[10px] font-bold text-indigo-600" x-text="status"></span>
+                                </div>
+                            </div>
+                            <input type="number" name="fingerprint_id" value="{{ $employee->fingerprint_id }}" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-bold text-indigo-600" placeholder="e.g. 1">
+                        </div>
                         <div class="space-y-2">
-                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Biometric Hash/Template</label>
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Biometric Template (Legacy)</label>
                             <input type="text" name="biometric_template" value="{{ $employee->biometric_template }}" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium">
                         </div>
                     </div>
@@ -66,7 +120,7 @@
                 <div class="space-y-6">
                     <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Institutional Identifiers</div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">TIN (Tax ID)</label>
                             <input type="text" name="tin_id" value="{{ $employee->tin_id }}" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium" placeholder="000-000-000-000">
@@ -89,7 +143,7 @@
                 <div class="space-y-6">
                     <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Leave Balance Management</div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Sick Leave Credits</label>
                             <input type="number" step="0.5" name="sick_leave_credits" value="{{ $employee->sick_leave_credits }}" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-bold text-rose-600">
@@ -104,7 +158,7 @@
                 <div class="space-y-6">
                     <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Role & Compensation</div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Hourly Rate (₱)</label>
                             <input type="number" step="0.01" name="hourly_rate" value="{{ $employee->hourly_rate }}" required class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-bold">

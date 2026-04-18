@@ -5,8 +5,8 @@
 
     <div class="max-w-4xl mx-auto space-y-6">
         <!-- Employee Info -->
-        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
-            <div class="p-8 flex items-center justify-between">
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="p-4 flex items-center justify-between">
                 <div class="flex items-center gap-5">
                     <div class="w-14 h-14 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-xl">
                         {{ substr($user->name, 0, 1) }}
@@ -29,7 +29,7 @@
         </div>
 
         <!-- Weekly Timetable -->
-        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
             <div class="p-6 border-b border-slate-50 dark:border-slate-800 flex items-center justify-between">
                 <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 italic">Weekly Timetable</h3>
                 <span class="text-sm font-bold text-slate-400">
@@ -89,7 +89,7 @@
         </div>
 
         <!-- Detailed List View -->
-        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
             <div class="p-6 border-b border-slate-50 dark:border-slate-800">
                 <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 italic">Detailed View</h3>
             </div>

@@ -7,6 +7,7 @@
 
     <div class="py-12" x-data="{ 
         editModal: false, 
+        currentView: 'calendar',
         editHoliday: { id: '', name: '', date: '', type: '', pay_option: '', description: '' },
         openEdit(holiday) {
             this.editHoliday = { ...holiday };
@@ -16,29 +17,29 @@
             }
             this.editModal = true;
         }
-    }">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    }" @open-edit-holiday.window="openEdit($event.detail)">
+        <div class="max-w-full mx-auto sm:px-6 lg:px-8 space-y-4">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 <!-- Form Column -->
                 <div class="lg:col-span-1">
-                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sticky top-8">
-                        <h3 class="text-lg font-bold text-gray-800 mb-6">Declare No-Work Day</h3>
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sticky top-4">
+                        <h3 class="text-base font-bold text-gray-800 mb-5">Declare No-Work Day</h3>
                         
                         <form action="{{ route('holidays.store') }}" method="POST" class="space-y-4">
                             @csrf
                             <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Event Name</label>
-                                <input type="text" name="name" required placeholder="e.g. Christmas Day" class="w-full bg-gray-50 border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Event Name</label>
+                                <input type="text" name="name" required placeholder="e.g. Christmas Day" class="w-full bg-gray-50 border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 text-sm py-2">
                             </div>
 
                             <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Date</label>
-                                <input type="date" name="date" required class="w-full bg-gray-50 border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Date</label>
+                                <input type="date" name="date" required class="w-full bg-gray-50 border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 text-sm py-2">
                             </div>
 
                             <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Type</label>
-                                <select name="type" required class="w-full bg-gray-50 border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Type</label>
+                                <select name="type" required class="w-full bg-gray-50 border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 text-sm py-2">
                                     <option value="Regular Holiday">Regular Holiday</option>
                                     <option value="Special Non-Working">Special Non-Working</option>
                                     <option value="Suspension">Suspension</option>
@@ -46,16 +47,16 @@
                             </div>
 
                             <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Pay Option</label>
-                                <select name="pay_option" required class="w-full bg-gray-50 border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 text-sm">
-                                    <option value="unpaid">Unpaid (No work, no pay)</option>
-                                    <option value="paid" selected>Standard Paid (100% Pay)</option>
-                                    <option value="double">Double Pay (200% if worked)</option>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Pay Option</label>
+                                <select name="pay_option" required class="w-full bg-gray-50 border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 text-sm py-2">
+                                    <option value="unpaid">Unpaid (No Pay)</option>
+                                    <option value="paid" selected>Standard (100%)</option>
+                                    <option value="double">Double Pay</option>
                                 </select>
                             </div>
 
-                            <div class="pt-4">
-                                <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-sm transition active:scale-[0.98]">
+                            <div class="pt-3">
+                                <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-sm transition active:scale-[0.98] text-sm">
                                     Save Declaration
                                 </button>
                             </div>
@@ -63,10 +64,27 @@
                     </div>
                 </div>
 
-                <!-- List Column -->
-                <div class="lg:col-span-2">
-                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                        <div class="p-6 border-b border-gray-50">
+                <!-- List & Calendar Column -->
+                <div class="lg:col-span-3">
+                    <div class="flex justify-end mb-4 bg-white p-1 rounded-xl shadow-sm border border-gray-100 w-fit ml-auto">
+                        <button @click="currentView = 'calendar'" :class="currentView === 'calendar' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-5 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            Calendar
+                        </button>
+                        <button @click="currentView = 'list'" :class="currentView === 'list' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-5 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                            List View
+                        </button>
+                    </div>
+
+                    <!-- Calendar View -->
+                    <div x-show="currentView === 'calendar'" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4" x-transition>
+                        <div id="calendar"></div>
+                    </div>
+
+                    <!-- List View -->
+                    <div x-show="currentView === 'list'" style="display: none;" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden" x-transition>
+                        <div class="p-4 border-b border-gray-50">
                             <h3 class="text-lg font-bold text-gray-800">Declared Holidays & Suspensions</h3>
                         </div>
 
@@ -158,7 +176,7 @@
                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
                 <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-slate-100">
-                    <div class="p-8">
+                    <div class="p-4">
                         <div class="flex items-center justify-between mb-6">
                             <h3 class="text-xl font-bold text-slate-800">Edit Holiday Record</h3>
                             <button @click="editModal = false" class="text-slate-400 hover:text-slate-600 transition">
@@ -213,5 +231,98 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                height: 'auto',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,dayGridWeek'
+                },
+                events: [
+                    @foreach($holidays as $holiday)
+                    {
+                        title: '{!! addslashes($holiday->name) !!}',
+                        start: '{{ $holiday->date->format("Y-m-d") }}',
+                        color: '{{ $holiday->type === "Regular Holiday" ? "#4f46e5" : ($holiday->type === "Special Non-Working" ? "#d97706" : "#e11d48") }}',
+                        extendedProps: {
+                            holidayData: @json($holiday)
+                        }
+                    },
+                    @endforeach
+                ],
+                eventClick: function(info) {
+                    var data = info.event.extendedProps.holidayData;
+                    window.dispatchEvent(new CustomEvent('open-edit-holiday', { detail: data }));
+                },
+                eventMouseEnter: function(info) {
+                    info.el.style.cursor = 'pointer';
+                }
+            });
+            calendar.render();
+
+            // Re-render when switching to calendar view
+            window.addEventListener('alpine:initialized', function () {
+                let alpineState = Alpine.$data(document.querySelector('.py-12'));
+                Alpine.effect(() => {
+                    if (alpineState.currentView === 'calendar') {
+                        setTimeout(() => calendar.render(), 100);
+                    }
+                });
+            });
+            
+            // To handle when alpine state changes (since alpine:initialized might be too late/early sometimes)
+            setInterval(() => {
+                if(document.querySelector('.py-12').__x.$data.currentView === 'calendar') {
+                     // Calendar resizing handling
+                     window.dispatchEvent(new Event('resize'));
+                }
+            }, 500);
+        });
+    </script>
+    <style>
+        .fc-event {
+            border: none;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .fc .fc-toolbar-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .fc .fc-button-primary {
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+        }
+        .fc .fc-button-primary:hover {
+            background-color: #4338ca;
+            border-color: #4338ca;
+        }
+        .fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:not(:disabled):active {
+            background-color: #3730a3;
+            border-color: #3730A3;
+        }
+        .fc-theme-standard .fc-scrollgrid {
+            border: 1px solid #f1f5f9;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .fc-daygrid-day {
+            transition: background-color 0.2s;
+        }
+        .fc-daygrid-day:hover {
+            background-color: #f8fafc;
+        }
+    </style>
+    @endpush
 </x-app-layout>
 

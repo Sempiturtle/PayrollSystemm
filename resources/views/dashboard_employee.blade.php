@@ -7,12 +7,12 @@
         </div>
     </x-slot>
 
-    <div class="space-y-8 animate-in-up">
+    <div class="space-y-4 animate-in-up">
         <!-- Employee Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">System Access <span class="text-indigo-600">Active</span></h1>
-                <p class="text-slate-500 mt-1 font-medium text-sm italic">Academic Period 2026 • AISAT Higher Education</p>
+                <h1 class="text-xl font-bold text-slate-900 tracking-tight">System Access <span class="text-indigo-600">Active</span></h1>
+                <p class="text-slate-500 mt-1 font-medium text-sm italic">Academic Period 2026 �?AISAT Higher Education</p>
             </div>
             
             <div class="flex items-center gap-3">
@@ -24,9 +24,9 @@
         </div>
 
         @if($todayHoliday)
-            <div class="glass-surface p-5 rounded-3xl flex items-center justify-between border-amber-200/50 bg-amber-50/20">
+            <div class="glass-surface p-5 rounded-xl flex items-center justify-between border-amber-200/50 bg-amber-50/20">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 shadow-sm shadow-amber-200/50">
+                    <div class="w-12 h-10 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 shadow-sm shadow-amber-200/50">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
                     <div>
@@ -41,16 +41,16 @@
         @endif
 
         {{-- Top Stats Row --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {{-- Latest Disbursement --}}
-            <div class="stat-high-level group p-10 bg-white shadow-xl shadow-slate-100/10 rounded-[2.5rem]">
+            <div class="stat-high-level group p-5 bg-white shadow-xl shadow-slate-100/10 rounded-2xl">
                 <div class="stat-label flex items-center justify-between font-black text-[10px] uppercase tracking-widest text-slate-400">
                     <span class="italic font-black">Latest Disbursement</span>
                     <svg class="w-4 h-4 text-slate-300 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
                 @if($myPayrolls->first())
                     <div class="mt-6 flex items-baseline gap-2">
-                        <div class="stat-value text-4xl font-black tracking-tighter tabular-nums text-slate-900 border-l-4 border-l-emerald-500 pl-4">₱{{ number_format($myPayrolls->first()->net_pay, 2) }}</div>
+                        <div class="stat-value text-xl font-black tracking-tighter tabular-nums text-slate-900 border-l-4 border-l-emerald-500 pl-4">₱{{ number_format($myPayrolls->first()->net_pay, 2) }}</div>
                     </div>
                 @else
                     <div class="mt-6 text-slate-300 italic text-sm">Awaiting sync.</div>
@@ -58,7 +58,7 @@
             </div>
 
             {{-- LIVE CYCLE Hardening Widget --}}
-            <div class="stat-high-level group p-10 bg-indigo-50 border border-indigo-100 overflow-hidden relative rounded-[2.5rem]">
+            <div class="stat-high-level group p-5 bg-indigo-50 border border-indigo-100 overflow-hidden relative rounded-2xl">
                 <div class="absolute top-0 right-0 p-4">
                     <div class="flex h-2 w-2 relative">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
@@ -69,51 +69,51 @@
                     <span class="italic font-black text-indigo-500">Live Cycle</span>
                 </div>
                 <div class="mt-6">
-                    <div class="stat-value text-4xl font-black tracking-tighter tabular-nums text-slate-900">{{ number_format($cycleStats['current_hours'], 1) }}h</div>
+                    <div class="stat-value text-xl font-black tracking-tighter tabular-nums text-slate-900">{{ number_format($cycleStats['current_hours'], 1) }}h</div>
                 </div>
             </div>
 
             {{-- Leave Balances --}}
-            <div class="stat-high-level group p-10 bg-white shadow-xl shadow-slate-100/10 rounded-[2.5rem] relative overflow-hidden">
-                <div class="absolute -right-4 -bottom-4 w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-200">
+            <div class="stat-high-level group p-5 bg-white shadow-xl shadow-slate-100/10 rounded-2xl relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 w-12 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-200">
                     <svg class="w-8 h-8 opacity-20" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 110-2 1 1 0 010 2z"></path></svg>
                 </div>
                 <div class="stat-label font-black text-[10px] uppercase tracking-widest text-slate-400 italic mb-6">Leave Credits</div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <div class="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none mb-1">Sick</div>
-                        <div class="text-2xl font-black text-slate-900 tracking-tighter tabular-nums">{{ number_format($user->sick_leave_credits, 1) }}</div>
+                        <div class="text-xl font-black text-slate-900 tracking-tighter tabular-nums">{{ number_format($user->sick_leave_credits, 1) }}</div>
                     </div>
                     <div>
                         <div class="text-[10px] font-black text-indigo-600 uppercase tracking-widest leading-none mb-1">Vacation</div>
-                        <div class="text-2xl font-black text-slate-900 tracking-tighter tabular-nums">{{ number_format($user->vacation_leave_credits, 1) }}</div>
+                        <div class="text-xl font-black text-slate-900 tracking-tighter tabular-nums">{{ number_format($user->vacation_leave_credits, 1) }}</div>
                     </div>
                 </div>
             </div>
 
             {{-- Attendance --}}
-            <div class="stat-high-level group p-10 bg-white rounded-[2.5rem]">
+            <div class="stat-high-level group p-5 bg-white rounded-2xl">
                 <div class="stat-label font-black text-[10px] uppercase tracking-widest text-slate-400 italic">Terminal Status</div>
                 @if($todayLog)
                     <div class="mt-6 flex items-center gap-3">
                         <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></div>
-                        <div class="stat-value text-4xl font-black tracking-tighter text-slate-900 italic underline decoration-emerald-100 underline-offset-8">Active</div>
+                        <div class="stat-value text-xl font-black tracking-tighter text-slate-900 italic underline decoration-emerald-100 underline-offset-8">Active</div>
                     </div>
                 @else
                     <div class="mt-6 flex items-center gap-3 opacity-50">
                         <div class="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
-                        <div class="stat-value text-4xl font-black tracking-tighter text-slate-300 italic">Inactive</div>
+                        <div class="stat-value text-xl font-black tracking-tighter text-slate-300 italic">Inactive</div>
                     </div>
                 @endif
             </div>
 
-            <div class="stat-high-level group p-10 bg-slate-950 !text-white overflow-hidden relative rounded-[2.5rem]">
+            <div class="stat-high-level group p-5 bg-slate-950 !text-white overflow-hidden relative rounded-2xl">
                 <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent"></div>
                 <div class="relative z-10">
                     <div class="stat-label !text-slate-500 italic uppercase tracking-widest font-black text-[10px]">Institutional Clock</div>
                     <div x-data="{ time: '' }" x-init="setInterval(() => { 
                         time = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }) 
-                    }, 1000)" class="text-3xl font-black tracking-tighter tabular-nums mt-6 text-white drop-shadow-2xl font-mono">
+                    }, 1000)" class="text-xl font-black tracking-tighter tabular-nums mt-6 text-white drop-shadow-2xl font-mono">
                         <span x-text="time || '00:00:00'"></span>
                     </div>
                 </div>
@@ -123,7 +123,7 @@
         {{-- Weekly Schedule --}}
         @if($mySchedule->count() > 0)
         <div class="card-modern bg-white overflow-hidden flex flex-col shadow-xl shadow-indigo-100/20">
-            <div class="p-10 border-b border-slate-50 bg-slate-50/10">
+            <div class="p-5 border-b border-slate-50 bg-slate-50/10">
                 <h3 class="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] italic">Work Shift Cycle</h3>
                 <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Institutional Period 2026</p>
             </div>
@@ -140,7 +140,7 @@
                         $daySchedule = $mySchedule->firstWhere('day_of_week', $day);
                         $isToday = ($day === $today);
                     @endphp
-                    <div class="p-8 text-center group transition-colors duration-500 {{ $isToday ? 'bg-indigo-600 !text-white' : 'hover:bg-slate-50' }}">
+                    <div class="p-4 text-center group transition-colors duration-500 {{ $isToday ? 'bg-indigo-600 !text-white' : 'hover:bg-slate-50' }}">
                         <div class="text-[10px] font-black uppercase tracking-[0.2em] {{ $isToday ? 'text-indigo-200' : 'text-slate-400 group-hover:text-indigo-600' }} mb-6 transition-colors">{{ $shortDays[$i] }}</div>
                         
                         @if($daySchedule)
@@ -159,10 +159,10 @@
         @endif
 
         {{-- Intelligence Section --}}
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-stretch">
             {{-- Logs --}}
             <div class="xl:col-span-8 card-modern flex flex-col h-full bg-white overflow-hidden shadow-xl shadow-slate-100/10">
-                <div class="p-10 border-b border-slate-50">
+                <div class="p-5 border-b border-slate-50">
                     <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] italic">Personal Authentication Logs</h3>
                     <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Institutional Attendance stream</p>
                 </div>
@@ -205,17 +205,17 @@
             </div>
 
             {{-- Sidebar Intelligence --}}
-            <div class="xl:col-span-4 flex flex-col gap-8">
+            <div class="xl:col-span-4 flex flex-col gap-4">
                 {{-- Upcoming Academic Breaks --}}
                 <div class="card-modern flex flex-col bg-white overflow-hidden shadow-xl shadow-slate-100/10">
-                    <div class="p-10 border-b border-slate-50">
+                    <div class="p-5 border-b border-slate-50">
                         <h3 class="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] italic">Academic Forecast</h3>
                         <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Institutional Milestone Stream</p>
                     </div>
-                    <div class="p-10 space-y-8 flex-1">
+                    <div class="p-5 space-y-4 flex-1">
                         @forelse($upcomingHolidays as $holiday)
                             <div class="flex gap-5 group">
-                                <div class="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100/50 flex flex-col items-center justify-center shrink-0 group-hover:bg-indigo-50 group-hover:border-indigo-100 transition-all">
+                                <div class="w-12 h-10 rounded-2xl bg-slate-50 border border-slate-100/50 flex flex-col items-center justify-center shrink-0 group-hover:bg-indigo-50 group-hover:border-indigo-100 transition-all">
                                     <span class="text-[10px] font-black text-indigo-600 uppercase leading-none">{{ $holiday->date->format('M') }}</span>
                                     <span class="text-sm font-black text-slate-900 leading-none mt-1">{{ $holiday->date->format('d') }}</span>
                                 </div>
@@ -232,12 +232,12 @@
 
                 {{-- Disbursement history --}}
                 <div class="card-modern flex flex-col bg-white overflow-hidden shadow-xl shadow-slate-100/10 border-l-4 border-l-emerald-500">
-                    <div class="p-10 border-b border-slate-50">
+                    <div class="p-5 border-b border-slate-50">
                         <h3 class="text-xs font-black text-emerald-600 uppercase tracking-[0.2em] italic">Performance Ledger</h3>
                         <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Verified Payout History</p>
                     </div>
                     
-                    <div class="p-10 space-y-8 flex-1">
+                    <div class="p-5 space-y-4 flex-1">
                         @forelse($myPayrolls as $payroll)
                             <div x-data="{ showTrace: false }" class="flex flex-col group p-4 -m-4 rounded-[2rem] transition-all hover:bg-slate-50">
                                 <div class="flex items-center justify-between cursor-pointer" @click="showTrace = !showTrace">
@@ -273,10 +273,10 @@
                 </div>
 
                 {{-- Support Card (Hardened Dispute Reporting) --}}
-                <div x-data="{ open: false }" class="glass-surface p-10 rounded-[2.5rem] bg-indigo-600 text-white shadow-2xl shadow-indigo-200 relative overflow-hidden group">
+                <div x-data="{ open: false }" class="glass-surface p-5 rounded-2xl bg-indigo-600 text-white shadow-2xl shadow-indigo-200 relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/50 to-transparent"></div>
                     <div class="relative z-10">
-                        <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-white mb-8 group-hover:rotate-12 transition-transform duration-500 rotate-0">
+                        <div class="w-12 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white mb-8 group-hover:rotate-12 transition-transform duration-500 rotate-0">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </div>
                         <h4 class="text-sm font-black uppercase italic tracking-[0.1em]">Conflict Disclosure</h4>
@@ -297,11 +297,11 @@
                          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm"
                          style="display: none;">
                         <div @click.away="open = false" class="bg-white rounded-[2rem] w-full max-w-lg overflow-hidden shadow-2xl">
-                            <div class="bg-slate-900 p-8 text-white">
+                            <div class="bg-slate-900 p-4 text-white">
                                 <h3 class="text-sm font-black uppercase tracking-widest italic">Formal Discrepancy Statement</h3>
                                 <p class="text-[10px] text-slate-500 mt-2 font-black uppercase tracking-widest">Closed-Loop Resolution Protocol</p>
                             </div>
-                            <form action="{{ route('discrepancies.store') }}" method="POST" class="p-8 space-y-6">
+                            <form action="{{ route('discrepancies.store') }}" method="POST" class="p-4 space-y-6">
                                 @csrf
                                 <div>
                                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic block mb-3">Target Ledger Cycle</label>

@@ -4,19 +4,19 @@
     </x-slot>
 
     <div class="max-w-3xl mx-auto mt-8">
-        <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
-            <div class="p-8 border-b border-slate-50 dark:border-slate-800 text-center">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-50 dark:border-slate-800 text-center">
                 <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 italic tracking-tight">Identity Registration</h3>
                 <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-2">AISAT Personnel Registry</p>
             </div>
 
-            <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
+            <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data" class="p-4 space-y-4">
                 @csrf
                 
                 <div class="space-y-6">
                     <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Basic Information</div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Full Name</label>
                             <input type="text" name="name" required class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium">
@@ -31,7 +31,7 @@
                 <div class="space-y-6">
                     <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">System Credentials</div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Employee ID</label>
                             <input type="text" name="employee_id" required class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-bold tracking-widest text-indigo-600">
@@ -39,6 +39,29 @@
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">RFID Tag Num</label>
                             <input type="text" name="rfid_card_num" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium">
+                        </div>
+                        <div class="space-y-2" x-data="{ 
+                            isEnrolling: false, 
+                            status: '', 
+                            pollInterval: null,
+                            startEnroll() {
+                                // Since the user doesn't exist yet, we check if they filled out the name
+                                let name = document.querySelector('input[name=name]').value;
+                                if(!name) { alert('Please enter a name first.'); return; }
+                                
+                                alert('Note: To use the automatic enrollment, you should save the employee first, then use the Enroll button in the Edit page. For now, please input the ID manually if you have it, or save and return here!');
+                            }
+                        }">
+                            <div class="flex items-center justify-between">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Fingerprint ID (Hardware)</label>
+                                <button type="button" 
+                                        @click="startEnroll" 
+                                        class="text-[10px] font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-lg hover:bg-indigo-100 transition flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                                    Enroll Help
+                                </button>
+                            </div>
+                            <input type="number" name="fingerprint_id" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-bold text-indigo-600" placeholder="e.g. 1">
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Biometric Hash/Template</label>
@@ -50,7 +73,7 @@
                 <div class="space-y-6">
                     <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Institutional Identifiers</div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">TIN (Tax ID)</label>
                             <input type="text" name="tin_id" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium" placeholder="000-000-000-000">
@@ -73,7 +96,7 @@
                 <div class="space-y-6">
                     <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Initial Leave Allocation</div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Sick Leave Credits</label>
                             <input type="number" step="0.5" name="sick_leave_credits" value="0" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-bold text-rose-600">
@@ -88,7 +111,7 @@
                 <div class="space-y-6">
                     <div class="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Role & Compensation</div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Hourly Rate (₱)</label>
                             <input type="number" step="0.01" name="hourly_rate" required class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-bold">

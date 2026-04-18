@@ -4,8 +4,8 @@
     </x-slot>
 
     <div class="max-w-2xl mx-auto mt-8">
-        <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
-            <div class="p-8 border-b border-slate-50 dark:border-slate-800 text-center">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-50 dark:border-slate-800 text-center">
                 <div class="w-16 h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl ring-8 ring-slate-50 dark:ring-slate-800/50">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 3v1c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 3v1m0 0c.851 0 1.673.1 2.459.29m0 0A10.016 10.016 0 0115.353 10H14a3 3 0 00-2.828 4M12 11c0 3.517 1.009 6.799 2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 3v1m0 0c.851 0 1.673.1 2.459.29m0 0a10.016 10.016 0 011.094 9.71m3.44 2.04l-.054-.09a10.003 10.003 0 010-19.142m0 19.142A10.002 10.002 0 0120 13v-1M12 11c0 3.517 1.009 6.799 2.753 9.571m0 0c.851 0 1.673.1 2.459.29m0 0a10.016 10.016 0 011.094 9.71m-1.094-9.71A10.016 10.016 0 0018 11.29"></path></svg>
                 </div>
@@ -13,7 +13,7 @@
                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2">Granting Full System Access</p>
             </div>
 
-            <form action="{{ route('admins.store') }}" method="POST" class="p-8 space-y-8">
+            <form action="{{ route('admins.store') }}" method="POST" class="p-4 space-y-4">
                 @csrf
                 
                 <div class="space-y-6">

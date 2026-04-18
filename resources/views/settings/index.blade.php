@@ -9,14 +9,14 @@
     <div class="py-12" x-data="{ activeTab: 'institutional' }">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             <!-- Header Section -->
-            <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div class="space-y-1">
                     <div class="flex items-center gap-2 mb-2">
                         <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-widest rounded-md border border-indigo-100">Configuration</span>
                         <span class="w-1 h-1 rounded-full bg-slate-200"></span>
                         <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none">Global Settings</span>
                     </div>
-                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">System Configuration</h1>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">System Configuration</h1>
                     <p class="text-slate-500 text-sm">Fine-tune institutional identity, statutory rates, and legal parameters.</p>
                 </div>
 
@@ -38,7 +38,7 @@
             </div>
 
             <!-- Tab Navigation -->
-            <div class="flex items-center gap-8 border-b border-slate-200 mb-8 overflow-x-auto pb-px">
+            <div class="flex items-center gap-4 border-b border-slate-200 mb-8 overflow-x-auto pb-px">
                 <button @click="activeTab = 'institutional'" 
                         :class="activeTab === 'institutional' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent hover:text-slate-600 hover:border-slate-300'"
                         class="pb-4 text-sm font-bold border-b-2 transition-all whitespace-nowrap px-1">
@@ -62,13 +62,13 @@
 
                 {{-- Institutional Identity Panel --}}
                 <div x-show="activeTab === 'institutional'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
-                    <div class="grid grid-cols-1 gap-6">
+                    <div class="grid grid-cols-1 gap-4">
                         @if(isset($settings['institutional']))
-                            <div class="card-modern p-8 bg-white/60 backdrop-blur-xl border-white/40">
+                            <div class="card-modern p-4 bg-white/60 backdrop-blur-xl border-white/40">
                                 <div class="mb-8 overflow-hidden rounded-2xl border border-slate-100">
                                     <div class="divide-y divide-slate-100">
                                         @foreach($settings['institutional'] as $setting)
-                                            <div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/50 transition-colors">
+                                            <div class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/50 transition-colors">
                                                 <div class="space-y-1">
                                                     <h4 class="text-sm font-bold text-slate-900 tracking-tight">{{ $setting->label }}</h4>
                                                     <div class="flex items-center gap-2">
@@ -101,7 +101,7 @@
                                 @foreach($settings['statutory']->chunk(2) as $chunk)
                                     <div class="grid grid-cols-1 md:grid-cols-2">
                                         @foreach($chunk as $setting)
-                                            <div class="p-8 border-r border-slate-50 last:border-r-0 hover:bg-white/40 transition-all group">
+                                            <div class="p-4 border-r border-slate-50 last:border-r-0 hover:bg-white/40 transition-all group">
                                                 <div class="flex flex-col gap-4">
                                                     <div class="flex items-center justify-between">
                                                         <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -138,14 +138,14 @@
 
                 {{-- Tax Brackets Panel --}}
                 <div x-show="activeTab === 'tax'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
-                    <div class="card-modern bg-slate-900 p-8 relative overflow-hidden">
+                    <div class="card-modern bg-slate-900 p-4 relative overflow-hidden">
                         <!-- Decorative glow -->
                         <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full -mr-32 -mt-32"></div>
                         <div class="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/5 blur-[100px] rounded-full -ml-32 -mb-32"></div>
                         
                         <div class="relative z-10">
                             <div class="flex items-center gap-4 mb-8">
-                                <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-xl border border-white/10">
+                                <div class="w-12 h-10 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-xl border border-white/10">
                                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 </div>
                                 <div>
@@ -155,9 +155,9 @@
                             </div>
 
                             @if(isset($settings['tax']))
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     @foreach($settings['tax'] as $setting)
-                                        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md">
+                                        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-md">
                                             <div class="space-y-3">
                                                 <div class="flex items-center justify-between">
                                                     <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Bracket Parameter</span>
@@ -186,9 +186,9 @@
             </form>
 
             <!-- Bottom Sections Grid -->
-            <div class="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <!-- Audit Trail -->
-                <div class="card-modern p-8 flex flex-col h-full bg-white/60 backdrop-blur-xl border-white/40">
+                <div class="card-modern p-4 flex flex-col h-full bg-white/60 backdrop-blur-xl border-white/40">
                     <div class="flex items-center justify-between mb-8">
                         <div>
                             <h3 class="text-xl font-bold text-slate-900 tracking-tight">Integrity Audit</h3>
@@ -238,8 +238,8 @@
                 </div>
 
                 <!-- Documentation/Help Card -->
-                <div class="card-modern p-8 bg-slate-900 group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-8">
+                <div class="card-modern p-4 bg-slate-900 group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4">
                         <svg class="w-24 h-24 text-white/5 group-hover:text-indigo-500/10 transition-colors duration-700" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
                     </div>
                     <div class="relative z-10 h-full flex flex-col">
@@ -261,7 +261,7 @@
 
     {{-- Manual Parameter Creation Modal (Using existing x-modal if available or custom Alpine) --}}
     <x-modal name="add-parameter" :show="false" focusable>
-        <div class="p-8">
+        <div class="p-4">
             <div class="mb-8">
                 <h3 class="text-xl font-bold text-slate-900 tracking-tight">Define New Parameter</h3>
                 <p class="text-sm text-slate-500">Add a custom administrative field to the database.</p>
@@ -269,7 +269,7 @@
             
             <form action="{{ route('settings.store') }}" method="POST" class="space-y-6">
                 @csrf
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-1.5">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Display Label</label>
                         <input type="text" name="label" placeholder="e.g., PAG-IBIG Rate" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 px-4 py-3 outline-none" required>

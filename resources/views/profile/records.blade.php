@@ -13,13 +13,13 @@
 
     <div class="max-w-4xl mx-auto space-y-6">
         <!-- Identity Card -->
-        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-            <div class="p-8 border-b border-slate-50 bg-slate-50/50 flex flex-col md:flex-row items-center gap-6">
-                <div class="w-24 h-24 rounded-3xl bg-slate-900 text-white flex items-center justify-center text-3xl font-bold shadow-xl">
+        <div class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-50 bg-slate-50/50 flex flex-col md:flex-row items-center gap-6">
+                <div class="w-24 h-24 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xl font-bold shadow-xl">
                     {{ strtoupper(substr($user->name, 0, 1)) }}
                 </div>
                 <div class="text-center md:text-left">
-                    <h3 class="text-2xl font-extrabold text-slate-900 tracking-tight mb-1">{{ $user->name }}</h3>
+                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight mb-1">{{ $user->name }}</h3>
                     <p class="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">{{ $user->role }}</p>
                     <div class="flex flex-wrap justify-center md:justify-start gap-4">
                         <div class="flex items-center gap-2 text-slate-500 text-xs font-bold">
@@ -35,7 +35,7 @@
                 </div>
             </div>
 
-            <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+            <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                 <!-- Statutory Information Section -->
                 <div class="space-y-6">
                     <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
@@ -92,7 +92,7 @@
         </div>
 
         <!-- Institutional Schedule -->
-        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        <div class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
             <div class="px-8 py-5 border-b border-slate-50 bg-slate-50/30 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -141,7 +141,7 @@
                             <tr>
                                 <td colspan="3" class="px-8 py-12 text-center">
                                     <div class="flex flex-col items-center gap-2">
-                                        <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300">
+                                        <div class="w-12 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300">
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                         </div>
                                         <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">No recurring schedules found</p>
@@ -164,7 +164,7 @@
         </div>
 
         <!-- Integrity Notice -->
-        <div class="p-6 bg-slate-900 rounded-3xl text-white shadow-xl flex items-start gap-6">
+        <div class="p-6 bg-slate-900 rounded-xl text-white shadow-xl flex items-start gap-6">
             <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-white shrink-0 shadow-lg shadow-amber-500/20">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
             </div>

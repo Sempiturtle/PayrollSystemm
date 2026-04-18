@@ -2,12 +2,12 @@
 
 @php
 $classes = ($active ?? false)
-    ? 'flex items-center gap-3 px-3 py-2 text-sm font-bold text-slate-900 bg-slate-50/80 rounded-xl transition-all duration-200 border border-slate-100 shadow-sm'
-    : 'flex items-center gap-3 px-3 py-2 text-sm font-bold text-slate-400 hover:text-slate-900 hover:bg-slate-50/50 rounded-xl transition-all duration-200 group';
+    ? 'flex items-center gap-2.5 px-3 py-1.5 text-xs font-bold text-slate-900 bg-slate-50/80 rounded-lg transition-all duration-200 border border-slate-100 shadow-sm'
+    : 'flex items-center gap-2.5 px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-900 hover:bg-slate-50/50 rounded-lg transition-all duration-200 group';
 
 $iconColor = ($active ?? false)
     ? 'text-indigo-600'
-    : 'text-slate-300 group-hover:text-slate-500';
+    : 'text-slate-400 group-hover:text-slate-500';
 
 $iconPaths = [
     'home' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
@@ -19,8 +19,8 @@ $iconPaths = [
 ];
 @endphp
 
-<a {{ $attributes->merge(['class' => $classes]) }}>
-    <svg class="w-[18px] h-[18px] {{ $iconColor }} transition-colors duration-200 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<a {{ $attributes->merge(['class' => $classes]) }} @click="sidebarOpen = false; localStorage.setItem('sidebarOpen', false)">
+    <svg class="w-4 h-4 {{ $iconColor }} transition-colors duration-200 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="{{ $iconPaths[$icon] ?? $iconPaths['home'] }}"></path>
     </svg>
     <span>{{ $slot }}</span>

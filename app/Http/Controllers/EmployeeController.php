@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\AttendanceLog;
 use App\Models\Schedule;
+use App\Models\BiometricAction;
 use App\Imports\ProfessorScheduleImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\PayrollService;
@@ -15,7 +16,8 @@ use Illuminate\Http\UploadedFile;
 class EmployeeController extends Controller
 {
     public function __construct(
-        private readonly PayrollService $payrollService
+        private readonly PayrollService $payrollService,
+        private readonly \App\Services\AttendanceService $attendanceService
     ) {}
 
     /**
@@ -69,6 +71,7 @@ class EmployeeController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'employee_id' => 'required|string|unique:users',
             'rfid_card_num' => 'nullable|string|unique:users',
+            'fingerprint_id' => 'nullable|integer|unique:users',
             'biometric_template' => 'nullable|string|unique:users',
             'hourly_rate' => 'required|numeric',
             'role' => 'required|in:professor,employee',
@@ -109,10 +112,7 @@ class EmployeeController extends Controller
         $source = $request->input('source', 'RFID'); 
 
         try {
-            $user = User::where('rfid_card_num', $identifier)
-                        ->orWhere('employee_id', $identifier)
-                        ->orWhere('biometric_template', $identifier)
-                        ->first();
+            $user = $this->attendanceService->resolveUserByBiometric($identifier, $source);
 
             if (!$user) {
                 return response()->json(['success' => false, 'message' => 'Employee identity not recognized.'], 404);
@@ -221,6 +221,7 @@ class EmployeeController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'employee_id' => 'required|string|unique:users,employee_id,' . $id,
             'rfid_card_num' => 'nullable|string|unique:users,rfid_card_num,' . $id,
+            'fingerprint_id' => 'nullable|integer|unique:users,fingerprint_id,' . $id,
             'biometric_template' => 'nullable|string|unique:users,biometric_template,' . $id,
             'hourly_rate' => 'required|numeric',
             'role' => 'required|in:professor,employee',
@@ -350,5 +351,95 @@ class EmployeeController extends Controller
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save($path);
+    }
+
+    // ──────────────────────────────────────
+    // Biometric Integrated Enrollment Logic
+    // ──────────────────────────────────────
+
+    /**
+     * Trigger a new enrollment request from the Admin UI.
+     */
+    public function enrollRequest(User $employee)
+    {
+        // Cancel any existing pending enrollments for this user
+        BiometricAction::where('user_id', $employee->id)
+            ->where('status', 'pending')
+            ->update(['status' => 'expired']);
+
+        $action = BiometricAction::create([
+            'user_id' => $employee->id,
+            'command' => 'ENROLL',
+            'status' => 'pending'
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Enrollment command issued. Waiting for hardware polling...',
+            'action_id' => $action->id
+        ]);
+    }
+
+    /**
+     * Check the status of a specific enrollment action (for UI feedback).
+     */
+    public function checkEnrollStatus(BiometricAction $action)
+    {
+        return response()->json([
+            'status' => $action->status,
+            'fingerprint_id' => $action->fingerprint_id,
+            'user' => $action->user->name
+        ]);
+    }
+
+    /**
+     * Endpoint for ESP32 to "Poll" for waiting commands.
+     */
+    public function checkCommand(Request $request)
+    {
+        $action = BiometricAction::where('status', 'pending')
+            ->orderBy('created_at', 'asc')
+            ->first();
+
+        if (!$action) {
+            return response()->json(['command' => 'NONE']);
+        }
+
+        return response()->json([
+            'command' => $action->command,
+            'action_id' => $action->id,
+            'user_id' => $action->user_id,
+            'name' => $action->user->name
+        ]);
+    }
+
+    /**
+     * Endpoint for ESP32 to report the result of an enrollment.
+     */
+    public function completeEnroll(Request $request)
+    {
+        $validated = $request->validate([
+            'action_id' => 'required|exists:biometric_actions,id',
+            'fingerprint_id' => 'required|integer',
+            'status' => 'required|in:success,failed'
+        ]);
+
+        $action = BiometricAction::findOrFail($validated['action_id']);
+        
+        if ($validated['status'] === 'success') {
+            $action->update([
+                'status' => 'success',
+                'fingerprint_id' => $validated['fingerprint_id']
+            ]);
+
+            // Automatically link the ID to the user
+            $action->user->update([
+                'fingerprint_id' => $validated['fingerprint_id']
+            ]);
+        } else {
+            $action->update(['status' => 'failed']);
+        }
+
+        return response()->json(['success' => true]);
     }
 }

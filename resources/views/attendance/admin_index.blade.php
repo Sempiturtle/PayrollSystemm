@@ -14,10 +14,10 @@
             this.editModal = true;
         }
     }">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+        <div class="max-w-full mx-auto sm:px-6 lg:px-8 space-y-4">
             
             <!-- Filters & Actions Header -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
                 <form action="{{ route('attendance.index') }}" method="GET" class="flex flex-wrap items-center gap-4 flex-1">
                     <div class="flex items-center gap-2">
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">From</label>
@@ -156,7 +156,7 @@
         <!-- Add Manual Log Modal -->
         <div x-show="addModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="addModal = false"></div>
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md relative p-8 border border-slate-100">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md relative p-4 border border-slate-100">
                 <h3 class="text-xl font-bold text-slate-800 mb-6 font-outfit">Manual Entry</h3>
                 <form action="{{ route('attendance.store') }}" method="POST" class="space-y-4">
                     @csrf
@@ -203,7 +203,7 @@
         <!-- Edit Modal -->
         <div x-show="editModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="editModal = false"></div>
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md relative p-8 border border-slate-100">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md relative p-4 border border-slate-100">
                 <h3 class="text-xl font-bold text-slate-800 mb-6 font-outfit">Adjust Presence</h3>
                 <form :action="'{{ url('attendance') }}/' + activeLog.id" method="POST" class="space-y-4">
                     @csrf
@@ -250,7 +250,7 @@
             <div class="font-bold text-white uppercase tracking-widest mb-2 border-b border-white/10 pb-2">Admin Guide</div>
             <p class="leading-relaxed opacity-80">Manual logs are marked as "Admin Manual". Adjusting logs here will automatically recalculate associated payroll records on the next sync.</p>
         </div>
-        <div class="w-12 h-12 bg-slate-900 text-white rounded-full flex items-center justify-center shadow-2xl cursor-help hover:scale-110 transition active:scale-95 border border-white/10">
+        <div class="w-12 h-10 bg-slate-900 text-white rounded-full flex items-center justify-center shadow-2xl cursor-help hover:scale-110 transition active:scale-95 border border-white/10">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         </div>
     </div>

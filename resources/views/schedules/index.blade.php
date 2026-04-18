@@ -22,7 +22,7 @@
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0 translate-y-4"
              x-transition:enter-end="opacity-100 translate-y-0"
-             class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] bg-slate-900 text-white px-8 py-4 rounded-[2rem] shadow-2xl flex items-center gap-6 border border-slate-700/50 backdrop-blur-xl">
+             class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] bg-slate-900 text-white px-8 py-4 rounded-[2rem] shadow-2xl flex items-center gap-4 border border-slate-700/50 backdrop-blur-xl">
             <div class="flex items-center gap-3 pr-6 border-r border-slate-700">
                 <span class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold" x-text="selected.length"></span>
                 <span class="text-sm font-bold uppercase tracking-widest text-slate-400">Selected</span>
@@ -51,17 +51,17 @@
         <div x-show="showBulkUpload" class="fixed inset-0 z-[110] overflow-y-auto" style="display: none;">
             <div class="flex items-center justify-center min-h-screen px-4">
                 <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm" @click="showBulkUpload = false"></div>
-                <div class="relative bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+                <div class="relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 dark:border-slate-800">
                     <form action="{{ route('schedules.bulkUpload') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <template x-for="id in selected" :key="id">
                             <input type="hidden" name="user_ids[]" :value="id">
                         </template>
-                        <div class="p-10">
-                            <div class="w-16 h-16 rounded-3xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-6">
+                        <div class="p-5">
+                            <div class="w-16 h-16 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-6">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                             </div>
-                            <h3 class="text-2xl font-black text-slate-900 dark:text-slate-100 italic tracking-tight">Bulk Schedule Upload</h3>
+                            <h3 class="text-xl font-black text-slate-900 dark:text-slate-100 italic tracking-tight">Bulk Schedule Upload</h3>
                             <p class="text-sm text-slate-500 mt-2 font-medium">Assign a single Excel template to <span class="text-indigo-600 font-bold" x-text="selected.length"></span> selected employees.</p>
                             
                             <div class="mt-8">
@@ -79,8 +79,8 @@
         </div>
 
         <!-- Header Bar -->
-        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
-            <div class="p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 italic tracking-tight">Academic Timelines</h3>
                     <p class="text-sm text-slate-500 mt-1">
@@ -121,7 +121,7 @@
 
         <!-- Employees Schedule Cards -->
         @forelse($employees as $employee)
-        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden transition-all duration-300" 
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden transition-all duration-300" 
              :class="selected.includes('{{ $employee->id }}') ? 'ring-4 ring-indigo-500/20 border-indigo-200' : ''"
              x-data="{ open: true }">
             
@@ -130,9 +130,9 @@
                 <div class="pl-8 flex items-center">
                     <input type="checkbox" name="user_ids[]" value="{{ $employee->id }}" x-model="selected" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-5 h-5">
                 </div>
-                <button @click="open = !open" class="flex-1 p-6 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
+                <button @click="open = !open" class="flex-1 p-4 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg">
+                        <div class="w-12 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg">
                             {{ substr($employee->name, 0, 1) }}
                         </div>
                         <div class="text-left">
@@ -194,7 +194,7 @@
             </div>
         </div>
         @empty
-        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm p-16 text-center">
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm p-16 text-center">
             <svg class="w-16 h-16 text-slate-200 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             <h4 class="text-lg font-bold text-slate-400 italic">No Schedules Found</h4>
             <p class="text-sm text-slate-400 mt-2">No schedules have been uploaded for any employee yet.</p>

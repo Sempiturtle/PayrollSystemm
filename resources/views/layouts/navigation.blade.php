@@ -81,6 +81,9 @@
                 <x-sidebar-link :href="route('leaves.index')" :active="request()->routeIs('leaves.*')" icon="calendar">
                     Leave Management
                 </x-sidebar-link>
+                <x-sidebar-link :href="route('discrepancies.mine')" :active="request()->routeIs('discrepancies.mine')" icon="alert">
+                    My Disputes
+                </x-sidebar-link>
                 <x-sidebar-link :href="route('profile.records')" :active="request()->routeIs('profile.records')" icon="user">
                     My Profile
                 </x-sidebar-link>
@@ -95,6 +98,9 @@
                 </x-sidebar-link>
                 <x-sidebar-link :href="route('admins.index')" :active="request()->routeIs('admins.*')" icon="users">
                     Manage Admins
+                </x-sidebar-link>
+                <x-sidebar-link :href="route('audit-logs.index')" :active="request()->routeIs('audit-logs.*')" icon="document">
+                    Security Audit Logs
                 </x-sidebar-link>
                 <x-sidebar-link :href="route('settings.index')" :active="request()->routeIs('settings.*')" icon="settings">
                     System Configurations
@@ -218,6 +224,9 @@
                     <x-sidebar-link :href="route('leaves.index')" :active="request()->routeIs('leaves.*')" icon="calendar">
                         Leave Management
                     </x-sidebar-link>
+                    <x-sidebar-link :href="route('discrepancies.mine')" :active="request()->routeIs('discrepancies.mine')" icon="alert">
+                        My Disputes
+                    </x-sidebar-link>
                     <x-sidebar-link :href="route('profile.records')" :active="request()->routeIs('profile.records')" icon="user">
                         My Profile
                     </x-sidebar-link>
@@ -232,6 +241,9 @@
                     </x-sidebar-link>
                     <x-sidebar-link :href="route('admins.index')" :active="request()->routeIs('admins.*')" icon="users">
                         Manage Admins
+                    </x-sidebar-link>
+                    <x-sidebar-link :href="route('audit-logs.index')" :active="request()->routeIs('audit-logs.*')" icon="document">
+                        Security Audit Logs
                     </x-sidebar-link>
                     <x-sidebar-link :href="route('settings.index')" :active="request()->routeIs('settings.*')" icon="settings">
                         System Configurations

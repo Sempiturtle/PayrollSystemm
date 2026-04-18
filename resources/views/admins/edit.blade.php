@@ -4,8 +4,8 @@
     </x-slot>
 
     <div class="max-w-2xl mx-auto mt-8">
-        <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
-            <div class="p-8 border-b border-slate-50 dark:border-slate-800 text-center">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-50 dark:border-slate-800 text-center">
                 <div class="w-16 h-16 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl ring-8 ring-slate-50 dark:ring-slate-800/50">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                 </div>
@@ -13,7 +13,7 @@
                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2">Updating Authority Record</p>
             </div>
 
-            <form action="{{ route('admins.update', $admin) }}" method="POST" class="p-8 space-y-8">
+            <form action="{{ route('admins.update', $admin) }}" method="POST" class="p-4 space-y-4">
                 @csrf
                 @method('PATCH')
                 

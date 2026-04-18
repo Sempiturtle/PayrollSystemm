@@ -76,7 +76,7 @@
 
                 <!-- Page Content -->
                 <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50">
-                    <div class="max-w-7xl mx-auto space-y-6">
+                    <div class="max-w-[120rem] mx-auto space-y-6">
                         <!-- Premium Toast Notifications -->
                         <div x-data="{ 
                             show: {{ session('success') ? 'true' : 'false' }},
@@ -133,5 +133,6 @@
                 </main>
             </div>
         </div>
+        @stack('scripts')
     </body>
 </html>
