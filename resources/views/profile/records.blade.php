@@ -44,22 +44,20 @@
                     </h4>
                     
                     <div class="space-y-4">
-                        <div class="flex justify-between items-center py-2 border-b border-slate-50">
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-tight">TIN ID</span>
-                            <span class="text-xs font-bold text-slate-900 tabular-nums">{{ $maskedTin }}</span>
-                        </div>
-                        <div class="flex justify-between items-center py-2 border-b border-slate-50">
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-tight">SSS Number</span>
-                            <span class="text-xs font-bold text-slate-900 tabular-nums">{{ $maskedSss }}</span>
-                        </div>
-                        <div class="flex justify-between items-center py-2 border-b border-slate-50">
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-tight">PhilHealth ID</span>
-                            <span class="text-xs font-bold text-slate-900 tabular-nums">{{ $maskedPhilhealth }}</span>
-                        </div>
-                        <div class="flex justify-between items-center py-2">
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-tight">Pag-IBIG Number</span>
-                            <span class="text-xs font-bold text-slate-900 tabular-nums">{{ $maskedPagibig }}</span>
-                        </div>
+                        @foreach(['tin' => 'TIN ID', 'sss' => 'SSS Number', 'philhealth' => 'PhilHealth ID', 'pagibig' => 'Pag-IBIG Number'] as $key => $label)
+                            <div class="flex justify-between items-center py-2 border-b border-slate-50" x-data="{ show: false }">
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-tight">{{ $label }}</span>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs font-bold text-slate-900 tabular-nums" x-text="show ? '{{ $statutory[$key]['raw'] ?? 'Not Set' }}' : '{{ $statutory[$key]['masked'] }}'"></span>
+                                    @if($statutory[$key]['raw'])
+                                        <button @click="show = !show" class="text-slate-400 hover:text-indigo-600 transition-colors focus:outline-none">
+                                            <svg x-show="!show" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                            <svg x-show="show" x-cloak class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path></svg>
+                                        </button>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
 

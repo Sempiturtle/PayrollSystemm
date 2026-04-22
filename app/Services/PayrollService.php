@@ -162,36 +162,36 @@ class PayrollService
             $hourlyRate = $user->hourly_rate ?? 0;
             $grossPay = $totalHours * $hourlyRate;
             
-            // 1 hour deduction per late instance
-            $lateDeduction = $lateCount * $hourlyRate;
+            // Precise Late Deduction (per minute)
+            $lateDeduction = ($totalLateMinutes * ($hourlyRate / 60));
             
             // Calculate Statutory Deductions using dynamic settings
             $statutory = $this->deductionService->computeAll($grossPay);
             
             /** 
              * FISCAL HARDENING: Capture current settings snapshot 
-             * This proves the exact math used even if settings change next year.
              */
             $snapshot = \App\Models\SystemSetting::all()->pluck('value', 'key')->toArray();
             
-            $totalDeductions = $lateDeduction + $statutory['total'];
-            
-            /** 
-             * FISCAL HARDENING: Zero-Floor Logic
-             * Net pay cannot be negative even with extreme deductions.
-             */
-            $netPay = max(0, $grossPay - $totalDeductions);
+            $totalDeductionsEE = $lateDeduction + $statutory['total_ee'];
+            $netPay = max(0, $grossPay - $totalDeductionsEE);
 
             return Payroll::updateOrCreate(
                 ['user_id' => $user->id, 'period_start' => $startDate, 'period_end' => $endDate],
                 [
                     'total_hours' => $totalHours,
                     'late_minutes' => $totalLateMinutes,
+                    'late_deduction' => $lateDeduction,
+                    'undertime_deduction' => 0, // Undertime logic can be added later
                     'sss_deduction' => $statutory['sss'],
                     'philhealth_deduction' => $statutory['philhealth'],
                     'pagibig_deduction' => $statutory['pagibig'],
                     'tax_deduction' => $statutory['tax'],
-                    'total_deductions' => $totalDeductions,
+                    'sss_employer' => $statutory['sss_er'],
+                    'philhealth_employer' => $statutory['philhealth_er'],
+                    'pagibig_employer' => $statutory['pagibig_er'],
+                    'sss_ec' => $statutory['sss_ec'],
+                    'total_deductions' => $totalDeductionsEE,
                     'gross_pay' => $grossPay,
                     'net_pay' => $netPay,
                     'status' => 'Draft',

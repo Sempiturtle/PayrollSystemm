@@ -61,22 +61,26 @@ class SettingsController extends Controller
     public function syncDefaults()
     {
         $defaults = [
-            // Statutory
-            ['key' => 'sss_rate', 'label' => 'SSS Employee Rate', 'value' => '0', 'group' => 'statutory', 'type' => 'decimal'],
-            ['key' => 'sss_max_contribution', 'label' => 'SSS Max Employee Contribution', 'value' => '0', 'group' => 'statutory', 'type' => 'decimal'],
-            ['key' => 'philhealth_rate', 'label' => 'PhilHealth Employee Rate', 'value' => '0', 'group' => 'statutory', 'type' => 'decimal'],
-            ['key' => 'philhealth_max_contribution', 'label' => 'PhilHealth Max Contribution', 'value' => '0', 'group' => 'statutory', 'type' => 'decimal'],
-            ['key' => 'pagibig_fixed_amount', 'label' => 'Pag-IBIG Monthly Contribution', 'value' => '0', 'group' => 'statutory', 'type' => 'decimal'],
-            ['key' => 'pagibig_threshold', 'label' => 'Pag-IBIG Salary Threshold', 'value' => '0', 'group' => 'statutory', 'type' => 'decimal'],
+            // Statutory - SSS 2025
+            ['key' => 'sss_ee_rate', 'label' => 'SSS Employee Rate', 'value' => '0.045', 'group' => 'statutory', 'type' => 'decimal'],
+            ['key' => 'sss_er_rate', 'label' => 'SSS Employer Rate', 'value' => '0.095', 'group' => 'statutory', 'type' => 'decimal'],
+            ['key' => 'sss_ee_max', 'label' => 'SSS Max Employee Contribution', 'value' => '1350', 'group' => 'statutory', 'type' => 'decimal'],
+            ['key' => 'sss_er_max', 'label' => 'SSS Max Employer Contribution', 'value' => '2850', 'group' => 'statutory', 'type' => 'decimal'],
             
-            // Tax
-            ['key' => 'tax_threshold_1', 'label' => 'Tax Free Threshold (Monthly)', 'value' => '0', 'group' => 'tax', 'type' => 'decimal'],
-            ['key' => 'tax_rate_2', 'label' => 'Tax Rate Bracket 2 (15%)', 'value' => '0', 'group' => 'tax', 'type' => 'decimal'],
-            ['key' => 'tax_rate_3', 'label' => 'Tax Rate Bracket 3 (20%)', 'value' => '0', 'group' => 'tax', 'type' => 'decimal'],
+            // Statutory - PhilHealth 2025
+            ['key' => 'philhealth_total_rate', 'label' => 'PhilHealth Total Rate', 'value' => '0.05', 'group' => 'statutory', 'type' => 'decimal'],
+            
+            // Statutory - Pag-IBIG 2025
+            ['key' => 'pagibig_ee_fixed', 'label' => 'Pag-IBIG Employee Fixed', 'value' => '200', 'group' => 'statutory', 'type' => 'decimal'],
+            ['key' => 'pagibig_er_fixed', 'label' => 'Pag-IBIG Employer Fixed', 'value' => '200', 'group' => 'statutory', 'type' => 'decimal'],
+            
+            // Tax - TRAIN Law
+            ['key' => 'tax_threshold_1', 'label' => 'Tax Free Threshold (Monthly)', 'value' => '20833', 'group' => 'tax', 'type' => 'decimal'],
+            ['key' => 'tax_rate_2', 'label' => 'Tax Rate Bracket 2 (15%)', 'value' => '0.15', 'group' => 'tax', 'type' => 'decimal'],
             
             // Institutional
             ['key' => 'currency_symbol', 'label' => 'Currency Symbol', 'value' => '₱', 'group' => 'institutional', 'type' => 'string'],
-            ['key' => 'institution_name', 'label' => 'Institution Name', 'value' => 'AISAT', 'group' => 'institutional', 'type' => 'string'],
+            ['key' => 'institution_name', 'label' => 'Institution Name', 'value' => 'AISAT College', 'group' => 'institutional', 'type' => 'string'],
         ];
 
         foreach ($defaults as $data) {

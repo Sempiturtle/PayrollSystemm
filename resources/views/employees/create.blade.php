@@ -80,7 +80,7 @@
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">SSS Number</label>
-                            <input type="text" name="sss_num" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium" placeholder="00-0000000-0">
+                            <input type="text" name="sss_id" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium" placeholder="00-0000000-0">
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">PhilHealth ID</label>
@@ -88,7 +88,7 @@
                         </div>
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Pag-IBIG Number</label>
-                            <input type="text" name="pagibig_num" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium" placeholder="0000-0000-0000">
+                            <input type="text" name="pagibig_id" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium" placeholder="0000-0000-0000">
                         </div>
                     </div>
                 </div>

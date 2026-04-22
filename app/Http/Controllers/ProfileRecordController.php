@@ -11,16 +11,30 @@ class ProfileRecordController extends Controller
     {
         $user = Auth::user();
         
-        // Mask statutory IDs for security (e.g. 123-456-789 -> XXX-XXX-789)
-        $maskedTin = $this->maskId($user->tin_id);
-        $maskedSss = $this->maskId($user->sss_id);
-        $maskedPhilhealth = $this->maskId($user->philhealth_id);
-        $maskedPagibig = $this->maskId($user->pagibig_id);
+        // Data for display with show/hide capability
+        $statutory = [
+            'tin' => [
+                'raw' => $user->tin_id,
+                'masked' => $this->maskId($user->tin_id)
+            ],
+            'sss' => [
+                'raw' => $user->sss_id,
+                'masked' => $this->maskId($user->sss_id)
+            ],
+            'philhealth' => [
+                'raw' => $user->philhealth_id,
+                'masked' => $this->maskId($user->philhealth_id)
+            ],
+            'pagibig' => [
+                'raw' => $user->pagibig_id,
+                'masked' => $this->maskId($user->pagibig_id)
+            ],
+        ];
 
         // Load the user's schedules
         $schedules = $user->schedules()->orderByDay()->get();
 
-        return view('profile.records', compact('user', 'maskedTin', 'maskedSss', 'maskedPhilhealth', 'maskedPagibig', 'schedules'));
+        return view('profile.records', compact('user', 'statutory', 'schedules'));
     }
 
     public function downloadSchedule()

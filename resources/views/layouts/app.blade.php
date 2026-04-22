@@ -37,7 +37,7 @@
             <div class="flex-1 flex flex-col min-w-0 overflow-hidden transition-all duration-300"
                  :class="sidebarOpen ? 'lg:pl-64' : 'lg:pl-0'">
                 <!-- Top Header Bar -->
-                <header class="h-16 flex items-center justify-between px-4 md:px-8 glass-header sticky top-0 z-30">
+                <header class="h-16 flex items-center justify-between px-3 md:px-8 glass-header sticky top-0 z-30">
                     <div class="flex items-center gap-4">
                         <!-- Hamburger Button (Desktop) -->
                         <button @click="toggleSidebar()" class="hidden lg:flex p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
@@ -75,7 +75,7 @@
                 </header>
 
                 <!-- Page Content -->
-                <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50">
+                <main class="flex-1 overflow-y-auto p-3 md:p-8 bg-slate-50">
                     <div class="max-w-[120rem] mx-auto space-y-6">
                         <!-- Premium Toast Notifications -->
                         <div x-data="{ 

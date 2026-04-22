@@ -48,6 +48,7 @@ trait LogsActivity
             'auditable_id' => $model->id,
             'old_values' => $oldValues,
             'new_values' => $newValues,
+            'url' => request()->fullUrl(),
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
         ]);

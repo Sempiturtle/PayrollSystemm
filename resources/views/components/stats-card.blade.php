@@ -18,15 +18,15 @@ $iconPaths = [
 ];
 @endphp
 
-<div class="stat-card group">
-    <div class="flex items-center justify-between mb-4">
+<div class="stat-high-level group">
+    <div class="flex items-center justify-between mb-3 md:mb-4">
         <div class="w-10 h-10 rounded-xl {{ $c['bg'] }} {{ $c['text'] }} flex items-center justify-center ring-1 {{ $c['ring'] }} transition-transform duration-300 group-hover:scale-110">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="{{ $iconPaths[$icon] ?? $iconPaths['users'] }}"></path>
             </svg>
         </div>
         @if($trend)
-            <div class="flex items-center gap-1 px-2 py-1 {{ str_starts_with($trend, '-') ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600' }} rounded-lg text-[11px] font-semibold">
+            <div class="flex items-center gap-1 px-2 py-1 {{ str_starts_with($trend, '-') ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600' }} rounded-lg text-[10px] md:text-[11px] font-semibold">
                 @if(!str_starts_with($trend, '-'))
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                 @else
@@ -38,7 +38,7 @@ $iconPaths = [
     </div>
 
     <div>
-        <div class="text-3xl font-bold text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">{{ $value }}</div>
-        <h4 class="text-sm font-medium text-slate-500 mt-1">{{ $title }}</h4>
+        <div class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">{{ $value }}</div>
+        <h4 class="text-xs md:text-sm font-medium text-slate-500 mt-1">{{ $title }}</h4>
     </div>
 </div>

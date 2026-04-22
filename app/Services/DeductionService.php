@@ -11,75 +11,106 @@ use App\Models\SystemSetting;
 class DeductionService
 {
     /**
-     * SSS Contribution
+     * SSS Contribution (2025 Rates: 14.5% Total)
+     * Employee: 4.5%
+     * Employer: 9.5% + 0.5% EC = 10%
      */
-    public function calculateSSS(float $grossPay): float
+    public function calculateSSS(float $grossPay): array
     {
-        if ($grossPay <= 0) return 0;
+        if ($grossPay <= 0) return ['ee' => 0, 'er' => 0, 'ec' => 0];
         
-        $sssRate = SystemSetting::get('sss_rate', 0.045); 
-        $maxContribution = SystemSetting::get('sss_max_contribution', 1125);
+        $eeRate = SystemSetting::get('sss_ee_rate', 0.045); 
+        $erRate = SystemSetting::get('sss_er_rate', 0.095);
+        $ecAmount = ($grossPay >= 14750) ? 30 : 10; // Simple EC approximation
         
-        $contribution = $grossPay * $sssRate;
+        $maxEe = SystemSetting::get('sss_ee_max', 1350); 
+        $maxEr = SystemSetting::get('sss_er_max', 2850);
         
-        return min($maxContribution, $contribution);
+        $eeContribution = min($maxEe, $grossPay * $eeRate);
+        $erContribution = min($maxEr, $grossPay * $erRate);
+        
+        return [
+            'ee' => round($eeContribution, 2),
+            'er' => round($erContribution, 2),
+            'ec' => round($ecAmount, 2)
+        ];
     }
 
     /**
-     * PhilHealth Contribution
+     * PhilHealth Contribution (2025 Rate: 5% Total)
+     * Employee: 2.5%
+     * Employer: 2.5%
      */
-    public function calculatePhilHealth(float $grossPay): float
+    public function calculatePhilHealth(float $grossPay): array
     {
-        if ($grossPay <= 0) return 0;
+        if ($grossPay <= 0) return ['ee' => 0, 'er' => 0];
         
-        $phRate = SystemSetting::get('philhealth_rate', 0.02); 
-        $maxContribution = SystemSetting::get('philhealth_max_contribution', 1000);
+        $totalRate = SystemSetting::get('philhealth_total_rate', 0.05); 
+        $minPay = 10000;
+        $maxPay = 100000;
         
-        $contribution = $grossPay * $phRate;
+        $basis = min(max($grossPay, $minPay), $maxPay);
+        $totalContribution = $basis * $totalRate;
+        $share = $totalContribution / 2;
         
-        return min($maxContribution, $contribution);
+        return [
+            'ee' => round($share, 2),
+            'er' => round($share, 2)
+        ];
     }
 
     /**
-     * Pag-IBIG Contribution
+     * Pag-IBIG Contribution (2025 Rate: 400 Total)
+     * Employee: 200
+     * Employer: 200
      */
-    public function calculatePagIBIG(float $grossPay): float
+    public function calculatePagIBIG(float $grossPay): array
     {
-        if ($grossPay <= 0) return 0;
+        if ($grossPay <= 0) return ['ee' => 0, 'er' => 0];
         
-        $fixedAmount = SystemSetting::get('pagibig_fixed_amount', 200);
-        $threshold = SystemSetting::get('pagibig_threshold', 1500);
+        $eeFixed = SystemSetting::get('pagibig_ee_fixed', 200);
+        $erFixed = SystemSetting::get('pagibig_er_fixed', 200);
         
-        return ($grossPay > $threshold) ? (float)$fixedAmount : (float)($fixedAmount / 2);
+        // Threshold check (standard is 1500 for full contribution)
+        if ($grossPay < 1500) {
+            $eeFixed = $eeFixed / 2;
+            $erFixed = $erFixed / 2;
+        }
+        
+        return [
+            'ee' => (float)$eeFixed,
+            'er' => (float)$erFixed
+        ];
     }
 
     /**
-     * Withholding Tax (WHT) based on TRAIN Law Monthly Brackets
+     * Withholding Tax (WHT) based on 2023-present TRAIN Law Monthly Brackets
      */
     public function calculateTax(float $grossPay, float $statutoryTotal): float
     {
         $taxableIncome = $grossPay - $statutoryTotal;
-        $threshold1 = SystemSetting::get('tax_threshold_1', 20833);
         
-        if ($taxableIncome <= $threshold1) {
-            return 0; // Below threshold
+        if ($taxableIncome <= 20833) {
+            return 0;
         }
 
-        $rate2 = SystemSetting::get('tax_rate_2', 0.15);
         if ($taxableIncome <= 33333) {
-            return ($taxableIncome - $threshold1) * $rate2;
+            return ($taxableIncome - 20833) * 0.15;
         }
 
-        $rate3 = SystemSetting::get('tax_rate_3', 0.20);
         if ($taxableIncome <= 66667) {
-            return 1875 + ($taxableIncome - 33333) * $rate3;
+            return 1875 + ($taxableIncome - 33333) * 0.20;
         }
 
         if ($taxableIncome <= 166667) {
             return 8541.67 + ($taxableIncome - 66667) * 0.25;
         }
 
-        return 33541.67 + ($taxableIncome - 166667) * 0.30;
+        if ($taxableIncome <= 666667) {
+            return 33541.67 + ($taxableIncome - 166667) * 0.30;
+        }
+
+        return 183541.67 + ($taxableIncome - 666667) * 0.35;
     }
 
     /**
@@ -91,15 +122,20 @@ class DeductionService
         $ph = $this->calculatePhilHealth($grossPay);
         $pi = $this->calculatePagIBIG($grossPay);
         
-        $statTotal = $sss + $ph + $pi;
-        $tax = $this->calculateTax($grossPay, $statTotal);
+        $statTotalEE = $sss['ee'] + $ph['ee'] + $pi['ee'];
+        $tax = $this->calculateTax($grossPay, $statTotalEE);
         
         return [
-            'sss' => round($sss, 2),
-            'philhealth' => round($ph, 2),
-            'pagibig' => round($pi, 2),
+            'sss' => $sss['ee'],
+            'sss_er' => $sss['er'],
+            'sss_ec' => $sss['ec'],
+            'philhealth' => $ph['ee'],
+            'philhealth_er' => $ph['er'],
+            'pagibig' => $pi['ee'],
+            'pagibig_er' => $pi['er'],
             'tax' => round($tax, 2),
-            'total' => round($statTotal + $tax, 2)
+            'total_ee' => round($statTotalEE + $tax, 2),
+            'total_er' => round($sss['er'] + $sss['ec'] + $ph['er'] + $pi['er'], 2)
         ];
     }
 }

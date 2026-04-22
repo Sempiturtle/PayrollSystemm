@@ -89,13 +89,16 @@
                                 <span class="text-xs font-bold text-slate-800 font-mono bg-slate-50 px-2 py-1 rounded border border-slate-100">{{ number_format($payroll->total_hours, 1) }}<span class="text-[9px] text-slate-400 ml-0.5 uppercase tracking-widest">h</span></span>
                             </td>
                             <td class="px-5 py-3 text-right">
-                                <div class="text-xs font-bold text-rose-600 font-mono">-₱{{ number_format($payroll->total_deductions, 2) }}</div>
-                                <div class="text-[8px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">{{ $payroll->late_minutes }}m gap</div>
+                                <div class="text-xs font-bold text-rose-600 font-mono">-₱{{ number_format($payroll->late_deduction, 2) }}</div>
+                                <div class="text-[8px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">{{ number_format($payroll->late_minutes, 0) }}m Tardy</div>
                             </td>
                             <td class="px-5 py-3 text-center">
-                                <span class="inline-flex items-center justify-center px-2 py-1 rounded-[4px] text-[9px] font-black uppercase tracking-[0.2em] {{ strtolower($payroll->status) === 'finalized' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100' }}">
-                                    {{ $payroll->status }}
-                                </span>
+                                <div class="flex flex-col items-center gap-1">
+                                    <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-[4px] text-[8px] font-black uppercase tracking-[0.2em] {{ strtolower($payroll->status) === 'finalized' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100' }}">
+                                        {{ $payroll->status }}
+                                    </span>
+                                    <div class="text-[7px] font-bold text-slate-300 uppercase tracking-tighter">PH-2025 COMPLIANT</div>
+                                </div>
                             </td>
                             <td class="px-5 py-3 text-right whitespace-nowrap">
                                 <span class="text-sm font-black {{ strtolower($payroll->status) === 'finalized' ? 'text-slate-900' : 'text-slate-500' }} tabular-nums tracking-tighter">₱{{ number_format($payroll->net_pay, 2) }}</span>

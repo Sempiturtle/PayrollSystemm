@@ -149,7 +149,7 @@
          x-transition:leave="transition ease-in duration-300 transform"
          x-transition:leave-start="translate-x-0"
          x-transition:leave-end="-translate-x-full"
-         class="fixed left-0 top-0 w-80 max-w-[calc(100%-3rem)] h-[100dvh] bg-white flex flex-col shadow-2xl z-50">
+         class="fixed left-0 top-0 w-72 max-w-[calc(100%-3rem)] h-[100dvh] bg-white flex flex-col shadow-2xl z-50">
         
         <div class="h-16 px-6 border-b border-slate-50 flex justify-between items-center">
             <div class="flex items-center gap-2.5">
@@ -163,7 +163,7 @@
             </button>
         </div>
 
-        <div class="flex-1 p-6 space-y-8 overflow-y-auto">
+        <div class="flex-1 p-4 md:p-6 space-y-6 md:space-y-8 overflow-y-auto">
             {{-- Overview Section --}}
             <div class="space-y-1">
                 <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Intelligence</div>
@@ -252,7 +252,7 @@
             </div>
         </div>
 
-        <div class="p-6 border-t border-slate-50 mt-auto">
+        <div class="p-4 md:p-6 border-t border-slate-50 mt-auto">
             {{-- User Identity Profile Card --}}
             <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 border border-slate-100/50 mb-4">
                 <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-sm">
