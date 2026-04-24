@@ -3,43 +3,64 @@
         Live Attendance Scanner
     </x-slot>
 
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-md mx-auto">
         <div class="relative group">
             <!-- Background Decoration -->
             <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
             
-            <div class="relative bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-2xl overflow-hidden min-h-[500px] flex flex-col">
+            <div class="relative bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-xl overflow-hidden min-h-[450px] flex flex-col">
                 <!-- Scanner Header -->
-                <div class="p-10 text-center border-b border-slate-50 dark:border-slate-800">
-                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full text-xs font-bold uppercase tracking-widest mb-6 animate-pulse">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
-                        System Online
+                <div class="p-6 text-center border-b border-slate-50 dark:border-slate-800">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 animate-pulse">
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                        Terminal Active
                     </div>
                     
-                    <div x-data="{ time: '' }" x-init="setInterval(() => { time = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', second: '2-digit' }) }, 1000)" class="text-7xl font-light tracking-tighter text-slate-900 dark:text-slate-100 mb-2 tabular-nums">
+                    <div x-data="{ time: '' }" x-init="setInterval(() => { time = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', second: '2-digit' }) }, 1000)" class="text-4xl font-light tracking-tighter text-slate-900 dark:text-slate-100 mb-1 tabular-nums">
                         <span x-text="time || '{{ date('h:i:s A') }}'"></span>
                     </div>
-                    <div class="text-slate-400 font-bold tracking-[0.2em] uppercase text-sm">{{ date('l, F j, Y') }}</div>
+                    <div class="text-slate-400 font-bold tracking-[0.1em] uppercase text-[10px]">{{ date('l, F j, Y') }}</div>
                 </div>
 
                 <!-- Input Area -->
-                <div class="flex-1 p-10 flex flex-col items-center justify-center space-y-8">
-                    <div class="w-full max-w-sm space-y-4 text-center">
-                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">Waiting for Input...</label>
-                        <input type="text" id="id_input" autofocus
-                               class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl p-6 text-center text-2xl font-bold tracking-widest text-indigo-600 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-200 transition" 
-                               placeholder="SCAN CARD OR ENTER ID">
-                        <p class="text-xs text-slate-400 mt-4 leading-relaxed italic">Secondary biometric verification active as fallback.</p>
-                    </div>
+                <div class="flex-1 p-6 flex flex-col items-center justify-center space-y-6">
+                    <div class="w-full space-y-3 text-center" x-data="{ rfid: '', fingerprint: '', lastUsed: '' }">
+                        <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-4">Flexible Dual-Factor Authorization</label>
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                            <!-- RFID Slot -->
+                            <div @click="lastUsed = 'rfid'" :class="lastUsed === 'rfid' ? 'ring-2 ring-indigo-500/50' : ''" class="relative bg-slate-50 dark:bg-slate-800 rounded-xl p-4 transition cursor-pointer group">
+                                <div class="text-[8px] font-bold text-slate-400 uppercase mb-2 group-hover:text-indigo-500 transition">Identity Card</div>
+                                <input type="text" x-model="rfid" @focus="lastUsed = 'rfid'"
+                                       class="w-full bg-transparent border-none p-0 text-center text-sm font-bold tracking-widest text-indigo-600 focus:ring-0 placeholder:text-slate-300" 
+                                       placeholder="SCAN OR ID">
+                                <div x-show="rfid" class="absolute top-2 right-2 text-indigo-500 animate-pulse">●</div>
+                            </div>
 
-                    <div class="flex gap-4">
-                        <button onclick="simulateScan('RFID')" class="px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold shadow-xl hover:bg-black hover:-translate-y-1 transition active:scale-95 flex items-center gap-3">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
-                            Scan RFID
-                        </button>
-                        <button onclick="simulateScan('Biometric')" class="px-8 py-4 bg-white text-slate-900 border-2 border-slate-100 rounded-2xl font-bold hover:border-indigo-600 hover:text-indigo-600 transition flex items-center gap-3">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 3v1c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 3v1m0 0c.851 0 1.673.1 2.459.29m0 0A10.016 10.016 0 0115.353 10H14a3 3 0 00-2.828 4M12 11c0 3.517 1.009 6.799 2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 3v1m0 0c.851 0 1.673.1 2.459.29m0 0a10.016 10.016 0 011.094 9.71m3.44 2.04l-.054-.09a10.003 10.003 0 010-19.142m0 19.142A10.002 10.002 0 0120 13v-1M12 11c0 3.517 1.009 6.799 2.753 9.571m0 0c.851 0 1.673.1 2.459.29m0 0a10.016 10.016 0 011.094 9.71m-1.094-9.71A10.016 10.016 0 0018 11.29"></path></svg>
-                            Use Fingerprint
+                            <!-- Fingerprint Slot -->
+                            <div @click="lastUsed = 'fp'" :class="lastUsed === 'fp' ? 'ring-2 ring-emerald-500/50' : ''" class="relative bg-slate-50 dark:bg-slate-800 rounded-xl p-4 transition cursor-pointer group">
+                                <div class="text-[8px] font-bold text-slate-400 uppercase mb-2 group-hover:text-emerald-500 transition">Biometric</div>
+                                <input type="number" x-model="fingerprint" @focus="lastUsed = 'fp'"
+                                       class="w-full bg-transparent border-none p-0 text-center text-sm font-bold tracking-widest text-emerald-600 focus:ring-0 placeholder:text-slate-300" 
+                                       placeholder="ID 1-127">
+                                <div x-show="fingerprint" class="absolute top-2 right-2 text-emerald-500 animate-pulse">●</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6">
+                            <button x-show="rfid && fingerprint" 
+                                    @click="processMFA(rfid, fingerprint); rfid=''; fingerprint='';" 
+                                    class="w-full py-3 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-black shadow-lg transition animate-in zoom-in-95 duration-300">
+                                Authorize Terminal
+                            </button>
+                            <div x-show="!rfid || !fingerprint" class="py-3 text-[9px] font-bold text-slate-300 uppercase tracking-widest bg-slate-50/50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+                                Waiting for <span x-text="!rfid ? 'Identity' : 'Fingerprint'"></span>...
+                            </div>
+                        </div>
+
+                        <button @click="lastUsed = 'rfid'; $nextTick(() => document.querySelector('input[x-model=rfid]').focus())" 
+                                class="text-[9px] text-slate-400 mt-6 leading-relaxed italic hover:text-indigo-500 transition-colors cursor-pointer">
+                            Forgot Card? Use Employee ID + Biometrics.
                         </button>
                     </div>
                 </div>
@@ -56,30 +77,54 @@
                 </div>
 
                 <!-- Recent Scans List -->
-                <div class="px-10 pb-10 mt-auto">
-                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 border-t border-slate-50 dark:border-slate-800 pt-6">Recent Activity Today</div>
-                    <div class="space-y-3" id="recent_scans_list">
+                <div class="px-6 pb-6 mt-auto">
+                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3 border-t border-slate-50 dark:border-slate-800 pt-4">Recent Verified Scans</div>
+                    <div class="space-y-2" id="recent_scans_list">
                         @forelse($recentLogs as $log)
-                        <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/10 rounded-2xl border border-slate-100 dark:border-slate-800 transition">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 font-bold text-xs uppercase">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/10 rounded-xl border border-slate-100 dark:border-slate-800 transition">
+                            <div class="flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 font-bold text-[10px] uppercase">
                                     {{ substr($log->user->name, 0, 1) }}
                                 </div>
                                 <div>
-                                    <div class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ $log->user->name }}</div>
-                                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{{ $log->time_out ? 'CHECK-OUT' : 'CHECK-IN' }}</div>
+                                    <div class="text-[10px] font-bold text-slate-700 dark:text-slate-300">{{ $log->user->name }}</div>
+                                    <div class="text-[8px] font-bold text-emerald-500 uppercase tracking-tight">SECURED</div>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <div class="text-xs font-bold text-slate-900 dark:text-slate-100 tabular-nums">
+                                <div class="text-[10px] font-bold text-slate-900 dark:text-slate-100 tabular-nums">
                                     {{ \Carbon\Carbon::parse($log->time_out ?? $log->time_in)->format('h:i A') }}
                                 </div>
-                                <span class="text-[9px] px-2 py-0.5 rounded-full {{ $log->status == 'On-time' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }} font-bold">{{ $log->status }}</span>
+                                <span class="text-[8px] px-1.5 py-0.5 rounded-full {{ $log->status == 'On-time' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }} font-bold">{{ $log->status }}</span>
                             </div>
                         </div>
                         @empty
-                        <div class="text-center py-4 text-xs italic text-slate-400">No active scans yet today.</div>
+                        <div class="text-center py-2 text-[10px] italic text-slate-400">No active scans yet.</div>
                         @endforelse
+                    </div>
+
+                    <!-- Sync Simulation (Thesis Demo Tool) -->
+                    <div class="mt-6 p-4 bg-slate-900 rounded-2xl border border-slate-800" x-data="{ open: false, rfid: '', fp: '', hoursAgo: 1 }">
+                        <button @click="open = !open" class="w-full flex items-center justify-between text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                            <span>Thesis: Internet Recovery Simulation</span>
+                            <span x-text="open ? '−' : '+'"></span>
+                        </button>
+                        
+                        <div x-show="open" x-transition class="mt-4 space-y-3">
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" x-model="rfid" placeholder="RFID" class="bg-slate-800 border-none rounded-lg text-[10px] text-white focus:ring-indigo-500">
+                                <input type="number" x-model="fp" placeholder="FP ID" class="bg-slate-800 border-none rounded-lg text-[10px] text-white focus:ring-indigo-500">
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[8px] text-slate-500 font-bold uppercase">Delay:</span>
+                                <input type="range" x-model="hoursAgo" min="1" max="48" class="flex-1 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+                                <span class="text-[9px] text-indigo-400 font-bold tabular-nums" x-text="hoursAgo + 'h'"></span>
+                            </div>
+                            <button @click="simulateSync(rfid, fp, hoursAgo)" 
+                                    class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-[10px] font-bold transition">
+                                Trigger Delayed Hardware Sync
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -87,16 +132,7 @@
     </div>
 
     <script>
-        function simulateScan(source) {
-            const id = document.getElementById('id_input').value;
-            if (!id) {
-                alert('Please enter an ID or scan a card');
-                return;
-            }
-            processScan(id, source);
-        }
-
-        function processScan(id, source) {
+        function processMFA(rfid, fingerprint) {
             fetch('{{ route('attendance.scan') }}', {
                 method: 'POST',
                 headers: {
@@ -104,8 +140,9 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
-                    id_value: id,
-                    source: source
+                    rfid: rfid,
+                    fingerprint_id: fingerprint,
+                    source: 'MFA'
                 })
             })
             .then(response => response.json())
@@ -121,21 +158,21 @@
                     banner.classList.add('bg-emerald-600', 'text-white');
                     icon.innerHTML = '✓';
                     icon.className = 'w-12 h-12 rounded-2xl flex items-center justify-center text-2xl bg-white/20';
-                    title.innerText = 'Access Granted';
+                    title.innerText = 'MFA Verified';
                     msg.innerText = data.message;
 
                     // Update recent scans list
                     const list = document.getElementById('recent_scans_list');
-                    if (list.querySelector('.italic')) list.innerHTML = ''; // Remove empty message
+                    if (list.querySelector('.italic')) list.innerHTML = ''; 
                     
                     const newItem = document.createElement('div');
-                    newItem.className = "flex items-center justify-between p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800 transition animate-pulse";
+                    newItem.className = "flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl border border-emerald-100 dark:border-emerald-800 transition animate-pulse";
                     newItem.innerHTML = `
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-xs uppercase underline">NEW</div>
+                            <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-xs uppercase underline">NEW</div>
                             <div>
                                 <div class="text-xs font-bold text-slate-700 dark:text-slate-300">Scan Recorded</div>
-                                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">${source}</div>
+                                <div class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">MFA (RFID + Biometric)</div>
                             </div>
                         </div>
                         <div class="text-right">
@@ -147,13 +184,11 @@
                     banner.classList.add('bg-rose-600', 'text-white');
                     icon.innerHTML = '✕';
                     icon.className = 'w-12 h-12 rounded-2xl flex items-center justify-center text-2xl bg-white/20';
-                    title.innerText = 'Authentication Failed';
+                    title.innerText = 'MFA Failed';
                     msg.innerText = data.message;
                 }
 
                 banner.classList.remove('hidden');
-                document.getElementById('id_input').value = '';
-                document.getElementById('id_input').focus();
 
                 setTimeout(() => {
                     banner.classList.add('hidden');
@@ -161,6 +196,49 @@
             })
             .catch(error => {
                 console.error('Error:', error);
+            });
+        }
+        function simulateSync(rfid, fp, hoursAgo) {
+            const scannedAt = new Date(Date.now() - (hoursAgo * 3600000)).toISOString();
+            
+            fetch('{{ route('attendance.sync') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    token: 'AISAT_SECURE_SYNC_2024',
+                    logs: [{
+                        rfid: rfid,
+                        fingerprint_id: fp,
+                        scanned_at: scannedAt,
+                        source: 'MFA'
+                    }]
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const banner = document.getElementById('response_banner');
+                const title = document.getElementById('status_title');
+                const msg = document.getElementById('status_msg');
+
+                banner.classList.remove('hidden', 'bg-emerald-600', 'bg-rose-600', 'bg-slate-900', 'text-white');
+                
+                if (data.success && data.processed > 0) {
+                    banner.classList.add('bg-slate-900', 'text-white');
+                    title.innerText = 'Sync Successful';
+                    msg.innerText = `Recovered ${data.processed} log(s) from memory.`;
+                    
+                    setTimeout(() => window.location.reload(), 2000);
+                } else {
+                    banner.classList.add('bg-rose-600', 'text-white');
+                    title.innerText = 'Sync Failed';
+                    msg.innerText = data.details[0] || 'Hardware authentication failed.';
+                }
+
+                banner.classList.remove('hidden');
+                setTimeout(() => banner.classList.add('hidden'), 4000);
             });
         }
     </script>

@@ -26,6 +26,94 @@ class AttendanceService
                     ->first();
     }
 
+    public function resolveUserByMFA(string $rfid, int|string $fingerprintId): ?\App\Models\User
+    {
+        return \App\Models\User::where(function($q) use ($rfid) {
+                        $q->where('rfid_card_num', $rfid)
+                          ->orWhere('employee_id', $rfid);
+                    })
+                    ->where('fingerprint_id', $fingerprintId)
+                    ->first();
+    }
+
+    /**
+     * Process a batch of attendance logs from hardware (Offline Sync).
+     */
+    public function processSyncBatch(array $logs, \App\Services\PayrollService $payrollService): array
+    {
+        $results = [
+            'success' => 0,
+            'failed' => 0,
+            'messages' => []
+        ];
+
+        foreach ($logs as $data) {
+            try {
+                $rfid = $data['rfid'] ?? null;
+                $fingerprintId = $data['fingerprint_id'] ?? null;
+                $scannedAt = \Carbon\Carbon::parse($data['scanned_at'], 'Asia/Manila');
+                $source = $data['source'] ?? 'MFA';
+
+                // Resolve User
+                $user = $this->resolveUserByMFA($rfid, $fingerprintId);
+                if (!$user) {
+                    $results['failed']++;
+                    $results['messages'][] = "Identity not recognized for RFID: $rfid, FP: $fingerprintId";
+                    continue;
+                }
+
+                // Check for existing log to prevent duplicates (same user, same minute)
+                $exists = AttendanceLog::where('user_id', $user->id)
+                    ->where('date', $scannedAt->toDateString())
+                    ->where('time_in', '>=', $scannedAt->copy()->subMinute()->toTimeString())
+                    ->where('time_in', '<=', $scannedAt->copy()->addMinute()->toTimeString())
+                    ->exists();
+
+                if ($exists) {
+                    $results['failed']++;
+                    $results['messages'][] = "Duplicate scan ignored for {$user->name} at {$scannedAt->toDateTimeString()}";
+                    continue;
+                }
+
+                // Find schedule to determine status
+                $dayName = $scannedAt->format('l');
+                $schedule = \App\Models\Schedule::where('user_id', $user->id)
+                                    ->where('day_of_week', $dayName)
+                                    ->first();
+
+                if (!$schedule) {
+                    $results['failed']++;
+                    $results['messages'][] = "No schedule for {$user->name} on $dayName.";
+                    continue;
+                }
+
+                // Check-in logic (Sync usually handles check-ins or both)
+                $startTime = \Carbon\Carbon::parse($scannedAt->toDateString() . ' ' . $schedule->start_time);
+                $graceTime = (clone $startTime)->addMinutes(15);
+                $status = ($scannedAt <= $graceTime) ? 'On-time' : 'Late';
+
+                $log = AttendanceLog::create([
+                    'user_id' => $user->id,
+                    'date' => $scannedAt->toDateString(),
+                    'time_in' => $scannedAt->toTimeString(),
+                    'status' => $status,
+                    'source' => $source . ' (Synced)',
+                ]);
+
+                // Sync Payroll for the affected date
+                $period = $payrollService->getCurrentPeriod($scannedAt);
+                $payrollService->syncForUser($user, $period['start'], $period['end']);
+
+                $results['success']++;
+            } catch (\Exception $e) {
+                $results['failed']++;
+                $results['messages'][] = "Error processing log: " . $e->getMessage();
+            }
+        }
+
+        return $results;
+    }
+
     /**
      * Fetch filtered attendance logs with necessary relations.
      */

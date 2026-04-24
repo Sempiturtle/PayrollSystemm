@@ -19,6 +19,7 @@ Route::get('/', function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
 Route::post('/attendance/scan', [EmployeeController::class, 'scan'])->name('attendance.scan');
+Route::post('/attendance/sync', [EmployeeController::class, 'batchSync'])->name('attendance.sync');
 Route::get('/attendance/check-command', [EmployeeController::class, 'checkCommand'])->name('attendance.check-command');
 Route::post('/attendance/complete-enroll', [EmployeeController::class, 'completeEnroll'])->name('attendance.complete-enroll');
 

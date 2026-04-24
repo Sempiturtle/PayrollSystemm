@@ -104,18 +104,28 @@ class EmployeeController extends Controller
     public function scan(Request $request)
     {
         $request->validate([
-            'id_value' => 'required|string',
-            'source' => 'nullable|in:RFID,Biometric',
+            'id_value' => 'nullable|string', // Backward compatibility for single scan if needed
+            'rfid' => 'nullable|string',
+            'fingerprint_id' => 'nullable|integer',
+            'source' => 'nullable|in:RFID,Biometric,MFA',
         ]);
 
-        $identifier = $request->input('id_value'); 
         $source = $request->input('source', 'RFID'); 
-
+        
         try {
-            $user = $this->attendanceService->resolveUserByBiometric($identifier, $source);
+            if ($source === 'MFA' || ($request->has('rfid') && $request->has('fingerprint_id'))) {
+                $user = $this->attendanceService->resolveUserByMFA(
+                    $request->input('rfid'), 
+                    $request->input('fingerprint_id')
+                );
+                $source = 'MFA'; // Force source to MFA for logging
+            } else {
+                $identifier = $request->input('id_value') ?? $request->input('rfid') ?? $request->input('fingerprint_id');
+                $user = $this->attendanceService->resolveUserByBiometric($identifier, $source);
+            }
 
             if (!$user) {
-                return response()->json(['success' => false, 'message' => 'Employee identity not recognized.'], 404);
+                return response()->json(['success' => false, 'message' => 'Identity not recognized. MFA verification failed.'], 404);
             }
 
             $now = Carbon::now('Asia/Manila');
@@ -188,6 +198,35 @@ class EmployeeController extends Controller
                 'time' => $currentTime
             ]);
         }
+    }
+
+    /**
+     * Batch Sync Endpoint for Hardware (Offline Support)
+     */
+    public function batchSync(Request $request)
+    {
+        $token = $request->header('X-Hardware-Token') ?? $request->input('token');
+        
+        if ($token !== config('services.biometric.token', env('BIOMETRIC_HARDWARE_TOKEN'))) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized hardware token.'], 401);
+        }
+
+        $validated = $request->validate([
+            'logs' => 'required|array',
+            'logs.*.rfid' => 'required|string',
+            'logs.*.fingerprint_id' => 'required|integer',
+            'logs.*.scanned_at' => 'required|date',
+            'logs.*.source' => 'nullable|string',
+        ]);
+
+        $results = $this->attendanceService->processSyncBatch($validated['logs'], $this->payrollService);
+
+        return response()->json([
+            'success' => true,
+            'processed' => $results['success'],
+            'failed' => $results['failed'],
+            'details' => $results['messages']
+        ]);
     }
 
     /**
