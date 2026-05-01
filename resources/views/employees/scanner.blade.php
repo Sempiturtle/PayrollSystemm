@@ -65,13 +65,13 @@
                     </div>
                 </div>
 
-                <!-- Response Banner (Pop-up style) -->
-                <div id="response_banner" class="hidden absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-sm p-6 rounded-3xl shadow-2xl animate-bounce">
+                <!-- Response Banner (Floating Toast) -->
+                <div id="response_banner" class="hidden fixed top-8 left-1/2 -translate-x-1/2 z-[200] w-[calc(100%-2rem)] max-w-sm p-6 rounded-[2rem] shadow-2xl backdrop-blur-xl border border-white/20 transition-all duration-500 transform scale-95 opacity-0">
                     <div class="flex items-center gap-4">
-                        <div id="status_icon" class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"></div>
+                        <div id="status_icon" class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0"></div>
                         <div>
-                            <div id="status_title" class="font-bold text-lg leading-tight uppercase tracking-tight"></div>
-                            <div id="status_msg" class="text-sm opacity-80 font-medium"></div>
+                            <div id="status_title" class="font-black text-lg leading-tight uppercase tracking-tight"></div>
+                            <div id="status_msg" class="text-xs opacity-90 font-bold leading-snug mt-0.5"></div>
                         </div>
                     </div>
                 </div>
@@ -152,7 +152,8 @@
                 const title = document.getElementById('status_title');
                 const msg = document.getElementById('status_msg');
 
-                banner.classList.remove('hidden', 'bg-emerald-600', 'bg-rose-600', 'bg-slate-900', 'text-white');
+                banner.classList.remove('hidden', 'bg-emerald-600', 'bg-rose-600', 'bg-slate-900', 'text-white', 'scale-95', 'opacity-0');
+                banner.classList.add('scale-100', 'opacity-100');
                 
                 if (data.success) {
                     banner.classList.add('bg-emerald-600', 'text-white');
@@ -166,7 +167,7 @@
                     if (list.querySelector('.italic')) list.innerHTML = ''; 
                     
                     const newItem = document.createElement('div');
-                    newItem.className = "flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl border border-emerald-100 dark:border-emerald-800 transition animate-pulse";
+                    newItem.className = "flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl border border-emerald-100 dark:border-emerald-800 transition-all duration-700 animate-in fade-in slide-in-from-top-4";
                     newItem.innerHTML = `
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-xs uppercase underline">NEW</div>
@@ -191,7 +192,9 @@
                 banner.classList.remove('hidden');
 
                 setTimeout(() => {
-                    banner.classList.add('hidden');
+                    banner.classList.replace('scale-100', 'scale-95');
+                    banner.classList.replace('opacity-100', 'opacity-0');
+                    setTimeout(() => banner.classList.add('hidden'), 500);
                 }, 4000);
             })
             .catch(error => {

@@ -19,6 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'employee_id',
@@ -28,6 +29,7 @@ class User extends Authenticatable
         'hourly_rate',
         'role',
         'schedule_file',
+        'schedule_image',
         'tin_id',
         'sss_id',
         'philhealth_id',
@@ -35,6 +37,47 @@ class User extends Authenticatable
         'sick_leave_credits',
         'vacation_leave_credits',
     ];
+
+    /**
+     * Required fields for a complete profile.
+     */
+    public const REQUIRED_PROFILE_FIELDS = [
+        'employee_id' => 'Employee ID',
+        'tin_id' => 'TIN ID',
+        'sss_id' => 'SSS ID',
+        'philhealth_id' => 'PhilHealth ID',
+        'pagibig_id' => 'Pag-IBIG ID',
+    ];
+
+    /**
+     * Calculate profile completion percentage.
+     */
+    public function getProfileCompletionAttribute(): int
+    {
+        $filledCount = 0;
+        foreach (array_keys(self::REQUIRED_PROFILE_FIELDS) as $field) {
+            if (!empty($this->{$field})) {
+                $filledCount++;
+            }
+        }
+
+        return (int) round(($filledCount / count(self::REQUIRED_PROFILE_FIELDS)) * 100);
+    }
+
+    /**
+     * Get list of missing required profile fields.
+     */
+    public function getMissingProfileFieldsAttribute(): array
+    {
+        $missing = [];
+        foreach (self::REQUIRED_PROFILE_FIELDS as $field => $label) {
+            if (empty($this->{$field})) {
+                $missing[] = $label;
+            }
+        }
+
+        return $missing;
+    }
 
     /**
      * The attributes that should be hidden for serialization.

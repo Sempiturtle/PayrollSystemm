@@ -12,7 +12,7 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-xl font-bold text-slate-900 tracking-tight">System Access <span class="text-indigo-600">Active</span></h1>
-                <p class="text-slate-500 mt-1 font-medium text-sm italic">Academic Period 2026 â€?AISAT Higher Education</p>
+                <p class="text-slate-500 mt-1 font-medium text-sm italic">Academic Period 2026 ï¿½?AISAT Higher Education</p>
             </div>
             
             <div class="flex items-center gap-3">
@@ -120,43 +120,62 @@
             </div>
         </div>
 
-        {{-- Weekly Schedule --}}
-        @if($mySchedule->count() > 0)
+                {{-- Official Schedule Image --}}
         <div class="card-modern bg-white overflow-hidden flex flex-col shadow-xl shadow-indigo-100/20">
-            <div class="p-5 border-b border-slate-50 bg-slate-50/10">
-                <h3 class="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] italic">Work Shift Cycle</h3>
-                <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Institutional Period 2026</p>
+            <div class="p-5 border-b border-slate-50 bg-slate-50/10 flex items-center justify-between">
+                <div>
+                    <h3 class="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] italic">Work Shift Cycle</h3>
+                    <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Official Institutional Schedule</p>
+                </div>
+                @if(Auth::user()->schedule_image)
+                    <a href="{{ asset(Auth::user()->schedule_image) }}" target="_blank" class="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition shadow-sm">
+                        View Full Size
+                    </a>
+                @endif
             </div>
             
-            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 divide-x divide-slate-100 border-b border-slate-50">
-                @php
-                    $allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                    $shortDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                    $today = now()->format('l');
-                @endphp
-                
-                @foreach($allDays as $i => $day)
-                    @php
-                        $daySchedule = $mySchedule->firstWhere('day_of_week', $day);
-                        $isToday = ($day === $today);
-                    @endphp
-                    <div class="p-4 text-center group transition-colors duration-500 {{ $isToday ? 'bg-indigo-600 !text-white' : 'hover:bg-slate-50' }}">
-                        <div class="text-[10px] font-black uppercase tracking-[0.2em] {{ $isToday ? 'text-indigo-200' : 'text-slate-400 group-hover:text-indigo-600' }} mb-6 transition-colors">{{ $shortDays[$i] }}</div>
-                        
-                        @if($daySchedule)
-                            <div class="font-black text-lg tracking-tighter tabular-nums leading-none">{{ \Carbon\Carbon::parse($daySchedule->start_time)->format('h:i') }} <span class="text-[10px] uppercase opacity-40 italic">{{ \Carbon\Carbon::parse($daySchedule->start_time)->format('A') }}</span></div>
-                            <div class="h-6 flex items-center justify-center">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $isToday ? 'bg-indigo-300 animate-pulse' : 'bg-slate-100' }}"></span>
-                            </div>
-                            <div class="font-black text-lg tracking-tighter tabular-nums leading-none">{{ \Carbon\Carbon::parse($daySchedule->end_time)->format('h:i') }} <span class="text-[10px] uppercase opacity-40 italic">{{ \Carbon\Carbon::parse($daySchedule->end_time)->format('A') }}</span></div>
-                        @else
-                            <div class="text-[10px] font-black {{ $isToday ? 'text-indigo-300' : 'text-slate-200' }} italic py-10 uppercase tracking-[0.2em]">Offsite</div>
-                        @endif
+            <div class="p-4 flex items-center justify-center bg-slate-50/30">
+                @if(Auth::user()->schedule_image)
+                    <div class="w-full max-w-4xl rounded-2xl overflow-hidden border border-slate-100 shadow-inner bg-white p-2">
+                        <img src="{{ asset(Auth::user()->schedule_image) }}" alt="Official Schedule" class="w-full h-auto object-contain max-h-[700px] rounded-xl">
                     </div>
-                @endforeach
+                @elseif($mySchedule->count() > 0)
+                    {{-- Fallback to structured schedule if no image yet --}}
+                    <div class="w-full grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 divide-x divide-slate-100 border border-slate-50 rounded-2xl overflow-hidden">
+                        @php
+                            $allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                            $shortDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                            $today = now()->format('l');
+                        @endphp
+                        
+                        @foreach($allDays as $i => $day)
+                            @php
+                                $daySchedule = $mySchedule->firstWhere('day_of_week', $day);
+                                $isToday = ($day === $today);
+                            @endphp
+                            <div class="p-4 text-center group transition-colors duration-500 {{ $isToday ? 'bg-indigo-600 !text-white' : 'bg-white hover:bg-slate-50' }}">
+                                <div class="text-[10px] font-black uppercase tracking-[0.2em] {{ $isToday ? 'text-indigo-200' : 'text-slate-400 group-hover:text-indigo-600' }} mb-6 transition-colors">{{ $shortDays[$i] }}</div>
+                                
+                                @if($daySchedule)
+                                    <div class="font-black text-lg tracking-tighter tabular-nums leading-none">{{ \Carbon\Carbon::parse($daySchedule->start_time)->format('h:i') }} <span class="text-[10px] uppercase opacity-40 italic">{{ \Carbon\Carbon::parse($daySchedule->start_time)->format('A') }}</span></div>
+                                    <div class="h-6 flex items-center justify-center">
+                                        <span class="w-1.5 h-1.5 rounded-full {{ $isToday ? 'bg-indigo-300 animate-pulse' : 'bg-slate-100' }}"></span>
+                                    </div>
+                                    <div class="font-black text-lg tracking-tighter tabular-nums leading-none">{{ \Carbon\Carbon::parse($daySchedule->end_time)->format('h:i') }} <span class="text-[10px] uppercase opacity-40 italic">{{ \Carbon\Carbon::parse($daySchedule->end_time)->format('A') }}</span></div>
+                                @else
+                                    <div class="text-[10px] font-black {{ $isToday ? 'text-indigo-300' : 'text-slate-200' }} italic py-10 uppercase tracking-[0.2em]">Offsite</div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="py-20 text-center w-full">
+                        <svg class="w-12 h-12 text-slate-200 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <p class="text-sm font-black text-slate-300 uppercase tracking-widest italic">Signal Offline: No Schedule Protocol Loaded</p>
+                    </div>
+                @endif
             </div>
         </div>
-        @endif
 
         {{-- Intelligence Section --}}
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-stretch">

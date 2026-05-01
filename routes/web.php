@@ -66,6 +66,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/payrolls/generate', [PayrollController::class, 'generate'])->name('payrolls.generate');
         Route::patch('/payrolls/{payroll}/finalize', [PayrollController::class, 'finalize'])->name('payrolls.finalize');
 
+        // Payroll Adjustments (Bonuses & Custom Deductions)
+        Route::post('/payrolls/{payroll}/adjustments', [\App\Http\Controllers\PayrollAdjustmentController::class, 'store'])->name('payroll.adjustments.store');
+        Route::delete('/adjustments/{adjustment}', [\App\Http\Controllers\PayrollAdjustmentController::class, 'destroy'])->name('payroll.adjustments.destroy');
+
         // Settings & Configurations
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
@@ -96,6 +100,11 @@ Route::middleware('auth')->group(function () {
         // Integrated Biometric Enrollment
         Route::post('/employees/{employee}/enroll', [EmployeeController::class, 'enrollRequest'])->name('employees.enroll');
         Route::get('/biometrics/actions/{action}', [EmployeeController::class, 'checkEnrollStatus'])->name('biometrics.status');
+
+        // AI Schedule Scanning
+        Route::post('/employees/pre-scan', [EmployeeController::class, 'preScan'])->name('employees.pre-scan');
+        Route::post('/employees/{employee}/auto-scan', [EmployeeController::class, 'autoScan'])->name('employees.auto-scan');
+        Route::post('/employees/{employee}/save-scan', [EmployeeController::class, 'saveAutoScan'])->name('employees.save-scan');
 
         // Export & Reporting Routes
         Route::get('/exports/attendance-today', [\App\Http\Controllers\ExportController::class, 'attendanceToday'])->name('exports.attendance-today');

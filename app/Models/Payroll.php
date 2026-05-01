@@ -57,6 +57,11 @@ class Payroll extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function adjustments()
+    {
+        return $this->hasMany(PayrollAdjustment::class);
+    }
+
     /**
      * Generate a digital fingerprint for fiscal verification.
      */

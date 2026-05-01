@@ -105,6 +105,15 @@ class DashboardController extends Controller
                 ->selectRaw('SUM(sss_deduction) as sss, SUM(philhealth_deduction) as philhealth, SUM(pagibig_deduction) as pagibig, SUM(tax_deduction) as tax, COUNT(CASE WHEN status = "Finalized" THEN 1 END) as finalized_count, COUNT(CASE WHEN status = "Draft" THEN 1 END) as draft_count')
                 ->first();
 
+            // Profile Completion Logic
+            $incompleteProfilesCount = User::where('role', '!=', 'admin')->get()->filter(function($u) {
+                return $u->profile_completion < 100;
+            })->count();
+
+            // Executive Command Center Data
+            $pendingDiscrepancies = \App\Models\DiscrepancyReport::where('status', 'Pending')->count();
+            $unfinalizedPayrolls = \App\Models\Payroll::where('status', 'Draft')->count();
+
             return view('dashboard', compact(
                 'totalEmployees', 
                 'presentToday', 
@@ -120,7 +129,10 @@ class DashboardController extends Controller
                 'statStats',
                 'hourlyActivities',
                 'sparklineData',
-                'deptStats'
+                'deptStats',
+                'incompleteProfilesCount',
+                'pendingDiscrepancies',
+                'unfinalizedPayrolls'
             ));
         } else {
             // Employee Stats

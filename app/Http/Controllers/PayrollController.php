@@ -19,7 +19,7 @@ class PayrollController extends Controller
 
     public function index()
     {
-        $query = Payroll::with('user')->orderBy('period_end', 'desc');
+        $query = Payroll::with(['user', 'adjustments'])->orderBy('period_end', 'desc');
         
         if (!auth()->user()->isAdmin()) {
             $query->where('user_id', auth()->id());

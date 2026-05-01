@@ -53,6 +53,71 @@
             </div>
         @endif
 
+        @if($incompleteProfilesCount > 0)
+            <div class="glass-surface p-5 rounded-[2rem] flex items-center justify-between border-amber-200/50 bg-amber-50/10">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-10 rounded-2xl bg-amber-500 flex items-center justify-center text-white shadow-lg shadow-amber-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="text-[10px] font-bold text-amber-600 uppercase tracking-[0.2em] mb-1">Data Integrity Alert</div>
+                        <div class="text-xs font-bold text-slate-800 tracking-tight">{{ $incompleteProfilesCount }} Personnel with Incomplete Statutory Profiles</div>
+                    </div>
+                </div>
+                <a href="{{ route('employees.index') }}" class="hidden sm:block text-[10px] font-black text-amber-700 bg-white border border-amber-100 px-4 py-2 rounded-xl italic uppercase tracking-widest hover:bg-amber-50 transition-colors">Review Records</a>
+            </div>
+        @endif
+
+        {{-- Executive Command Center --}}
+        @if($pendingLeaves > 0 || $pendingDiscrepancies > 0 || $unfinalizedPayrolls > 0)
+        <div class="card-modern bg-white overflow-hidden shadow-xl shadow-slate-100/10">
+            <div class="p-5 border-b border-slate-50 flex items-center justify-between">
+                <div>
+                    <h3 class="text-xs font-black text-rose-600 uppercase tracking-[0.2em] italic">Command Center</h3>
+                    <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Items Requiring Action</p>
+                </div>
+                <div class="flex items-center gap-1.5 px-4 py-2 bg-rose-50 rounded-full">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                    <span class="text-[9px] font-black text-rose-600 uppercase tracking-widest">{{ $pendingLeaves + $pendingDiscrepancies + $unfinalizedPayrolls }} Pending</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-50">
+                {{-- Pending Leaves --}}
+                <a href="{{ route('leaves.index') }}" class="p-5 flex items-center gap-4 group hover:bg-slate-50/50 transition-colors">
+                    <div class="w-10 h-10 rounded-2xl {{ $pendingLeaves > 0 ? 'bg-amber-500' : 'bg-slate-100' }} flex items-center justify-center text-white shadow-lg {{ $pendingLeaves > 0 ? 'shadow-amber-100' : 'shadow-slate-50' }} flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="text-lg font-black text-slate-900 tracking-tighter tabular-nums">{{ $pendingLeaves }}</div>
+                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Pending Leaves</div>
+                    </div>
+                </a>
+
+                {{-- Open Disputes --}}
+                <a href="{{ route('admin.discrepancies.index') }}" class="p-5 flex items-center gap-4 group hover:bg-slate-50/50 transition-colors">
+                    <div class="w-10 h-10 rounded-2xl {{ $pendingDiscrepancies > 0 ? 'bg-rose-500' : 'bg-slate-100' }} flex items-center justify-center text-white shadow-lg {{ $pendingDiscrepancies > 0 ? 'shadow-rose-100' : 'shadow-slate-50' }} flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="text-lg font-black text-slate-900 tracking-tighter tabular-nums">{{ $pendingDiscrepancies }}</div>
+                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Open Disputes</div>
+                    </div>
+                </a>
+
+                {{-- Unfinalized Payrolls --}}
+                <a href="{{ route('payrolls.index') }}" class="p-5 flex items-center gap-4 group hover:bg-slate-50/50 transition-colors">
+                    <div class="w-10 h-10 rounded-2xl {{ $unfinalizedPayrolls > 0 ? 'bg-indigo-500' : 'bg-slate-100' }} flex items-center justify-center text-white shadow-lg {{ $unfinalizedPayrolls > 0 ? 'shadow-indigo-100' : 'shadow-slate-50' }} flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    </div>
+                    <div>
+                        <div class="text-lg font-black text-slate-900 tracking-tighter tabular-nums">{{ $unfinalizedPayrolls }}</div>
+                        <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Draft Payrolls</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        @endif
+
         {{-- Top Metrics --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="stat-high-level group p-5 bg-white shadow-xl shadow-slate-100/10 flex flex-col justify-between overflow-hidden relative">

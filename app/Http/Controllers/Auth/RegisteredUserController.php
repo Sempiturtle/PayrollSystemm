@@ -35,9 +35,18 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $username = strtolower(preg_replace('/[^a-zA-Z0-9._-]/', '', explode('@', $request->email)[0]));
+        $base = $username;
+        $counter = 1;
+        while (User::where('username', $username)->exists()) {
+            $username = $base . $counter;
+            $counter++;
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'username' => $username,
             'password' => Hash::make($request->password),
         ]);
 

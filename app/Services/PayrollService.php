@@ -176,7 +176,7 @@ class PayrollService
             $totalDeductionsEE = $lateDeduction + $statutory['total_ee'];
             $netPay = max(0, $grossPay - $totalDeductionsEE);
 
-            return Payroll::updateOrCreate(
+            $payroll = Payroll::updateOrCreate(
                 ['user_id' => $user->id, 'period_start' => $startDate, 'period_end' => $endDate],
                 [
                     'total_hours' => $totalHours,
@@ -198,6 +198,17 @@ class PayrollService
                     'calculation_snapshot' => $snapshot,
                 ]
             );
+
+            // Apply Custom Adjustments (Bonuses & Deductions)
+            $adjustments = $payroll->adjustments;
+            if ($adjustments->isNotEmpty()) {
+                $bonusTotal = $adjustments->where('type', 'bonus')->sum('amount');
+                $deductionTotal = $adjustments->where('type', 'deduction')->sum('amount');
+                $adjustedNet = max(0, $netPay + $bonusTotal - $deductionTotal);
+                $payroll->update(['net_pay' => $adjustedNet]);
+            }
+
+            return $payroll;
         });
     }
 }

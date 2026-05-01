@@ -61,12 +61,12 @@
                             <div class="w-16 h-16 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-6">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                             </div>
-                            <h3 class="text-xl font-black text-slate-900 dark:text-slate-100 italic tracking-tight">Bulk Schedule Upload</h3>
-                            <p class="text-sm text-slate-500 mt-2 font-medium">Assign a single Excel template to <span class="text-indigo-600 font-bold" x-text="selected.length"></span> selected employees.</p>
+                            <h3 class="text-xl font-black text-slate-900 dark:text-slate-100 italic tracking-tight">Bulk Schedule Image Assignment</h3>
+                            <p class="text-sm text-slate-500 mt-2 font-medium">Assign a single official schedule image to <span class="text-indigo-600 font-bold" x-text="selected.length"></span> selected employees.</p>
                             
                             <div class="mt-8">
-                                <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Target Excel/CSV File</label>
-                                <input type="file" name="schedule_file" required class="w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-6 file:rounded-2xl file:border-0 file:text-xs file:font-black file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition cursor-pointer">
+                                <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Official Schedule Image</label>
+                                <input type="file" name="schedule_image" required class="w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-6 file:rounded-2xl file:border-0 file:text-xs file:font-black file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition cursor-pointer">
                             </div>
                         </div>
                         <div class="px-10 py-8 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-end gap-3">
@@ -84,7 +84,7 @@
                 <div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 italic tracking-tight">Academic Timelines</h3>
                     <p class="text-sm text-slate-500 mt-1">
-                        <span class="font-bold text-indigo-600">{{ $totalScheduled }}</span> employees with 
+                        <span class="font-bold text-indigo-600">{{ $totalScheduled }}</span> employees with active official schedules and 
                         <span class="font-bold text-indigo-600">{{ $totalEntries }}</span> schedule entries
                     </p>
                 </div>
@@ -160,6 +160,14 @@
             <!-- Weekly Timetable Grid -->
             <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                 <div class="border-t border-slate-100 dark:border-slate-800">
+                    @if($employee->schedule_image)
+                        <div class="p-8 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col items-center gap-4">
+                            <div class="max-w-2xl w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-lg bg-white dark:bg-slate-900">
+                                <img src="{{ asset($employee->schedule_image) }}" alt="Schedule" class="w-full h-auto object-contain max-h-[500px]">
+                            </div>
+                            <a href="{{ asset($employee->schedule_image) }}" target="_blank" class="px-6 py-2 bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-xs shadow-sm hover:shadow-md transition">View Full Size</a>
+                        </div>
+                    @endif
                     <div class="grid grid-cols-7 divide-x divide-slate-100 dark:divide-slate-800">
                         @php
                             $allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];

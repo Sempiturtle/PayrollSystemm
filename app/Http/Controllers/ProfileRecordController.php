@@ -41,17 +41,22 @@ class ProfileRecordController extends Controller
     {
         $user = Auth::user();
         
-        if (!$user->schedule_file) {
-            return back()->with('error', 'No schedule file found for your account.');
+        if ($user->schedule_image) {
+            $path = public_path($user->schedule_image);
+            if (file_exists($path)) {
+                $extension = pathinfo($path, PATHINFO_EXTENSION);
+                return response()->download($path, "Official_Schedule_{$user->employee_id}.{$extension}");
+            }
         }
 
-        $path = storage_path('app/' . $user->schedule_file);
-
-        if (!file_exists($path)) {
-            return back()->with('error', 'The schedule file could not be found on the server.');
+        if ($user->schedule_file) {
+            $path = storage_path('app/' . $user->schedule_file);
+            if (file_exists($path)) {
+                return response()->download($path, "Your_Schedule_{$user->employee_id}.xlsx");
+            }
         }
 
-        return response()->download($path, "Your_Schedule_" . $user->employee_id . ".xlsx");
+        return back()->with('error', 'No schedule record found for your account.');
     }
 
     private function maskId($id)
