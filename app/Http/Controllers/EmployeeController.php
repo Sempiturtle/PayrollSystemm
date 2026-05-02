@@ -24,10 +24,23 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $employees = User::where('role', '!=', 'admin')->get();
-        return view('employees.index', compact('employees'));
+        $search = $request->input('search');
+        
+        $employees = User::where('role', '!=', 'admin')
+            ->when($search, function($query) use ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhere('employee_id', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('name', 'asc')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('employees.index', compact('employees', 'search'));
     }
 
     /**

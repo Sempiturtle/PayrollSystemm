@@ -14,12 +14,12 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Serif+Text:ital@0;1&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="h-full bg-slate-50 text-slate-800 antialiased" 
+    <body class="h-full bg-[#FDFCF8] text-slate-800 antialiased institutional-gradient" 
           x-data="{ 
               sidebarOpen: localStorage.getItem('sidebarOpen') !== 'false', 
               mobileSidebar: false,
@@ -37,17 +37,17 @@
             <div class="flex-1 flex flex-col min-w-0 overflow-hidden transition-all duration-300"
                  :class="sidebarOpen ? 'lg:pl-64' : 'lg:pl-0'">
                 <!-- Top Header Bar -->
-                <header class="h-16 flex items-center justify-between px-3 md:px-8 glass-header sticky top-0 z-30">
-                    <div class="flex items-center gap-4">
+                <header class="h-20 flex items-center justify-between px-4 md:px-12 bg-white/70 backdrop-blur-md border-b border-[#101D33]/5 sticky top-0 z-30">
+                    <div class="flex items-center gap-6">
                         <!-- Hamburger Button (Desktop) -->
-                        <button @click="toggleSidebar()" class="hidden lg:flex p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                        <button @click="toggleSidebar()" class="hidden lg:flex p-2.5 text-[#101D33]/40 hover:text-[#101D33] hover:bg-[#101D33]/5 rounded-xl transition-all">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
                             </svg>
                         </button>
                         
                         <!-- Hamburger Button (Mobile) -->
-                        <button @click="mobileSidebar = true" class="lg:hidden p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                        <button @click="mobileSidebar = true" class="lg:hidden p-2.5 text-[#101D33]/40 hover:text-[#101D33] hover:bg-[#101D33]/5 rounded-xl transition-all">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
                             </svg>
@@ -55,28 +55,29 @@
 
                         @isset($header)
                             <div class="flex items-center gap-2">
-                                <h1 class="text-base font-semibold text-slate-800 tracking-tight">{{ $header }}</h1>
+                                <h1 class="text-xl font-['DM_Serif_Display'] text-[#101D33] tracking-tight">{{ $header }}</h1>
                             </div>
                         @endisset
                     </div>
 
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-6">
                         <!-- User Profile Action -->
-                        <div class="flex items-center gap-3">
-                            <div class="text-right">
-                                <div class="text-[11px] font-bold text-slate-400 capitalize tabular-nums tracking-widest leading-none mb-1">{{ Auth::user()->role }} Account</div>
-                                <div class="text-sm font-bold text-slate-900 tracking-tight leading-none">{{ Auth::user()->name }}</div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right hidden sm:block">
+                                <div class="text-[10px] font-bold text-[#660000] uppercase tabular-nums tracking-[0.2em] leading-none mb-1.5">{{ Auth::user()->role }}</div>
+                                <div class="text-sm font-['DM_Serif_Text'] text-[#101D33] leading-none">{{ Auth::user()->name }}</div>
                             </div>
-                            <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xs font-bold shadow-md hover:bg-slate-800 transition-colors cursor-pointer border border-slate-800">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            <div class="w-11 h-11 rounded-2xl bg-[#101D33] text-white flex items-center justify-center text-sm font-bold shadow-xl shadow-[#101D33]/20 hover:bg-[#101D33]/90 transition-all cursor-pointer border border-white/10 overflow-hidden relative group">
+                                <div class="absolute inset-0 bg-gradient-to-tr from-[#660000]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <span class="relative z-10">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                             </div>
                         </div>
                     </div>
                 </header>
 
                 <!-- Page Content -->
-                <main class="flex-1 overflow-y-auto p-3 md:p-8 bg-slate-50">
-                    <div class="max-w-[120rem] mx-auto space-y-6">
+                <main class="flex-1 overflow-y-auto p-4 md:p-12">
+                    <div class="max-w-[140rem] mx-auto space-y-8">
                         <!-- Premium Toast Notifications -->
                         <div x-data="{ 
                             show: {{ session('success') ? 'true' : 'false' }},
@@ -87,39 +88,40 @@
                             }
                         }"
                         x-show="show"
-                        x-transition:enter="transition ease-out duration-300 transform"
-                        x-transition:enter-start="translate-y-[-20px] opacity-0"
-                        x-transition:enter-end="translate-y-0 opacity-100"
-                        x-transition:leave="transition ease-in duration-200 transform"
-                        x-transition:leave-start="translate-y-0 opacity-100"
-                        x-transition:leave-end="translate-y-[-20px] opacity-0"
-                        class="fixed top-6 right-6 z-[100] max-w-sm w-full pointer-events-auto"
+                        x-transition:enter="transition ease-out duration-500"
+                        x-transition:enter-start="translate-y-4 opacity-0 scale-95"
+                        x-transition:enter-end="translate-y-0 opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-300"
+                        x-transition:leave-start="translate-y-0 opacity-100 scale-100"
+                        x-transition:leave-end="translate-y-4 opacity-0 scale-95"
+                        class="fixed bottom-10 right-10 z-[100] max-w-md w-full pointer-events-auto"
                         style="display: none;">
-                            <div class="bg-white/90 backdrop-blur-xl border border-emerald-100 shadow-2xl shadow-emerald-200/50 rounded-2xl p-4 flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-200 shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            <div class="bg-[#101D33] text-white border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-3xl p-5 flex items-center gap-5 overflow-hidden relative">
+                                <div class="absolute top-0 right-0 w-24 h-24 bg-[#D4AF37]/10 blur-3xl -mr-12 -mt-12"></div>
+                                <div class="w-12 h-12 rounded-2xl bg-[#D4AF37] flex items-center justify-center text-[#101D33] shadow-lg shadow-[#D4AF37]/20 shrink-0 relative z-10">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
                                 </div>
-                                <div class="flex-1">
-                                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-0.5">Notification</h4>
-                                    <p class="text-sm font-bold text-slate-800" x-text="message"></p>
+                                <div class="flex-1 relative z-10">
+                                    <h4 class="text-[10px] font-bold text-[#D4AF37] uppercase tracking-[0.2em] mb-1">Administrative Update</h4>
+                                    <p class="text-[15px] font-medium leading-tight" x-text="message"></p>
                                 </div>
-                                <button @click="show = false" class="text-slate-300 hover:text-slate-500 transition">
+                                <button @click="show = false" class="text-white/40 hover:text-white transition relative z-10 p-2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Error Banner (Kept static for priority) -->
+                        <!-- Error Banner -->
                         @if (session('error') || $errors->any())
-                            <div class="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl space-y-2 shadow-soft animate-in">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 flex-shrink-0">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
+                            <div class="p-6 bg-[#660000]/5 border border-[#660000]/10 text-[#660000] rounded-3xl space-y-3 shadow-xl shadow-[#660000]/5 animate-in">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-2xl bg-[#660000] flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-[#660000]/20">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
                                     </div>
-                                    <span class="text-sm font-medium">{{ session('error') ?? 'Action could not be completed.' }}</span>
+                                    <span class="text-base font-semibold">{{ session('error') ?? 'Action could not be completed.' }}</span>
                                 </div>
                                 @if($errors->any())
-                                    <ul class="list-disc list-inside text-xs font-medium pl-11 text-rose-600/80 space-y-1">
+                                    <ul class="list-disc list-inside text-sm font-medium pl-14 text-[#660000]/70 space-y-1">
                                         @foreach ($errors->all() as $error)
                                             <li>{{ $error }}</li>
                                         @endforeach

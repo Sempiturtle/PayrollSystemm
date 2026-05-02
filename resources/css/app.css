@@ -4,43 +4,46 @@
 
 @layer base {
     :root {
-        /* Senior Developer Palette (Stripe/Vercel inspired) */
-        --brand-primary: 79 70 229;     /* Indigo 600 */
-        --brand-accent: 99 102 241;      /* Indigo 500 */
+        /* Institutional Excellence Palette (Academic / Prestige) */
+        --brand-primary: 16 29 51;      /* Oxford Midnight #101D33 */
+        --brand-accent: 102 0 0;        /* Eton Crimson #660000 */
+        --brand-gold: 212 175 55;       /* Burnished Gold #D4AF37 */
+        
         --slate-primary: 15 23 42;       /* Slate 900 */
         --slate-secondary: 71 85 105;    /* Slate 600 */
         
-        /* Surface & Interaction */
-        --bg-main: 248 250 252;          /* Slate 50 */
+        /* Surface & Interaction (Parchment & Minimalist) */
+        --bg-main: 253 252 248;          /* Academic Parchment #FDFCF8 */
         --surface-card: 255 255 255;
-        --border-refined: 226 232 240 / 0.6; /* Slate 200 soft */
+        --border-refined: 226 232 240 / 0.4; /* Ultra-soft borders */
     }
 
     body {
-        @apply font-['Inter'] antialiased text-slate-800 bg-slate-50 selection:bg-indigo-500/10 selection:text-indigo-900;
+        @apply font-['Inter'] antialiased text-slate-800 bg-[#FDFCF8] selection:bg-[#101D33]/10 selection:text-[#101D33];
         letter-spacing: -0.01em;
     }
 
     /* ── High-Level Utilities ── */
-    .mesh-gradient-bg {
-        background-color: #020617;
-        background-image: 
-            radial-gradient(at 0% 0%, hsla(243, 75%, 35%, 0.15) 0px, transparent 50%),
-            radial-gradient(at 100% 0%, hsla(263, 70%, 35%, 0.15) 0px, transparent 50%),
-            radial-gradient(at 100% 100%, hsla(243, 75%, 35%, 0.1) 0px, transparent 50%),
-            radial-gradient(at 0% 100%, hsla(263, 70%, 35%, 0.1) 0px, transparent 50%);
+    .institutional-gradient {
+        background: radial-gradient(circle at top left, rgba(16, 29, 51, 0.03), transparent 40%),
+                    radial-gradient(circle at bottom right, rgba(102, 0, 0, 0.02), transparent 40%);
     }
 
-    .text-glow-indigo {
-        text-shadow: 0 0 20px rgba(79, 70, 229, 0.4);
+    .text-prestige-gold {
+        color: #D4AF37;
+        text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
     }
 
     .glass-dark {
-        @apply bg-slate-900/40 backdrop-blur-xl border border-white/5;
+        @apply bg-[#101D33]/90 backdrop-blur-xl border border-white/10 shadow-2xl;
     }
 
-    h1, h2, h3, h4, h5, h6 {
-        @apply font-['Outfit'] tracking-tight text-slate-900;
+    h1, h2, h3 {
+        @apply font-['DM_Serif_Display'] tracking-tight text-[#101D33];
+    }
+
+    h4, h5, h6 {
+        @apply font-['Outfit'] font-semibold tracking-tight text-[#101D33];
     }
 
     [x-cloak] { display: none !important; }
