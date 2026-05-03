@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('gross_pay', 10, 2)->default(0);
             $table->decimal('net_pay', 10, 2)->default(0);
             $table->enum('status', ['Draft', 'Released'])->default('Draft');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

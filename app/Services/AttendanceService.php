@@ -175,4 +175,85 @@ class AttendanceService
 
         return $content;
     }
+
+    /**
+     * Fetch employees currently clocked into the institution.
+     */
+    public function getOnSiteEmployees(): Collection
+    {
+        return \App\Models\User::whereHas('attendanceLogs', function($q) {
+            $q->where('date', Carbon::now('Asia/Manila')->toDateString())
+              ->whereNull('time_out');
+        })->get();
+    }
+
+    /**
+     * Fetch employees expected to arrive based on their schedule.
+     */
+    public function getExpectedArrivals(): Collection
+    {
+        $now = Carbon::now('Asia/Manila');
+        $dayName = $now->format('l');
+        $currentTime = $now->toTimeString();
+        $twoHoursLater = $now->copy()->addHours(2)->toTimeString();
+
+        return \App\Models\User::where('role', '!=', 'admin')
+            ->whereHas('schedules', function($q) use ($dayName, $currentTime, $twoHoursLater) {
+                $q->where('day_of_week', $dayName)
+                  ->where('start_time', '>=', $currentTime)
+                  ->where('start_time', '<=', $twoHoursLater);
+            })
+            ->whereDoesntHave('attendanceLogs', function($q) use ($now) {
+                $q->where('date', $now->toDateString());
+            })
+            ->get();
+    }
+
+    /**
+     * Identify faculty who are 20+ minutes late for an active schedule block but haven't clocked in.
+     */
+    public function getContinuityAlerts(): Collection
+    {
+        $now = Carbon::now('Asia/Manila');
+        $dayName = $now->format('l');
+        $currentTime = $now->toTimeString();
+        $twentyMinsAgo = $now->copy()->subMinutes(20)->toTimeString();
+
+        return \App\Models\User::where('role', '!=', 'admin')
+            ->whereHas('schedules', function($q) use ($dayName, $twentyMinsAgo, $currentTime) {
+                $q->where('day_of_week', $dayName)
+                  ->where('start_time', '<=', $twentyMinsAgo)
+                  ->where('end_time', '>', $currentTime);
+            })
+            ->whereDoesntHave('attendanceLogs', function($q) use ($now) {
+                $q->where('date', $now->toDateString());
+            })
+            ->with(['schedules' => function($q) use ($dayName, $twentyMinsAgo, $currentTime) {
+                $q->where('day_of_week', $dayName)
+                  ->where('start_time', '<=', $twentyMinsAgo)
+                  ->where('end_time', '>', $currentTime);
+            }])
+            ->get();
+    }
+
+    /**
+     * Find personnel currently on-site who do NOT have a schedule block at the specified time.
+     */
+    public function getAvailableReliefStaff(string $time = null): Collection
+    {
+        $now = $time ? Carbon::parse($time, 'Asia/Manila') : Carbon::now('Asia/Manila');
+        $dayName = $now->format('l');
+        $currentTime = $now->toTimeString();
+
+        return \App\Models\User::whereHas('attendanceLogs', function($q) use ($now) {
+            $q->where('date', $now->toDateString())
+              ->whereNull('time_out');
+        })
+        ->whereDoesntHave('schedules', function($q) use ($dayName, $currentTime) {
+            $q->where('day_of_week', $dayName)
+              ->where('start_time', '<=', $currentTime)
+              ->where('end_time', '>', $currentTime);
+        })
+        ->get();
+    }
 }

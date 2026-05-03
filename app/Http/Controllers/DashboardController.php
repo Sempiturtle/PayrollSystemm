@@ -15,10 +15,14 @@ use App\Services\PayrollService;
 class DashboardController extends Controller
 {
     protected $payrollService;
+    protected $attendanceService;
 
-    public function __construct(PayrollService $payrollService)
-    {
+    public function __construct(
+        PayrollService $payrollService,
+        \App\Services\AttendanceService $attendanceService
+    ) {
         $this->payrollService = $payrollService;
+        $this->attendanceService = $attendanceService;
     }
     public function index()
     {
@@ -30,6 +34,8 @@ class DashboardController extends Controller
         $todayHoliday = \App\Models\Holiday::where('date', $today)->first();
 
         if ($user->isAdmin()) {
+            // Continuity Alerts
+            $continuityAlerts = $this->attendanceService->getContinuityAlerts();
             // Admin Stats
             $totalEmployees = User::where('role', '!=', 'admin')->count();
             $presentToday = AttendanceLog::where('date', $today)->where('status', 'On-time')->count();
@@ -114,6 +120,16 @@ class DashboardController extends Controller
             $pendingDiscrepancies = \App\Models\DiscrepancyReport::where('status', 'Pending')->count();
             $unfinalizedPayrolls = \App\Models\Payroll::where('status', 'Draft')->count();
 
+            // NEW: Fiscal Pulse & Audit Stream
+            $institutionalPayrollPulse = \App\Models\Payroll::whereMonth('period_end', $now->month)
+                ->whereYear('period_end', $now->year)
+                ->sum('net_pay');
+            
+            $recentAuditStream = \App\Models\AuditLog::with('user')
+                ->latest()
+                ->limit(5)
+                ->get();
+
             return view('dashboard', compact(
                 'totalEmployees', 
                 'presentToday', 
@@ -132,7 +148,10 @@ class DashboardController extends Controller
                 'deptStats',
                 'incompleteProfilesCount',
                 'pendingDiscrepancies',
-                'unfinalizedPayrolls'
+                'unfinalizedPayrolls',
+                'institutionalPayrollPulse',
+                'recentAuditStream',
+                'continuityAlerts'
             ));
         } else {
             // Employee Stats

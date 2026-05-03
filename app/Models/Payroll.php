@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Payroll extends Model
 {
-    use \App\Traits\LogsActivity;
+    use \App\Traits\LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'user_id',

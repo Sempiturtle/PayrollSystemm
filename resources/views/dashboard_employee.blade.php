@@ -12,7 +12,7 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-xl font-bold text-slate-900 tracking-tight">System Access <span class="text-indigo-600">Active</span></h1>
-                <p class="text-slate-500 mt-1 font-medium text-sm italic">Academic Period 2026 �?AISAT Higher Education</p>
+                <p class="text-slate-500 mt-1 font-medium text-sm italic">Academic Period 2026 • AISAT Higher Education</p>
             </div>
             
             <div class="flex items-center gap-3">
@@ -120,7 +120,7 @@
             </div>
         </div>
 
-                {{-- Official Schedule Image --}}
+        {{-- Official Schedule Image --}}
         <div class="card-modern bg-white overflow-hidden flex flex-col shadow-xl shadow-indigo-100/20">
             <div class="p-5 border-b border-slate-50 bg-slate-50/10 flex items-center justify-between">
                 <div>
@@ -134,9 +134,18 @@
                 @endif
             </div>
             
-            <div class="p-4 flex items-center justify-center bg-slate-50/30">
+            <div class="p-4 flex flex-col bg-slate-50/30">
+                <div class="mb-4 flex items-center justify-between">
+                    <p class="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em]">Institutional Attendance Grid</p>
+                    <div class="flex gap-4">
+                        <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Verified</span></div>
+                        <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span> <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Latency</span></div>
+                        <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-slate-200"></span> <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Pending</span></div>
+                    </div>
+                </div>
+
                 @if(Auth::user()->schedule_image)
-                    <div class="w-full max-w-4xl rounded-2xl overflow-hidden border border-slate-100 shadow-inner bg-white p-2">
+                    <div class="w-full max-w-4xl mx-auto rounded-2xl overflow-hidden border border-slate-100 shadow-inner bg-white p-2">
                         <img src="{{ asset(Auth::user()->schedule_image) }}" alt="Official Schedule" class="w-full h-auto object-contain max-h-[700px] rounded-xl">
                     </div>
                 @elseif($mySchedule->count() > 0)
@@ -264,9 +273,14 @@
                                         <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">Cycle Ending</div>
                                         <div class="text-sm font-black text-slate-800 tracking-tight">{{ $payroll->period_end->format('M d, Y') }}</div>
                                     </div>
-                                    <div class="text-right">
-                                        <div class="text-base font-black text-emerald-600 tracking-tighter">₱{{ number_format($payroll->net_pay, 2) }}</div>
-                                        <div class="text-[9px] font-bold text-slate-400 tabular-nums font-mono">{{ number_format($payroll->total_hours, 1) }} HRS</div>
+                                    <div class="flex items-center gap-6">
+                                        <div class="text-right">
+                                            <div class="text-base font-black text-emerald-600 tracking-tighter">₱{{ number_format($payroll->net_pay, 2) }}</div>
+                                            <div class="text-[9px] font-bold text-slate-400 tabular-nums font-mono">{{ number_format($payroll->total_hours, 1) }} HRS</div>
+                                        </div>
+                                        <a href="{{ route('payrolls.download', $payroll->id) }}" class="p-2 bg-slate-100 rounded-xl text-slate-400 hover:bg-emerald-600 hover:text-white transition-all shadow-sm" @click.stop>
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                        </a>
                                     </div>
                                 </div>
 

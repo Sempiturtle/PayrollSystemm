@@ -37,17 +37,17 @@
             <div class="flex-1 flex flex-col min-w-0 overflow-hidden transition-all duration-300"
                  :class="sidebarOpen ? 'lg:pl-64' : 'lg:pl-0'">
                 <!-- Top Header Bar -->
-                <header class="h-20 flex items-center justify-between px-4 md:px-12 bg-white/70 backdrop-blur-md border-b border-[#101D33]/5 sticky top-0 z-30">
+                <header class="h-16 flex items-center justify-between px-4 md:px-8 bg-white/70 backdrop-blur-md border-b border-[#101D33]/5 sticky top-0 z-30">
                     <div class="flex items-center gap-6">
                         <!-- Hamburger Button (Desktop) -->
-                        <button @click="toggleSidebar()" class="hidden lg:flex p-2.5 text-[#101D33]/40 hover:text-[#101D33] hover:bg-[#101D33]/5 rounded-xl transition-all">
+                        <button @click="toggleSidebar()" class="hidden lg:flex p-2 text-[#101D33]/40 hover:text-[#101D33] hover:bg-[#101D33]/5 rounded-xl transition-all">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
                             </svg>
                         </button>
                         
                         <!-- Hamburger Button (Mobile) -->
-                        <button @click="mobileSidebar = true" class="lg:hidden p-2.5 text-[#101D33]/40 hover:text-[#101D33] hover:bg-[#101D33]/5 rounded-xl transition-all">
+                        <button @click="mobileSidebar = true" class="lg:hidden p-2 text-[#101D33]/40 hover:text-[#101D33] hover:bg-[#101D33]/5 rounded-xl transition-all">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
                             </svg>
@@ -61,13 +61,65 @@
                     </div>
 
                     <div class="flex items-center gap-6">
+                        <!-- Neural Alert Bell -->
+                        <div x-data="{ open: false }" class="relative">
+                            <button @click="open = !open" class="relative p-2.5 text-[#101D33]/40 hover:text-[#101D33] hover:bg-[#101D33]/5 rounded-xl transition-all group">
+                                <svg class="w-5 h-5 transition-transform group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                </svg>
+                                @if(auth()->user()->unreadNotifications->count() > 0)
+                                    <span class="absolute top-2 right-2 w-2 h-2 bg-[#660000] rounded-full border-2 border-white animate-pulse shadow-[0_0_8px_rgba(102,0,0,0.5)]"></span>
+                                @endif
+                            </button>
+
+                            <!-- Dropdown -->
+                            <div x-show="open" @click.away="open = false" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                 class="absolute right-0 mt-3 w-80 bg-white rounded-[2rem] shadow-[0_40px_100px_rgba(16,29,51,0.15)] border border-[#101D33]/5 overflow-hidden z-50">
+                                
+                                <div class="px-6 py-4 bg-[#FDFCF8] border-b border-[#101D33]/5 flex items-center justify-between">
+                                    <span class="text-[10px] font-black text-[#101D33] uppercase tracking-[0.2em]">Neural Alerts</span>
+                                    @if(auth()->user()->unreadNotifications->count() > 0)
+                                        <a href="{{ route('notifications.readAll') }}" class="text-[8px] font-bold text-[#660000] uppercase tracking-widest hover:underline">Mark all read</a>
+                                    @endif
+                                </div>
+
+                                <div class="max-h-96 overflow-y-auto custom-scrollbar">
+                                    @forelse(auth()->user()->notifications->take(10) as $notification)
+                                        <div class="px-6 py-4 border-b border-[#101D33]/5 hover:bg-slate-50 transition-colors cursor-pointer {{ $notification->unread() ? 'bg-[#D4AF37]/5' : '' }}">
+                                            <div class="flex gap-3">
+                                                <div class="w-8 h-8 rounded-lg bg-[#101D33] text-[#D4AF37] flex items-center justify-center shrink-0">
+                                                    @if(($notification->data['type'] ?? '') === 'payroll_finalized')
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                    @else
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                    @endif
+                                                </div>
+                                                <div class="flex-1">
+                                                    <p class="text-[11px] font-bold text-[#101D33] leading-tight mb-0.5">{{ $notification->data['title'] ?? 'System Alert' }}</p>
+                                                    <p class="text-[10px] text-slate-500 leading-tight">{{ $notification->data['message'] ?? '' }}</p>
+                                                    <p class="text-[8px] text-[#D4AF37] font-black uppercase mt-1.5">{{ $notification->created_at->diffForHumans() }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="px-6 py-12 text-center">
+                                            <p class="text-[10px] font-['DM_Serif_Text'] italic text-slate-300 uppercase tracking-widest">No active alerts</p>
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- User Profile Action -->
                         <div class="flex items-center gap-4">
                             <div class="text-right hidden sm:block">
                                 <div class="text-[10px] font-bold text-[#660000] uppercase tabular-nums tracking-[0.2em] leading-none mb-1.5">{{ Auth::user()->role }}</div>
                                 <div class="text-sm font-['DM_Serif_Text'] text-[#101D33] leading-none">{{ Auth::user()->name }}</div>
                             </div>
-                            <div class="w-11 h-11 rounded-2xl bg-[#101D33] text-white flex items-center justify-center text-sm font-bold shadow-xl shadow-[#101D33]/20 hover:bg-[#101D33]/90 transition-all cursor-pointer border border-white/10 overflow-hidden relative group">
+                            <div class="w-9 h-9 rounded-xl bg-[#101D33] text-white flex items-center justify-center text-sm font-bold shadow-xl shadow-[#101D33]/20 hover:bg-[#101D33]/90 transition-all cursor-pointer border border-white/10 overflow-hidden relative group">
                                 <div class="absolute inset-0 bg-gradient-to-tr from-[#660000]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 <span class="relative z-10">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                             </div>
@@ -76,8 +128,8 @@
                 </header>
 
                 <!-- Page Content -->
-                <main class="flex-1 overflow-y-auto p-4 md:p-12">
-                    <div class="max-w-[140rem] mx-auto space-y-8">
+                <main class="flex-1 overflow-y-auto p-4 md:p-8">
+                    <div class="max-w-[140rem] mx-auto space-y-6">
                         <!-- Premium Toast Notifications -->
                         <div x-data="{ 
                             show: {{ session('success') ? 'true' : 'false' }},

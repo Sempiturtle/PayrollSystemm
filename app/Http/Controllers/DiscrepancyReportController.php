@@ -7,6 +7,7 @@ use App\Models\AuditLog;
 use App\Models\Payroll;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\DiscrepancyUpdated;
 
 class DiscrepancyReportController extends Controller
 {
@@ -79,7 +80,6 @@ class DiscrepancyReportController extends Controller
 
         return view('discrepancies.my_disputes', compact('reports'));
     }
-
     /**
      * Update report status (Admin).
      */
@@ -97,6 +97,9 @@ class DiscrepancyReportController extends Controller
         ]);
 
         $report->update($validated);
+
+        // Notify User
+        $report->user->notify(new DiscrepancyUpdated($report));
 
         // Immutable Audit: Admin resolved/changed a discrepancy
         AuditLog::create([

@@ -63,8 +63,11 @@ class EmployeeController extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
+            
+        $onSiteCount = $this->attendanceService->getOnSiteEmployees()->count();
+        $expectedArrivals = $this->attendanceService->getExpectedArrivals();
 
-        return view('employees.scanner', compact('recentLogs'));
+        return view('employees.scanner', compact('recentLogs', 'onSiteCount', 'expectedArrivals'));
     }
 
     /**
@@ -177,6 +180,12 @@ class EmployeeController extends Controller
             }
 
             if (!$user) {
+                \Illuminate\Support\Facades\Log::channel('security')->warning('Terminal identity recognition failed.', [
+                    'rfid' => $request->input('rfid'),
+                    'fingerprint_id' => $request->input('fingerprint_id'),
+                    'ip' => $request->ip(),
+                    'source' => $source
+                ]);
                 return response()->json(['success' => false, 'message' => 'Identity not recognized. MFA verification failed.'], 404);
             }
 

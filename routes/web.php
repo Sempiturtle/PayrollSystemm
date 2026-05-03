@@ -18,8 +18,8 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
-Route::post('/attendance/scan', [EmployeeController::class, 'scan'])->name('attendance.scan');
-Route::post('/attendance/sync', [EmployeeController::class, 'batchSync'])->name('attendance.sync');
+Route::post('/attendance/scan', [EmployeeController::class, 'scan'])->middleware('throttle:30,1')->name('attendance.scan');
+Route::post('/attendance/sync', [EmployeeController::class, 'batchSync'])->middleware('throttle:10,1')->name('attendance.sync');
 Route::get('/attendance/check-command', [EmployeeController::class, 'checkCommand'])->name('attendance.check-command');
 Route::post('/attendance/complete-enroll', [EmployeeController::class, 'completeEnroll'])->name('attendance.complete-enroll');
 
@@ -82,6 +82,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/discrepancies', [\App\Http\Controllers\DiscrepancyReportController::class, 'index'])->name('admin.discrepancies.index');
         Route::patch('/admin/discrepancies/{report}', [\App\Http\Controllers\DiscrepancyReportController::class, 'update'])->name('admin.discrepancies.update');
 
+        // Institutional Continuity (Substitutions)
+        Route::get('/admin/substitutions/suggestions/{user}', [\App\Http\Controllers\SubstitutionController::class, 'suggestions'])->name('substitutions.suggestions');
+        Route::post('/admin/substitutions', [\App\Http\Controllers\SubstitutionController::class, 'store'])->name('substitutions.store');
+
         // Leave Approvals
         Route::patch('/leaves/{leave}', [LeaveController::class, 'update'])->name('leaves.update');
         Route::post('/leaves/bulk', [LeaveController::class, 'bulkUpdate'])->name('leaves.bulk');
@@ -110,7 +114,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/exports/attendance-today', [\App\Http\Controllers\ExportController::class, 'attendanceToday'])->name('exports.attendance-today');
         Route::get('/exports/payroll-insight', [\App\Http\Controllers\ExportController::class, 'payrollInsight'])->name('exports.payroll-insight');
         Route::get('/exports/period-summary', [\App\Http\Controllers\ExportController::class, 'periodSummary'])->name('exports.period-summary');
+        Route::get('/exports/executive-summary', [\App\Http\Controllers\ReportController::class, 'executiveSummary'])->name('exports.executive-summary');
     });
+
+    // Universal Notifications
+    Route::get('/notifications/read-all', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back()->with('success', 'Neural alerts synchronized.');
+    })->name('notifications.readAll');
 });
 
 require __DIR__.'/auth.php';

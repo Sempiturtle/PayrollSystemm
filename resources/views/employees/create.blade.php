@@ -305,7 +305,10 @@
                                             <div class="bg-[#FDFCF8] rounded-[2rem] border border-[#101D33]/5 p-6 hover:border-[#D4AF37] transition-all group shadow-sm">
                                                 <div class="flex items-center justify-between mb-4">
                                                     <div class="text-xs font-black text-[#101D33] uppercase tracking-[0.2em]" x-text="s.day_of_week"></div>
-                                                    <div class="w-8 h-8 rounded-xl bg-[#101D33] text-[#D4AF37] flex items-center justify-center text-[10px] font-black" x-text="s.day_of_week.substring(0,3)"></div>
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-500 rounded-full text-[7px] font-black uppercase tracking-widest border border-emerald-500/20">Verified Node</span>
+                                                        <div class="w-8 h-8 rounded-xl bg-[#101D33] text-[#D4AF37] flex items-center justify-center text-[10px] font-black" x-text="s.day_of_week.substring(0,3)"></div>
+                                                    </div>
                                                 </div>
                                                 <div class="flex items-center gap-3">
                                                     <input type="text" x-model="s.start_time" class="flex-1 bg-white border border-[#101D33]/5 rounded-xl text-[11px] font-black text-center py-3 focus:ring-[#101D33] tabular-nums">
