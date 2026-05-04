@@ -23,6 +23,7 @@ return new class extends Migration
             $table->decimal('hourly_rate', 10, 2)->default(0);
             $table->enum('role', ['admin', 'professor', 'employee'])->default('employee');
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
 

@@ -7,12 +7,12 @@
         </div>
     </x-slot>
 
-    <div class="space-y-4 animate-in-up">
+    <div class="space-y-3 animate-in-up">
         <!-- Employee Header -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div>
                 <h1 class="text-xl font-bold text-slate-900 tracking-tight">System Access <span class="text-indigo-600">Active</span></h1>
-                <p class="text-slate-500 mt-1 font-medium text-sm italic">Academic Period 2026 �?AISAT Higher Education</p>
+                <p class="text-slate-500 mt-0.5 font-medium text-[11px] italic">Academic Period 2026 • AISAT Higher Education</p>
             </div>
             
             <div class="flex items-center gap-3">
@@ -92,22 +92,22 @@
             </div>
 
             {{-- Attendance --}}
-            <div class="stat-high-level group p-5 bg-white rounded-2xl">
-                <div class="stat-label font-black text-[10px] uppercase tracking-widest text-slate-400 italic">Terminal Status</div>
+            <div class="stat-high-level group p-4 bg-white rounded-xl">
+                <div class="stat-label font-black text-[9px] uppercase tracking-widest text-slate-400 italic">Terminal Status</div>
                 @if($todayLog)
-                    <div class="mt-6 flex items-center gap-3">
-                        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></div>
-                        <div class="stat-value text-xl font-black tracking-tighter text-slate-900 italic underline decoration-emerald-100 underline-offset-8">Active</div>
+                    <div class="mt-4 flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></div>
+                        <div class="stat-value text-lg font-black tracking-tighter text-slate-900 italic underline decoration-emerald-100 underline-offset-8">Active</div>
                     </div>
                 @else
-                    <div class="mt-6 flex items-center gap-3 opacity-50">
-                        <div class="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
-                        <div class="stat-value text-xl font-black tracking-tighter text-slate-300 italic">Inactive</div>
+                    <div class="mt-4 flex items-center gap-2 opacity-50">
+                        <div class="w-2 h-2 rounded-full bg-slate-200"></div>
+                        <div class="stat-value text-lg font-black tracking-tighter text-slate-300 italic">Inactive</div>
                     </div>
                 @endif
             </div>
 
-            <div class="stat-high-level group p-5 bg-slate-950 !text-white overflow-hidden relative rounded-2xl">
+            <div class="stat-high-level group p-4 bg-slate-950 !text-white overflow-hidden relative rounded-xl">
                 <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent"></div>
                 <div class="relative z-10">
                     <div class="stat-label !text-slate-500 italic uppercase tracking-widest font-black text-[10px]">Institutional Clock</div>
@@ -120,43 +120,71 @@
             </div>
         </div>
 
-        {{-- Weekly Schedule --}}
-        @if($mySchedule->count() > 0)
+        {{-- Official Schedule Image --}}
         <div class="card-modern bg-white overflow-hidden flex flex-col shadow-xl shadow-indigo-100/20">
-            <div class="p-5 border-b border-slate-50 bg-slate-50/10">
-                <h3 class="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] italic">Work Shift Cycle</h3>
-                <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Institutional Period 2026</p>
+            <div class="p-5 border-b border-slate-50 bg-slate-50/10 flex items-center justify-between">
+                <div>
+                    <h3 class="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] italic">Work Shift Cycle</h3>
+                    <p class="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest leading-none">Official Institutional Schedule</p>
+                </div>
+                @if(Auth::user()->schedule_image)
+                    <a href="{{ asset(Auth::user()->schedule_image) }}" target="_blank" class="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition shadow-sm">
+                        View Full Size
+                    </a>
+                @endif
             </div>
             
-            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 divide-x divide-slate-100 border-b border-slate-50">
-                @php
-                    $allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                    $shortDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                    $today = now()->format('l');
-                @endphp
-                
-                @foreach($allDays as $i => $day)
-                    @php
-                        $daySchedule = $mySchedule->firstWhere('day_of_week', $day);
-                        $isToday = ($day === $today);
-                    @endphp
-                    <div class="p-4 text-center group transition-colors duration-500 {{ $isToday ? 'bg-indigo-600 !text-white' : 'hover:bg-slate-50' }}">
-                        <div class="text-[10px] font-black uppercase tracking-[0.2em] {{ $isToday ? 'text-indigo-200' : 'text-slate-400 group-hover:text-indigo-600' }} mb-6 transition-colors">{{ $shortDays[$i] }}</div>
-                        
-                        @if($daySchedule)
-                            <div class="font-black text-lg tracking-tighter tabular-nums leading-none">{{ \Carbon\Carbon::parse($daySchedule->start_time)->format('h:i') }} <span class="text-[10px] uppercase opacity-40 italic">{{ \Carbon\Carbon::parse($daySchedule->start_time)->format('A') }}</span></div>
-                            <div class="h-6 flex items-center justify-center">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $isToday ? 'bg-indigo-300 animate-pulse' : 'bg-slate-100' }}"></span>
-                            </div>
-                            <div class="font-black text-lg tracking-tighter tabular-nums leading-none">{{ \Carbon\Carbon::parse($daySchedule->end_time)->format('h:i') }} <span class="text-[10px] uppercase opacity-40 italic">{{ \Carbon\Carbon::parse($daySchedule->end_time)->format('A') }}</span></div>
-                        @else
-                            <div class="text-[10px] font-black {{ $isToday ? 'text-indigo-300' : 'text-slate-200' }} italic py-10 uppercase tracking-[0.2em]">Offsite</div>
-                        @endif
+            <div class="p-4 flex flex-col bg-slate-50/30">
+                <div class="mb-4 flex items-center justify-between">
+                    <p class="text-[9px] font-black text-indigo-600 uppercase tracking-[0.2em]">Institutional Attendance Grid</p>
+                    <div class="flex gap-4">
+                        <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Verified</span></div>
+                        <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span> <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Latency</span></div>
+                        <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-slate-200"></span> <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Pending</span></div>
                     </div>
-                @endforeach
+                </div>
+
+                @if(Auth::user()->schedule_image)
+                    <div class="w-full max-w-4xl mx-auto rounded-2xl overflow-hidden border border-slate-100 shadow-inner bg-white p-2">
+                        <img src="{{ asset(Auth::user()->schedule_image) }}" alt="Official Schedule" class="w-full h-auto object-contain max-h-[700px] rounded-xl">
+                    </div>
+                @elseif($mySchedule->count() > 0)
+                    {{-- Fallback to structured schedule if no image yet --}}
+                    <div class="w-full grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 divide-x divide-slate-100 border border-slate-50 rounded-2xl overflow-hidden">
+                        @php
+                            $allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                            $shortDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                            $today = now()->format('l');
+                        @endphp
+                        
+                        @foreach($allDays as $i => $day)
+                            @php
+                                $daySchedule = $mySchedule->firstWhere('day_of_week', $day);
+                                $isToday = ($day === $today);
+                            @endphp
+                            <div class="p-4 text-center group transition-colors duration-500 {{ $isToday ? 'bg-indigo-600 !text-white' : 'bg-white hover:bg-slate-50' }}">
+                                <div class="text-[10px] font-black uppercase tracking-[0.2em] {{ $isToday ? 'text-indigo-200' : 'text-slate-400 group-hover:text-indigo-600' }} mb-6 transition-colors">{{ $shortDays[$i] }}</div>
+                                
+                                @if($daySchedule)
+                                    <div class="font-black text-lg tracking-tighter tabular-nums leading-none">{{ \Carbon\Carbon::parse($daySchedule->start_time)->format('h:i') }} <span class="text-[10px] uppercase opacity-40 italic">{{ \Carbon\Carbon::parse($daySchedule->start_time)->format('A') }}</span></div>
+                                    <div class="h-6 flex items-center justify-center">
+                                        <span class="w-1.5 h-1.5 rounded-full {{ $isToday ? 'bg-indigo-300 animate-pulse' : 'bg-slate-100' }}"></span>
+                                    </div>
+                                    <div class="font-black text-lg tracking-tighter tabular-nums leading-none">{{ \Carbon\Carbon::parse($daySchedule->end_time)->format('h:i') }} <span class="text-[10px] uppercase opacity-40 italic">{{ \Carbon\Carbon::parse($daySchedule->end_time)->format('A') }}</span></div>
+                                @else
+                                    <div class="text-[10px] font-black {{ $isToday ? 'text-indigo-300' : 'text-slate-200' }} italic py-10 uppercase tracking-[0.2em]">Offsite</div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="py-20 text-center w-full">
+                        <svg class="w-12 h-12 text-slate-200 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <p class="text-sm font-black text-slate-300 uppercase tracking-widest italic">Signal Offline: No Schedule Protocol Loaded</p>
+                    </div>
+                @endif
             </div>
         </div>
-        @endif
 
         {{-- Intelligence Section --}}
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-stretch">
@@ -245,9 +273,14 @@
                                         <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">Cycle Ending</div>
                                         <div class="text-sm font-black text-slate-800 tracking-tight">{{ $payroll->period_end->format('M d, Y') }}</div>
                                     </div>
-                                    <div class="text-right">
-                                        <div class="text-base font-black text-emerald-600 tracking-tighter">₱{{ number_format($payroll->net_pay, 2) }}</div>
-                                        <div class="text-[9px] font-bold text-slate-400 tabular-nums font-mono">{{ number_format($payroll->total_hours, 1) }} HRS</div>
+                                    <div class="flex items-center gap-6">
+                                        <div class="text-right">
+                                            <div class="text-base font-black text-emerald-600 tracking-tighter">₱{{ number_format($payroll->net_pay, 2) }}</div>
+                                            <div class="text-[9px] font-bold text-slate-400 tabular-nums font-mono">{{ number_format($payroll->total_hours, 1) }} HRS</div>
+                                        </div>
+                                        <a href="{{ route('payrolls.download', $payroll->id) }}" class="p-2 bg-slate-100 rounded-xl text-slate-400 hover:bg-emerald-600 hover:text-white transition-all shadow-sm" @click.stop>
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                        </a>
                                     </div>
                                 </div>
 

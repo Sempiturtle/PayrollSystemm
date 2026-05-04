@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('attendance_logs', function (Blueprint $table) {
-            \Illuminate\Support\Facades\DB::statement("ALTER TABLE attendance_logs MODIFY COLUMN source VARCHAR(50) DEFAULT 'RFID'");
+            $table->string('source', 50)->default('RFID')->change();
         });
     }
 
@@ -22,7 +22,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('attendance_logs', function (Blueprint $table) {
-            \Illuminate\Support\Facades\DB::statement("ALTER TABLE attendance_logs MODIFY COLUMN source ENUM('RFID', 'Biometric') DEFAULT 'RFID'");
+            // ENUM to VARCHAR change is tricky in some versions of SQLite/Laravel
+            // but the most compatible way is to just define it as a string
+            $table->string('source', 50)->default('RFID')->change();
         });
     }
 };

@@ -35,10 +35,12 @@ return [
         ],
     ],
 
-    'google' => [
+        'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URL'),
+        'vision_key' => env('GOOGLE_VISION_API_KEY'),
+        'gemini_key' => env('GEMINI_API_KEY', env('GOOGLE_VISION_API_KEY')),
     ],
 
 ];

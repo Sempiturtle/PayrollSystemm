@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description');
             $table->enum('status', ['Pending', 'Reviewing', 'Resolved', 'Dismissed'])->default('Pending');
             $table->text('admin_notes')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

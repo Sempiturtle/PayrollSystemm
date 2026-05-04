@@ -53,7 +53,10 @@ class ScheduleController extends Controller
         
         \DB::transaction(function() use ($request) {
             Schedule::whereIn('user_id', $request->user_ids)->delete();
-            User::whereIn('id', $request->user_ids)->update(['schedule_file' => null]);
+            User::whereIn('id', $request->user_ids)->update([
+                'schedule_file' => null,
+                'schedule_image' => null
+            ]);
         });
 
         return redirect()->route('schedules.index')->with('success', count($request->user_ids) . ' schedules cleared.');
@@ -67,25 +70,29 @@ class ScheduleController extends Controller
         $request->validate([
             'user_ids'      => 'required|array',
             'user_ids.*'    => 'exists:users,id',
-            'schedule_file' => 'required|mimes:xlsx,xls,csv|max:10240',
+            'schedule_image' => 'required|image|mimes:jpeg,png,jpg,gif,jfif|max:2048',
         ]);
 
         $users = User::whereIn('id', $request->user_ids)->get();
-        $file = $request->file('schedule_file');
+        $file = $request->file('schedule_image');
 
         \DB::transaction(function() use ($users, $file) {
             foreach ($users as $user) {
-                // Clear existing
-                Schedule::where('user_id', $user->id)->delete();
-                
-                // Import (using the same library as EmployeeController)
-                \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\ProfessorScheduleImport($user->id), $file);
-                
-                // Update file reference
-                $user->update(['schedule_file' => 'bulk_assigned_' . now()->format('YmdHis')]);
+                // Delete old image if exists
+                if ($user->schedule_image && file_exists(public_path($user->schedule_image))) {
+                    @unlink(public_path($user->schedule_image));
+                }
+
+                // Store with identifiable name
+                $extension = $file->getClientOriginalExtension();
+                $filename = "schedule_{$user->employee_id}_" . time() . ".{$extension}";
+                $file->move(public_path('uploads/schedules'), $filename);
+
+                // Update reference
+                $user->update(['schedule_image' => 'uploads/schedules/' . $filename]);
             }
         });
 
-        return redirect()->route('schedules.index')->with('success', 'Schedule applied to ' . $users->count() . ' employees.');
+        return redirect()->route('schedules.index')->with('success', 'Schedule image applied to ' . $users->count() . ' employees.');
     }
 }

@@ -6,10 +6,10 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="{ activeTab: 'institutional' }">
+    <div class="py-6" x-data="{ activeTab: 'institutional' }">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             <!-- Header Section -->
-            <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div class="space-y-1">
                     <div class="flex items-center gap-2 mb-2">
                         <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-widest rounded-md border border-indigo-100">Configuration</span>
@@ -38,7 +38,7 @@
             </div>
 
             <!-- Tab Navigation -->
-            <div class="flex items-center gap-4 border-b border-slate-200 mb-8 overflow-x-auto pb-px">
+            <div class="flex items-center gap-4 border-b border-slate-200 mb-4 overflow-x-auto pb-px">
                 <button @click="activeTab = 'institutional'" 
                         :class="activeTab === 'institutional' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent hover:text-slate-600 hover:border-slate-300'"
                         class="pb-4 text-sm font-bold border-b-2 transition-all whitespace-nowrap px-1">
@@ -65,10 +65,10 @@
                     <div class="grid grid-cols-1 gap-4">
                         @if(isset($settings['institutional']))
                             <div class="card-modern p-4 bg-white/60 backdrop-blur-xl border-white/40">
-                                <div class="mb-8 overflow-hidden rounded-2xl border border-slate-100">
+                                <div class="mb-4 overflow-hidden rounded-xl border border-slate-100">
                                     <div class="divide-y divide-slate-100">
                                         @foreach($settings['institutional'] as $setting)
-                                            <div class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/50 transition-colors">
+                                            <div class="p-3 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-slate-50/50 transition-colors">
                                                 <div class="space-y-1">
                                                     <h4 class="text-sm font-bold text-slate-900 tracking-tight">{{ $setting->label }}</h4>
                                                     <div class="flex items-center gap-2">
@@ -78,7 +78,7 @@
                                                 </div>
                                                 <div class="w-full md:w-80">
                                                     <input type="text" name="settings[{{ $setting->key }}]" value="{{ $setting->value }}" 
-                                                           class="w-full bg-white border-slate-200 rounded-xl text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all px-4 py-2.5 outline-none shadow-sm">
+                                                           class="w-full bg-white border-slate-200 rounded-xl text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all px-4 py-2 outline-none shadow-sm">
                                                 </div>
                                             </div>
                                         @endforeach
@@ -101,8 +101,8 @@
                                 @foreach($settings['statutory']->chunk(2) as $chunk)
                                     <div class="grid grid-cols-1 md:grid-cols-2">
                                         @foreach($chunk as $setting)
-                                            <div class="p-4 border-r border-slate-50 last:border-r-0 hover:bg-white/40 transition-all group">
-                                                <div class="flex flex-col gap-4">
+                                            <div class="p-3 border-r border-slate-50 last:border-r-0 hover:bg-white/40 transition-all group">
+                                                <div class="flex flex-col gap-3">
                                                     <div class="flex items-center justify-between">
                                                         <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -116,7 +116,7 @@
                                                                    step="any" 
                                                                    name="settings[{{ $setting->key }}]" 
                                                                    value="{{ $setting->value }}" 
-                                                                   class="w-full bg-white border-slate-200 rounded-xl text-lg font-bold text-slate-900 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all px-4 py-3 outline-none shadow-sm h-14 pr-12">
+                                                                   class="w-full bg-white border-slate-200 rounded-xl text-lg font-bold text-slate-900 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all px-4 py-2.5 outline-none shadow-sm h-12 pr-10">
                                                             @if($setting->type === 'decimal' && str_contains(strtolower($setting->label), 'rate'))
                                                                 <div class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 font-bold">%</div>
                                                             @endif
@@ -144,8 +144,8 @@
                         <div class="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/5 blur-[100px] rounded-full -ml-32 -mb-32"></div>
                         
                         <div class="relative z-10">
-                            <div class="flex items-center gap-4 mb-8">
-                                <div class="w-12 h-10 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-xl border border-white/10">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-10 h-8 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-xl border border-white/10">
                                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 </div>
                                 <div>
@@ -177,8 +177,8 @@
                     </div>
                 </div>
 
-                <div class="mt-10 flex justify-end">
-                    <button type="submit" class="px-10 py-4 bg-slate-900 text-white rounded-[1.25rem] font-bold text-sm shadow-xl hover:bg-slate-800 hover:-translate-y-1 transition-all active:scale-95 flex items-center gap-3">
+                <div class="mt-6 flex justify-end">
+                    <button type="submit" class="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm shadow-xl hover:bg-slate-800 hover:-translate-y-1 transition-all active:scale-95 flex items-center gap-3">
                         <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
                         Update Parameters
                     </button>
@@ -188,8 +188,8 @@
             <!-- Bottom Sections Grid -->
             <div class="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <!-- Audit Trail -->
-                <div class="card-modern p-4 flex flex-col h-full bg-white/60 backdrop-blur-xl border-white/40">
-                    <div class="flex items-center justify-between mb-8">
+                <div class="card-modern p-3 flex flex-col h-full bg-white/60 backdrop-blur-xl border-white/40">
+                    <div class="flex items-center justify-between mb-4">
                         <div>
                             <h3 class="text-xl font-bold text-slate-900 tracking-tight">Integrity Audit</h3>
                             <p class="text-xs text-slate-400 mt-1">Real-time administrative security trail.</p>
@@ -203,7 +203,7 @@
                         </div>
                     </div>
 
-                    <div class="space-y-6 flex-1">
+                    <div class="space-y-3 flex-1">
                         @php
                             $audits = \App\Models\AuditLog::with('user')->latest()->limit(4)->get();
                         @endphp

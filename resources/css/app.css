@@ -4,43 +4,46 @@
 
 @layer base {
     :root {
-        /* Senior Developer Palette (Stripe/Vercel inspired) */
-        --brand-primary: 79 70 229;     /* Indigo 600 */
-        --brand-accent: 99 102 241;      /* Indigo 500 */
+        /* Institutional Excellence Palette (Academic / Prestige) */
+        --brand-primary: 16 29 51;      /* Oxford Midnight #101D33 */
+        --brand-accent: 102 0 0;        /* Eton Crimson #660000 */
+        --brand-gold: 212 175 55;       /* Burnished Gold #D4AF37 */
+        
         --slate-primary: 15 23 42;       /* Slate 900 */
         --slate-secondary: 71 85 105;    /* Slate 600 */
         
-        /* Surface & Interaction */
-        --bg-main: 248 250 252;          /* Slate 50 */
+        /* Surface & Interaction (Parchment & Minimalist) */
+        --bg-main: 253 252 248;          /* Academic Parchment #FDFCF8 */
         --surface-card: 255 255 255;
-        --border-refined: 226 232 240 / 0.6; /* Slate 200 soft */
+        --border-refined: 226 232 240 / 0.4; /* Ultra-soft borders */
     }
 
     body {
-        @apply font-['Inter'] antialiased text-slate-800 bg-slate-50 selection:bg-indigo-500/10 selection:text-indigo-900;
+        @apply font-['Inter'] antialiased text-slate-800 bg-[#FDFCF8] selection:bg-[#101D33]/10 selection:text-[#101D33];
         letter-spacing: -0.01em;
     }
 
     /* ── High-Level Utilities ── */
-    .mesh-gradient-bg {
-        background-color: #020617;
-        background-image: 
-            radial-gradient(at 0% 0%, hsla(243, 75%, 35%, 0.15) 0px, transparent 50%),
-            radial-gradient(at 100% 0%, hsla(263, 70%, 35%, 0.15) 0px, transparent 50%),
-            radial-gradient(at 100% 100%, hsla(243, 75%, 35%, 0.1) 0px, transparent 50%),
-            radial-gradient(at 0% 100%, hsla(263, 70%, 35%, 0.1) 0px, transparent 50%);
+    .institutional-gradient {
+        background: radial-gradient(circle at top left, rgba(16, 29, 51, 0.03), transparent 40%),
+                    radial-gradient(circle at bottom right, rgba(102, 0, 0, 0.02), transparent 40%);
     }
 
-    .text-glow-indigo {
-        text-shadow: 0 0 20px rgba(79, 70, 229, 0.4);
+    .text-prestige-gold {
+        color: #D4AF37;
+        text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
     }
 
     .glass-dark {
-        @apply bg-slate-900/40 backdrop-blur-xl border border-white/5;
+        @apply bg-[#101D33]/90 backdrop-blur-xl border border-white/10 shadow-2xl;
     }
 
-    h1, h2, h3, h4, h5, h6 {
-        @apply font-['Outfit'] tracking-tight text-slate-900;
+    h1, h2, h3 {
+        @apply font-['DM_Serif_Display'] tracking-tight text-[#101D33];
+    }
+
+    h4, h5, h6 {
+        @apply font-['Outfit'] font-semibold tracking-tight text-[#101D33];
     }
 
     [x-cloak] { display: none !important; }
@@ -49,23 +52,23 @@
 @layer components {
     /* ── Senior Card (High-Fidelity) ── */
     .card-modern {
-        @apply bg-white rounded-2xl md:rounded-[1.25rem] border border-slate-200/60 shadow-sm transition-all duration-300;
-        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.02), 0 1px 2px -1px rgb(0 0 0 / 0.03), 0 4px 6px -1px rgb(0 0 0 / 0.02);
+        @apply bg-white rounded-xl md:rounded-[1rem] border border-slate-200/60 shadow-sm transition-all duration-300;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.02), 0 1px 1px -1px rgb(0 0 0 / 0.03);
     }
     .card-modern:hover {
         @apply border-slate-300/60 -translate-y-0.5;
-        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
     }
 
     /* ── Metric Box (Stripe Style) ── */
     .stat-high-level {
-        @apply card-modern p-4 md:p-6 flex flex-col justify-between min-h-[120px] md:min-h-[140px];
+        @apply card-modern p-3 md:p-4 flex flex-col justify-between min-h-[100px] md:min-h-[110px];
     }
     .stat-label {
-        @apply text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1;
+        @apply text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-1;
     }
     .stat-value {
-        @apply text-2xl md:text-3xl font-bold text-slate-900 tracking-tighter;
+        @apply text-xl md:text-2xl font-bold text-slate-900 tracking-tighter;
     }
 
     /* ── Sidebar (Refined Light) ── */
@@ -84,18 +87,18 @@
         @apply bg-slate-50/50 border-b border-slate-100;
     }
     .pro-table th {
-        @apply px-4 py-3 md:px-6 md:py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest;
+        @apply px-3 py-2 md:px-4 md:py-2.5 text-[9px] font-bold text-slate-400 uppercase tracking-widest;
     }
     .pro-table tbody tr {
         @apply border-b border-slate-50 hover:bg-slate-50/40 transition-all duration-200;
     }
     .pro-table td {
-        @apply px-4 py-3 md:px-6 md:py-4 text-sm text-slate-600;
+        @apply px-3 py-2 md:px-4 md:py-2.5 text-[13px] text-slate-600;
     }
 
     /* ── High-Level Buttons ── */
     .btn-action {
-        @apply px-4 py-2 md:px-5 md:py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98];
+        @apply px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-semibold text-xs md:text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98];
     }
     .btn-action-primary {
         @apply btn-action bg-slate-900 text-white hover:bg-slate-800 shadow-sm hover:shadow-md;

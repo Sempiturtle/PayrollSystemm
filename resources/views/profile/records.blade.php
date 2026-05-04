@@ -11,48 +11,48 @@
         </div>
     </x-slot>
 
-    <div class="max-w-4xl mx-auto space-y-6">
+    <div class="max-w-4xl mx-auto space-y-4">
         <!-- Identity Card -->
         <div class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-            <div class="p-4 border-b border-slate-50 bg-slate-50/50 flex flex-col md:flex-row items-center gap-6">
-                <div class="w-24 h-24 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xl font-bold shadow-xl">
+            <div class="p-3 border-b border-slate-50 bg-slate-50/50 flex flex-col md:flex-row items-center gap-4">
+                <div class="w-16 h-16 rounded-xl bg-slate-900 text-white flex items-center justify-center text-lg font-bold shadow-xl">
                     {{ strtoupper(substr($user->name, 0, 1)) }}
                 </div>
                 <div class="text-center md:text-left">
-                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight mb-1">{{ $user->name }}</h3>
-                    <p class="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">{{ $user->role }}</p>
-                    <div class="flex flex-wrap justify-center md:justify-start gap-4">
-                        <div class="flex items-center gap-2 text-slate-500 text-xs font-bold">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <h3 class="text-lg font-extrabold text-slate-900 tracking-tight mb-0.5">{{ $user->name }}</h3>
+                    <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mb-1.5">{{ $user->role }}</p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3">
+                        <div class="flex items-center gap-1.5 text-slate-500 text-[10px] font-bold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                             ACTIVE STATUS
                         </div>
                         <div class="text-slate-300">•</div>
-                        <div class="text-slate-500 text-xs font-bold uppercase tracking-tighter">ESTABLISHED: {{ $user->created_at->format('M Y') }}</div>
+                        <div class="text-slate-500 text-[10px] font-bold uppercase tracking-tighter">ESTABLISHED: {{ $user->created_at->format('M Y') }}</div>
                     </div>
                 </div>
                 <div class="md:ml-auto">
-                    <span class="px-4 py-2 bg-white border border-slate-100 rounded-xl text-xs font-bold text-slate-900 shadow-sm">ID: {{ $user->employee_id ?: 'UNASSIGNED' }}</span>
+                    <span class="px-3 py-1.5 bg-white border border-slate-100 rounded-lg text-[10px] font-bold text-slate-900 shadow-sm">ID: {{ $user->employee_id ?: 'UNASSIGNED' }}</span>
                 </div>
             </div>
 
-            <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+            <div class="p-3 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                 <!-- Statutory Information Section -->
-                <div class="space-y-6">
-                    <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                <div class="space-y-4">
+                    <h4 class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                         Statutory Identifiers
                     </h4>
                     
-                    <div class="space-y-4">
+                    <div class="space-y-3">
                         @foreach(['tin' => 'TIN ID', 'sss' => 'SSS Number', 'philhealth' => 'PhilHealth ID', 'pagibig' => 'Pag-IBIG Number'] as $key => $label)
-                            <div class="flex justify-between items-center py-2 border-b border-slate-50" x-data="{ show: false }">
-                                <span class="text-xs font-bold text-slate-500 uppercase tracking-tight">{{ $label }}</span>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-xs font-bold text-slate-900 tabular-nums" x-text="show ? '{{ $statutory[$key]['raw'] ?? 'Not Set' }}' : '{{ $statutory[$key]['masked'] }}'"></span>
+                            <div class="flex justify-between items-center py-1.5 border-b border-slate-50" x-data="{ show: false }">
+                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-tight">{{ $label }}</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-bold text-slate-900 tabular-nums" x-text="show ? '{{ $statutory[$key]['raw'] ?? 'Not Set' }}' : '{{ $statutory[$key]['masked'] }}'"></span>
                                     @if($statutory[$key]['raw'])
                                         <button @click="show = !show" class="text-slate-400 hover:text-indigo-600 transition-colors focus:outline-none">
-                                            <svg x-show="!show" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                            <svg x-show="show" x-cloak class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path></svg>
+                                            <svg x-show="!show" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                            <svg x-show="show" x-cloak class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path></svg>
                                         </button>
                                     @endif
                                 </div>
@@ -91,19 +91,18 @@
 
         <!-- Institutional Schedule -->
         <div class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-            <div class="px-8 py-5 border-b border-slate-50 bg-slate-50/30 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <div class="px-4 py-2.5 border-b border-slate-50 bg-slate-50/30 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
                     <div>
-                        <h4 class="text-sm font-bold text-slate-900">Institutional Schedule</h4>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Recurring Weekly Assignment</p>
+                        <h4 class="text-xs font-bold text-slate-900">Institutional Schedule</h4>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Recurring Weekly Assignment</p>
                     </div>
                 </div>
                 @isset($user->schedule_file)
-                    <a href="{{ route('profile.schedule.download') }}" class="flex items-center gap-2 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-[10px] font-bold hover:bg-slate-800 transition-colors shadow-sm">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    <a href="{{ route('profile.schedule.download') }}" class="flex items-center gap-1.5 px-2 py-1 bg-slate-900 text-white rounded-lg text-[9px] font-bold hover:bg-slate-800 transition-colors shadow-sm">
                         DOWNLOAD EXCEL
                     </a>
                 @endisset
@@ -113,26 +112,26 @@
                 <table class="w-full text-left">
                     <thead>
                         <tr class="bg-slate-50/50">
-                            <th class="px-8 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50">Day</th>
-                            <th class="px-8 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50">Shift Schedule</th>
-                            <th class="px-8 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50 text-right">Hours</th>
+                            <th class="px-4 py-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50">Day</th>
+                            <th class="px-4 py-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50">Shift Schedule</th>
+                            <th class="px-4 py-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50 text-right">Hours</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-50">
                         @forelse($schedules as $schedule)
                             <tr class="group hover:bg-slate-50/30 transition-colors">
-                                <td class="px-8 py-4">
-                                    <span class="text-sm font-bold text-slate-900">{{ $schedule->day_of_week }}</span>
+                                <td class="px-4 py-2">
+                                    <span class="text-xs font-bold text-slate-900">{{ $schedule->day_of_week }}</span>
                                 </td>
-                                <td class="px-8 py-4">
-                                    <div class="flex items-center gap-2 text-sm font-medium text-slate-600">
-                                        <span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[11px] font-bold">{{ \Carbon\Carbon::parse($schedule->start_time)->format('h:i A') }}</span>
-                                        <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                                        <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[11px] font-bold">{{ \Carbon\Carbon::parse($schedule->end_time)->format('h:i A') }}</span>
+                                <td class="px-4 py-2">
+                                    <div class="flex items-center gap-2 text-xs font-medium text-slate-600">
+                                        <span class="px-1.5 py-0.5 bg-indigo-50 text-indigo-700 rounded text-[10px] font-bold">{{ \Carbon\Carbon::parse($schedule->start_time)->format('h:i A') }}</span>
+                                        <svg class="w-2.5 h-2.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                        <span class="px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px] font-bold">{{ \Carbon\Carbon::parse($schedule->end_time)->format('h:i A') }}</span>
                                     </div>
                                 </td>
-                                <td class="px-8 py-4 text-right">
-                                    <span class="text-sm font-bold text-slate-900 tabular-nums">{{ round(\Carbon\Carbon::parse($schedule->end_time)->diffInMinutes(\Carbon\Carbon::parse($schedule->start_time)) / 60, 1) }} hrs</span>
+                                <td class="px-4 py-2 text-right">
+                                    <span class="text-xs font-bold text-slate-900 tabular-nums">{{ round(\Carbon\Carbon::parse($schedule->end_time)->diffInMinutes(\Carbon\Carbon::parse($schedule->start_time)) / 60, 1) }} hrs</span>
                                 </td>
                             </tr>
                         @empty

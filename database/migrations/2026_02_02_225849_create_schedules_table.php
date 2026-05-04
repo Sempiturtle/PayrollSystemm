@@ -19,6 +19,7 @@ return new class extends Migration
             $table->time('end_time');
             $table->date('effective_from')->nullable();
             $table->unique(['user_id', 'day_of_week']);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

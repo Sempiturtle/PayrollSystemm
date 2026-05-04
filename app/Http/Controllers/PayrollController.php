@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Services\PayrollService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Notifications\PayrollFinalized;
 
 class PayrollController extends Controller
 {
@@ -19,7 +20,7 @@ class PayrollController extends Controller
 
     public function index()
     {
-        $query = Payroll::with('user')->orderBy('period_end', 'desc');
+        $query = Payroll::with(['user', 'adjustments'])->orderBy('period_end', 'desc');
         
         if (!auth()->user()->isAdmin()) {
             $query->where('user_id', auth()->id());
@@ -64,7 +65,6 @@ class PayrollController extends Controller
         $filename = 'payslip_' . $payroll->user->name . '_' . $payroll->period_end . '.pdf';
         return $pdf->download(str_replace(' ', '_', strtolower($filename)));
     }
-
     /**
      * Finalize (Lock) the payroll record.
      */
@@ -75,6 +75,9 @@ class PayrollController extends Controller
         }
 
         $payroll->update(['status' => 'Finalized']);
+
+        // Notify User
+        $payroll->user->notify(new PayrollFinalized($payroll));
 
         return redirect()->back()->with('success', 'Payroll record for ' . $payroll->user->name . ' has been finalized and locked.');
     }
