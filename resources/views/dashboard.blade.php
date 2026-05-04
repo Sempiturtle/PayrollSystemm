@@ -7,34 +7,34 @@
         </div>
     </x-slot>
 
-    <div class="space-y-8 animate-in-up">
+    <div class="space-y-6 animate-in-up">
         <!-- Dashboard Header -->
-        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-3 border-b border-[#101D33]/5">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-2 border-b border-[#101D33]/5">
             <div>
-                <h1 class="text-3xl font-['DM_Serif_Display'] text-[#101D33] leading-none mb-2">Institutional <span class="text-[#D4AF37]">Command</span> Center</h1>
-                <p class="text-[10px] text-[#101D33]/30 font-black uppercase tracking-[0.4em]">Real-time Executive Oversight & Fiscal Governance</p>
+                <h1 class="text-2xl font-['DM_Serif_Display'] text-[#101D33] leading-none mb-1.5">Institutional <span class="text-[#D4AF37]">Command</span> Center</h1>
+                <p class="text-[9px] text-[#101D33]/30 font-black uppercase tracking-[0.4em]">Real-time Executive Oversight & Fiscal Governance</p>
             </div>
             
-            <div class="flex items-center gap-4">
-                <a href="{{ route('exports.executive-summary') }}" class="px-6 py-3 bg-[#101D33] text-[#D4AF37] rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#660000] hover:text-white transition-all shadow-xl flex items-center gap-3 group">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('exports.executive-summary') }}" class="px-5 py-2.5 bg-[#101D33] text-[#D4AF37] rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-[#660000] hover:text-white transition-all shadow-xl flex items-center gap-2.5 group">
                     <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     Institutional Export
                 </a>
-                <div class="hidden xl:flex items-center gap-4 px-6 py-3 bg-white rounded-[1.5rem] border border-[#101D33]/5 shadow-[0_10px_30px_rgba(16,29,51,0.03)]">
+                <div class="hidden xl:flex items-center gap-4 px-5 py-2.5 bg-white rounded-xl border border-[#101D33]/5 shadow-[0_10px_30px_rgba(16,29,51,0.03)]">
                     <div class="text-right">
-                        <div class="text-[8px] font-black text-[#101D33]/30 uppercase tracking-[0.3em] mb-1 leading-none">Central Terminal Time</div>
-                        <div class="text-base font-bold text-[#101D33] tabular-nums leading-none tracking-tight">
+                        <div class="text-[7px] font-black text-[#101D33]/30 uppercase tracking-[0.3em] mb-1 leading-none">Central Terminal Time</div>
+                        <div class="text-sm font-bold text-[#101D33] tabular-nums leading-none tracking-tight">
                             <span x-data="{ time: '' }" x-init="setInterval(() => { 
                                 time = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }) 
                             }, 1000)" x-text="time || '00:00:00'"></span>
                         </div>
                     </div>
-                    <div class="w-10 h-10 rounded-xl bg-[#101D33]/5 flex items-center justify-center text-[#101D33]/30">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div class="w-8 h-8 rounded-lg bg-[#101D33]/5 flex items-center justify-center text-[#101D33]/30">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
                 </div>
                 @if(Auth::user()->isAdmin())
-                    <a href="{{ route('attendance.scanner') }}" class="group relative px-6 py-3.5 bg-[#101D33] text-white rounded-[1.5rem] font-bold text-xs shadow-[0_20px_40px_rgba(16,29,51,0.2)] transition-all hover:scale-[1.02] active:scale-[0.98] overflow-hidden flex items-center gap-3">
+                    <a href="{{ route('attendance.scanner') }}" class="group relative px-5 py-2.5 bg-[#101D33] text-white rounded-xl font-bold text-[11px] shadow-[0_20px_40px_rgba(16,29,51,0.2)] transition-all hover:scale-[1.02] active:scale-[0.98] overflow-hidden flex items-center gap-2.5">
                         <div class="absolute inset-0 bg-gradient-to-tr from-[#660000]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <svg class="w-4 h-4 relative z-10 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
                         <span class="relative z-10">Initialize Terminal</span>
@@ -127,68 +127,68 @@
 
         {{-- Top Metrics --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white rounded-[2rem] p-6 border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] flex flex-col justify-between h-48 relative overflow-hidden group">
+            <div class="bg-white rounded-2xl p-4 border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] flex flex-col justify-between h-40 relative overflow-hidden group">
                 <div class="absolute -right-8 -top-8 w-32 h-32 bg-[#101D33]/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div class="flex items-center justify-between relative z-10">
-                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">Personnel Capital</span>
-                    <div class="w-9 h-9 rounded-xl bg-[#101D33]/5 flex items-center justify-center text-[#101D33]">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span class="text-[8px] font-bold text-slate-400 uppercase tracking-[0.2em]">Personnel Capital</span>
+                    <div class="w-8 h-8 rounded-lg bg-[#101D33]/5 flex items-center justify-center text-[#101D33]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     </div>
                 </div>
-                <div class="mt-2 relative z-10">
-                    <div class="text-3xl font-['DM_Serif_Display'] text-[#101D33] tracking-tighter tabular-nums">{{ $totalEmployees }}</div>
-                    <div class="mt-1 flex items-center gap-2">
-                        <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded text-[8px] font-bold uppercase tracking-widest">+1 (30d)</span>
-                        <span class="text-[8px] font-bold text-slate-300 uppercase tracking-widest">Growth Vector</span>
+                <div class="mt-1 relative z-10">
+                    <div class="text-2xl font-['DM_Serif_Display'] text-[#101D33] tracking-tighter tabular-nums">{{ $totalEmployees }}</div>
+                    <div class="mt-0.5 flex items-center gap-2">
+                        <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded text-[7px] font-bold uppercase tracking-widest">+1 (30d)</span>
+                        <span class="text-[7px] font-bold text-slate-300 uppercase tracking-widest">Growth Vector</span>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-[2rem] p-6 border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] flex flex-col justify-between h-48 relative overflow-hidden group border-b-4 border-b-emerald-600">
+            <div class="bg-white rounded-2xl p-4 border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] flex flex-col justify-between h-40 relative overflow-hidden group border-b-4 border-b-emerald-600">
                 <div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div class="flex items-center justify-between relative z-10">
-                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">Presence Index</span>
-                    <div class="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <span class="text-[8px] font-bold text-slate-400 uppercase tracking-[0.2em]">Presence Index</span>
+                    <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     </div>
                 </div>
-                <div class="mt-2 relative z-10">
-                    <div class="text-3xl font-['DM_Serif_Display'] text-emerald-600 tracking-tighter tabular-nums">{{ $totalEmployees > 0 ? round(($presentToday / $totalEmployees) * 100) : 0 }}%</div>
-                    <div class="mt-1 flex items-center gap-2">
-                        <span class="text-[10px] font-['DM_Serif_Text'] text-[#101D33] italic opacity-60">{{ $presentToday }} Authenticated</span>
+                <div class="mt-1 relative z-10">
+                    <div class="text-2xl font-['DM_Serif_Display'] text-emerald-600 tracking-tighter tabular-nums">{{ $totalEmployees > 0 ? round(($presentToday / $totalEmployees) * 100) : 0 }}%</div>
+                    <div class="mt-0.5 flex items-center gap-2">
+                        <span class="text-[9px] font-['DM_Serif_Text'] text-[#101D33] italic opacity-60">{{ $presentToday }} Authenticated</span>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-[2rem] p-6 border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] flex flex-col justify-between h-48 relative overflow-hidden group">
+            <div class="bg-white rounded-2xl p-4 border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] flex flex-col justify-between h-40 relative overflow-hidden group">
                 <div class="absolute -right-8 -top-8 w-32 h-32 bg-[#660000]/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 <div class="flex items-center justify-between relative z-10">
-                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">Cycle Latency</span>
-                    <div class="w-9 h-9 rounded-xl bg-[#660000]/5 flex items-center justify-center text-[#660000]">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="text-[8px] font-bold text-slate-400 uppercase tracking-[0.2em]">Cycle Latency</span>
+                    <div class="w-8 h-8 rounded-lg bg-[#660000]/5 flex items-center justify-center text-[#660000]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
                 </div>
-                <div class="mt-2 relative z-10">
-                    <div class="text-3xl font-['DM_Serif_Display'] {{ $pendingLeaves > 0 ? 'text-[#660000]' : 'text-slate-200' }} tracking-tighter tabular-nums">{{ $pendingLeaves }}</div>
-                    <div class="mt-1 flex items-center gap-2">
-                        <span class="text-[8px] font-bold text-[#660000] uppercase tracking-[0.2em]">Pending Auth</span>
+                <div class="mt-1 relative z-10">
+                    <div class="text-2xl font-['DM_Serif_Display'] {{ $pendingLeaves > 0 ? 'text-[#660000]' : 'text-slate-200' }} tracking-tighter tabular-nums">{{ $pendingLeaves }}</div>
+                    <div class="mt-0.5 flex items-center gap-2">
+                        <span class="text-[7px] font-bold text-[#660000] uppercase tracking-[0.2em]">Pending Auth</span>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-[#101D33] text-white rounded-[2rem] p-6 shadow-[0_30px_60px_rgba(16,29,51,0.2)] flex flex-col justify-between h-48 relative overflow-hidden group">
+            <div class="bg-[#101D33] text-white rounded-2xl p-4 shadow-[0_30px_60px_rgba(16,29,51,0.2)] flex flex-col justify-between h-40 relative overflow-hidden group">
                 <div class="absolute inset-0 bg-gradient-to-tr from-[#660000]/30 to-transparent opacity-50"></div>
                 <div class="flex items-center justify-between relative z-10">
-                    <span class="text-[9px] font-bold text-[#D4AF37] uppercase tracking-[0.3em]">Institutional Fiscal Pulse</span>
-                    <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-[#D4AF37]">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="text-[8px] font-bold text-[#D4AF37] uppercase tracking-[0.3em]">Institutional Fiscal Pulse</span>
+                    <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-[#D4AF37]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
                 </div>
-                <div class="mt-2 relative z-10">
+                <div class="mt-1 relative z-10">
                     <div class="flex items-baseline gap-2">
-                        <div class="text-3xl font-['DM_Serif_Display'] text-white tabular-nums leading-none">₱{{ number_format($institutionalPayrollPulse, 2) }}</div>
+                        <div class="text-2xl font-['DM_Serif_Display'] text-white tabular-nums leading-none">₱{{ number_format($institutionalPayrollPulse, 2) }}</div>
                     </div>
-                    <div class="mt-3 flex items-center gap-2.5">
+                    <div class="mt-2.5 flex items-center gap-2.5">
                         <div class="flex-1 bg-white/10 h-1 rounded-full overflow-hidden">
                             @php 
                                 $totalRows = ($statStats->finalized_count + $statStats->draft_count) ?: 1;
@@ -196,18 +196,18 @@
                             @endphp
                             <div class="bg-[#D4AF37] h-full transition-all duration-1000" style="width: {{ $percent }}%"></div>
                         </div>
-                        <span class="text-[9px] font-black text-white tabular-nums tracking-tighter">{{ round($percent) }}%</span>
+                        <span class="text-[8px] font-black text-white tabular-nums tracking-tighter">{{ round($percent) }}%</span>
                     </div>
-                    <div class="mt-1.5 text-[8px] font-bold text-white/30 uppercase tracking-[0.2em]">{{ $statStats->finalized_count }} Finalized Ledgers This Cycle</div>
+                    <div class="mt-1 text-[7px] font-bold text-white/30 uppercase tracking-[0.2em]">{{ $statStats->finalized_count }} Finalized Ledgers This Cycle</div>
                 </div>
             </div>
         </div>
 
 
         {{-- Row 2: Operational & Visual Intelligence --}}
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-stretch">
             {{-- Attendance Distribution (Donut) --}}
-            <div class="xl:col-span-4 bg-white rounded-[2.5rem] p-6 border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] flex flex-col h-full overflow-hidden">
+            <div class="xl:col-span-4 bg-white rounded-2xl p-5 border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] flex flex-col h-full overflow-hidden">
                 <div class="mb-6">
                     <h3 class="text-xs font-bold text-[#101D33] uppercase tracking-[0.3em] mb-1 leading-none">Authentication Flux</h3>
                     <p class="text-[10px] text-slate-400 font-['DM_Serif_Text'] italic leading-none">Real-time presence distribution.</p>
@@ -232,7 +232,7 @@
             </div>
 
             {{-- Institutional Pulse (Hourly Flow Area Chart) --}}
-            <div class="xl:col-span-8 bg-white rounded-[2.5rem] p-6 border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] flex flex-col h-full overflow-hidden">
+            <div class="xl:col-span-8 bg-white rounded-2xl p-5 border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] flex flex-col h-full overflow-hidden">
                 <div class="flex items-center justify-between mb-6">
                     <div>
                         <h3 class="text-xs font-bold text-[#101D33] uppercase tracking-[0.3em] mb-1 leading-none">Institutional Pulse</h3>
@@ -250,9 +250,9 @@
         </div>
 
         {{-- Row 3: Performance & Streams --}}
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-stretch">
             {{-- Performance Leaderboard --}}
-            <div class="xl:col-span-4 bg-white rounded-[2.5rem] p-6 border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] flex flex-col h-full overflow-hidden">
+            <div class="xl:col-span-4 bg-white rounded-2xl p-5 border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] flex flex-col h-full overflow-hidden">
                 <div class="mb-6">
                     <h3 class="text-xs font-bold text-[#101D33] uppercase tracking-[0.3em] mb-1 leading-none">Institutional Apex</h3>
                     <p class="text-[10px] text-slate-400 font-['DM_Serif_Text'] italic leading-none">Distinguished faculty presence rankings.</p>
@@ -297,7 +297,7 @@
             </div>
 
             {{-- Authentication Logs --}}
-            <div class="xl:col-span-8 bg-white rounded-[2.5rem] overflow-hidden border border-[#101D33]/5 shadow-[0_30px_100px_rgba(16,29,51,0.06)] flex flex-col h-full">
+            <div class="xl:col-span-8 bg-white rounded-2xl overflow-hidden border border-[#101D33]/5 shadow-[0_30px_100px_rgba(16,29,51,0.06)] flex flex-col h-full">
                 <div class="p-6 border-b border-[#101D33]/5 flex items-center justify-between">
                     <div>
                         <h3 class="text-xs font-bold text-[#101D33] uppercase tracking-[0.3em] mb-1 leading-none">Authentication Log</h3>

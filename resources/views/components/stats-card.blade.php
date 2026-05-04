@@ -19,9 +19,9 @@ $iconPaths = [
 @endphp
 
 <div class="stat-high-level group">
-    <div class="flex items-center justify-between mb-3 md:mb-4">
-        <div class="w-10 h-10 rounded-xl {{ $c['bg'] }} {{ $c['text'] }} flex items-center justify-center ring-1 {{ $c['ring'] }} transition-transform duration-300 group-hover:scale-110">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="flex items-center justify-between mb-2 md:mb-3">
+        <div class="w-8 h-8 rounded-lg {{ $c['bg'] }} {{ $c['text'] }} flex items-center justify-center ring-1 {{ $c['ring'] }} transition-transform duration-300 group-hover:scale-110">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="{{ $iconPaths[$icon] ?? $iconPaths['users'] }}"></path>
             </svg>
         </div>
@@ -38,7 +38,7 @@ $iconPaths = [
     </div>
 
     <div>
-        <div class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">{{ $value }}</div>
-        <h4 class="text-xs md:text-sm font-medium text-slate-500 mt-1">{{ $title }}</h4>
+        <div class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">{{ $value }}</div>
+        <h4 class="text-[11px] md:text-xs font-medium text-slate-500 mt-0.5">{{ $title }}</h4>
     </div>
 </div>

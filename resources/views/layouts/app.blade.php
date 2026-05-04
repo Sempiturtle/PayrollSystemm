@@ -35,9 +35,9 @@
 
             <!-- Main Content Area -->
             <div class="flex-1 flex flex-col min-w-0 overflow-hidden transition-all duration-300"
-                 :class="sidebarOpen ? 'lg:pl-64' : 'lg:pl-0'">
+                 :class="sidebarOpen ? 'lg:pl-56' : 'lg:pl-0'">
                 <!-- Top Header Bar -->
-                <header class="h-16 flex items-center justify-between px-4 md:px-8 bg-white/70 backdrop-blur-md border-b border-[#101D33]/5 sticky top-0 z-30">
+                <header class="h-14 flex items-center justify-between px-4 md:px-6 bg-white/70 backdrop-blur-md border-b border-[#101D33]/5 sticky top-0 z-30">
                     <div class="flex items-center gap-6">
                         <!-- Hamburger Button (Desktop) -->
                         <button @click="toggleSidebar()" class="hidden lg:flex p-2 text-[#101D33]/40 hover:text-[#101D33] hover:bg-[#101D33]/5 rounded-xl transition-all">
@@ -63,7 +63,7 @@
                     <div class="flex items-center gap-6">
                         <!-- Neural Alert Bell -->
                         <div x-data="{ open: false }" class="relative">
-                            <button @click="open = !open" class="relative p-2.5 text-[#101D33]/40 hover:text-[#101D33] hover:bg-[#101D33]/5 rounded-xl transition-all group">
+                            <button @click="open = !open" class="relative p-2 text-[#101D33]/40 hover:text-[#101D33] hover:bg-[#101D33]/5 rounded-lg transition-all group">
                                 <svg class="w-5 h-5 transition-transform group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                                 </svg>
@@ -119,7 +119,7 @@
                                 <div class="text-[10px] font-bold text-[#660000] uppercase tabular-nums tracking-[0.2em] leading-none mb-1.5">{{ Auth::user()->role }}</div>
                                 <div class="text-sm font-['DM_Serif_Text'] text-[#101D33] leading-none">{{ Auth::user()->name }}</div>
                             </div>
-                            <div class="w-9 h-9 rounded-xl bg-[#101D33] text-white flex items-center justify-center text-sm font-bold shadow-xl shadow-[#101D33]/20 hover:bg-[#101D33]/90 transition-all cursor-pointer border border-white/10 overflow-hidden relative group">
+                            <div class="w-8 h-8 rounded-lg bg-[#101D33] text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-[#101D33]/20 hover:bg-[#101D33]/90 transition-all cursor-pointer border border-white/10 overflow-hidden relative group">
                                 <div class="absolute inset-0 bg-gradient-to-tr from-[#660000]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 <span class="relative z-10">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                             </div>
@@ -128,7 +128,7 @@
                 </header>
 
                 <!-- Page Content -->
-                <main class="flex-1 overflow-y-auto p-4 md:p-8">
+                <main class="flex-1 overflow-y-auto p-3 md:p-6">
                     <div class="max-w-[140rem] mx-auto space-y-6">
                         <!-- Premium Toast Notifications -->
                         <div x-data="{ 

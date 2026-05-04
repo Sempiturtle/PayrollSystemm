@@ -2,8 +2,8 @@
 
 @php
 $classes = ($active ?? false)
-    ? 'flex items-center gap-2.5 px-3 py-1.5 text-xs font-bold text-slate-900 bg-slate-50/80 rounded-lg transition-all duration-200 border border-slate-100 shadow-sm'
-    : 'flex items-center gap-2.5 px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-900 hover:bg-slate-50/50 rounded-lg transition-all duration-200 group';
+    ? 'flex items-center gap-2 px-2 py-1 text-[11px] font-bold text-slate-900 bg-slate-50/80 rounded-lg transition-all duration-200 border border-slate-100 shadow-sm'
+    : 'flex items-center gap-2 px-2 py-1 text-[11px] font-bold text-slate-400 hover:text-slate-900 hover:bg-slate-50/50 rounded-lg transition-all duration-200 group';
 
 $iconColor = ($active ?? false)
     ? 'text-indigo-600'

@@ -7,7 +7,7 @@
         </div>
     </x-slot>
 
-    <div class="space-y-8 animate-in-up" x-data="{ 
+    <div class="space-y-6 animate-in-up" x-data="{ 
         editModal: false, 
         addModal: false,
         activeLog: { id: '', user_id: '', date: '', time_in: '', time_out: '', status: '' },
@@ -17,22 +17,22 @@
         }
     }">
         <!-- Filters & Actions Header -->
-        <div class="bg-white rounded-[2.5rem] border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] p-6 lg:p-8 flex flex-col xl:flex-row xl:items-center justify-between gap-8 overflow-hidden relative group">
+        <div class="bg-white rounded-2xl border border-[#101D33]/5 shadow-[0_20px_60px_rgba(16,29,51,0.04)] p-4 lg:p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-4 overflow-hidden relative group">
             <div class="absolute inset-0 bg-gradient-to-tr from-[#660000]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             
-            <form action="{{ route('attendance.index') }}" method="GET" class="flex flex-wrap items-center gap-6 flex-1 relative z-10">
-                <div class="flex items-center gap-3">
-                    <label class="text-[9px] font-black text-[#101D33]/30 uppercase tracking-[0.2em]">Temporal Range</label>
-                    <div class="flex items-center bg-[#FDFCF8] rounded-2xl border border-[#101D33]/5 overflow-hidden">
-                        <input type="date" name="date_from" value="{{ $filters['date_from'] ?? '' }}" class="bg-transparent border-none text-[11px] font-bold text-[#101D33] focus:ring-0 py-3 pl-4 pr-2">
-                        <span class="text-slate-300 mx-1">—</span>
-                        <input type="date" name="date_to" value="{{ $filters['date_to'] ?? '' }}" class="bg-transparent border-none text-[11px] font-bold text-[#101D33] focus:ring-0 py-3 pr-4 pl-2">
+            <form action="{{ route('attendance.index') }}" method="GET" class="flex flex-wrap items-center gap-4 flex-1 relative z-10">
+                <div class="flex items-center gap-2">
+                    <label class="text-[8px] font-black text-[#101D33]/30 uppercase tracking-[0.2em]">Temporal Range</label>
+                    <div class="flex items-center bg-[#FDFCF8] rounded-xl border border-[#101D33]/5 overflow-hidden">
+                        <input type="date" name="date_from" value="{{ $filters['date_from'] ?? '' }}" class="bg-transparent border-none text-[10px] font-bold text-[#101D33] focus:ring-0 py-2 pl-3 pr-1">
+                        <span class="text-slate-300 mx-0.5">—</span>
+                        <input type="date" name="date_to" value="{{ $filters['date_to'] ?? '' }}" class="bg-transparent border-none text-[10px] font-bold text-[#101D33] focus:ring-0 py-2 pr-3 pl-1">
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <label class="text-[9px] font-black text-[#101D33]/30 uppercase tracking-[0.2em]">Asset</label>
-                    <select name="user_id" class="bg-[#FDFCF8] border-[#101D33]/5 rounded-2xl text-[11px] font-bold text-[#101D33] focus:ring-[#101D33] min-w-[220px] py-3 px-5">
+                <div class="flex items-center gap-2">
+                    <label class="text-[8px] font-black text-[#101D33]/30 uppercase tracking-[0.2em]">Asset</label>
+                    <select name="user_id" class="bg-[#FDFCF8] border-[#101D33]/5 rounded-xl text-[10px] font-bold text-[#101D33] focus:ring-[#101D33] min-w-[180px] py-2 px-4">
                         <option value="">All Institutional Assets</option>
                         @foreach($employees as $emp)
                             <option value="{{ $emp->id }}" {{ ($filters['user_id'] ?? '') == $emp->id ? 'selected' : '' }}>{{ $emp->name }}</option>
@@ -40,64 +40,64 @@
                     </select>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <label class="text-[9px] font-black text-[#101D33]/30 uppercase tracking-[0.2em]">Stream</label>
-                    <select name="status" class="bg-[#FDFCF8] border-[#101D33]/5 rounded-2xl text-[11px] font-bold text-[#101D33] focus:ring-[#101D33] py-3 px-5">
+                <div class="flex items-center gap-2">
+                    <label class="text-[8px] font-black text-[#101D33]/30 uppercase tracking-[0.2em]">Stream</label>
+                    <select name="status" class="bg-[#FDFCF8] border-[#101D33]/5 rounded-xl text-[10px] font-bold text-[#101D33] focus:ring-[#101D33] py-2 px-4">
                         <option value="">All Protocols</option>
                         <option value="On-time" {{ ($filters['status'] ?? '') == 'On-time' ? 'selected' : '' }}>On-time Only</option>
                         <option value="Late" {{ ($filters['status'] ?? '') == 'Late' ? 'selected' : '' }}>Late Only</option>
                     </select>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <button type="submit" class="w-12 h-12 flex items-center justify-center bg-[#101D33] text-white rounded-2xl hover:bg-[#660000] transition-all shadow-xl shadow-[#101D33]/10">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <div class="flex items-center gap-3">
+                    <button type="submit" class="w-10 h-10 flex items-center justify-center bg-[#101D33] text-white rounded-xl hover:bg-[#660000] transition-all shadow-xl shadow-[#101D33]/10">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </button>
                     @if(!empty($filters))
-                        <a href="{{ route('attendance.index') }}" class="text-[10px] font-black text-[#660000] uppercase tracking-widest hover:opacity-70 transition-all underline underline-offset-8 decoration-2">Reset Grid</a>
+                        <a href="{{ route('attendance.index') }}" class="text-[9px] font-black text-[#660000] uppercase tracking-widest hover:opacity-70 transition-all underline underline-offset-4 decoration-1">Reset Grid</a>
                     @endif
                 </div>
             </form>
 
-            <div class="flex items-center gap-4 relative z-10 xl:border-l border-[#101D33]/5 xl:pl-8">
-                <a href="{{ route('attendance.export', request()->all()) }}" class="flex items-center gap-3 px-6 py-4 bg-white text-[#101D33] border border-[#101D33]/10 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[#FDFCF8] transition-all shadow-sm">
-                    <svg class="w-4 h-4 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <div class="flex items-center gap-3 relative z-10 xl:border-l border-[#101D33]/5 xl:pl-5">
+                <a href="{{ route('attendance.export', request()->all()) }}" class="flex items-center gap-2 px-4 py-2.5 bg-white text-[#101D33] border border-[#101D33]/10 rounded-xl font-black text-[9px] uppercase tracking-[0.2em] hover:bg-[#FDFCF8] transition-all shadow-sm">
+                    <svg class="w-3.5 h-3.5 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     Export Ledger
                 </a>
-                <button @click="addModal = true" class="flex items-center gap-3 px-6 py-4 bg-[#101D33] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-[#101D33]/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                    <svg class="w-4 h-4 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                <button @click="addModal = true" class="flex items-center gap-2 px-4 py-2.5 bg-[#101D33] text-white rounded-xl font-black text-[9px] uppercase tracking-[0.2em] shadow-xl shadow-[#101D33]/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    <svg class="w-3.5 h-3.5 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                     Manual Registry
                 </button>
             </div>
         </div>
 
         <!-- Table Section -->
-        <div class="bg-white rounded-[3rem] border border-[#101D33]/5 shadow-[0_30px_100px_rgba(16,29,51,0.06)] overflow-hidden">
+        <div class="bg-white rounded-3xl border border-[#101D33]/5 shadow-[0_30px_100px_rgba(16,29,51,0.06)] overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-white border-b border-[#101D33]/5">
-                            <th class="px-10 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Asset Identity</th>
-                            <th class="px-10 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Temporal Point</th>
-                            <th class="px-10 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Authentication In</th>
-                            <th class="px-10 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Authentication Out</th>
-                            <th class="px-10 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Protocol State</th>
-                            <th class="px-10 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Labor Value</th>
-                            <th class="px-10 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] text-right">Registry Actions</th>
+                            <th class="px-5 py-3 text-[8px] font-black text-slate-400 uppercase tracking-[0.3em]">Asset Identity</th>
+                            <th class="px-5 py-3 text-[8px] font-black text-slate-400 uppercase tracking-[0.3em]">Temporal Point</th>
+                            <th class="px-5 py-3 text-[8px] font-black text-slate-400 uppercase tracking-[0.3em]">Authentication In</th>
+                            <th class="px-5 py-3 text-[8px] font-black text-slate-400 uppercase tracking-[0.3em]">Authentication Out</th>
+                            <th class="px-5 py-3 text-[8px] font-black text-slate-400 uppercase tracking-[0.3em]">Protocol State</th>
+                            <th class="px-5 py-3 text-[8px] font-black text-slate-400 uppercase tracking-[0.3em]">Labor Value</th>
+                            <th class="px-5 py-3 text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] text-right">Registry Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#101D33]/5">
                         @forelse($logs as $log)
                             <tr class="hover:bg-[#FDFCF8] transition-all group relative">
-                                <td class="px-10 py-8">
-                                    <div class="flex items-center gap-5">
-                                        <div class="w-10 h-10 rounded-2xl bg-[#101D33] text-white flex items-center justify-center font-['DM_Serif_Display'] text-sm relative overflow-hidden shrink-0 shadow-lg">
+                                <td class="px-5 py-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-xl bg-[#101D33] text-white flex items-center justify-center font-['DM_Serif_Display'] text-xs relative overflow-hidden shrink-0 shadow-lg">
                                             <div class="absolute inset-0 bg-gradient-to-br from-[#660000]/30 to-transparent"></div>
                                             <span class="relative z-10">{{ strtoupper(substr($log->user->name ?? '?', 0, 1)) }}</span>
                                         </div>
                                         <div>
-                                            <div class="text-sm font-['DM_Serif_Text'] text-[#101D33] tracking-tight leading-none mb-2">{{ $log->user->name ?? 'Unknown Asset' }}</div>
-                                            <div class="text-[9px] text-slate-300 font-bold uppercase tracking-[0.2em]">{{ $log->user->employee_id ?? 'UNREGISTERED' }}</div>
+                                            <div class="text-sm font-['DM_Serif_Text'] text-[#101D33] tracking-tight leading-none mb-1">{{ $log->user->name ?? 'Unknown Asset' }}</div>
+                                            <div class="text-[8px] text-slate-300 font-bold uppercase tracking-[0.2em]">{{ $log->user->employee_id ?? 'UNREGISTERED' }}</div>
                                         </div>
                                     </div>
                                 </td>
@@ -139,14 +139,14 @@
                                         <span class="text-slate-200">—</span>
                                     @endif
                                 </td>
-                                <td class="px-10 py-8 text-right">
-                                    <div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
-                                        <button @click="openEdit({{ $log->toJson() }})" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white text-[#101D33]/40 hover:text-[#101D33] border border-[#101D33]/5 hover:shadow-lg transition-all" title="Modify Presence">
+                                <td class="px-5 py-3 text-right">
+                                    <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
+                                        <button @click="openEdit({{ $log->toJson() }})" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white text-[#101D33]/40 hover:text-[#101D33] border border-[#101D33]/5 hover:shadow-lg transition-all" title="Modify Presence">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-5M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                                         </button>
                                         <form action="{{ route('attendance.destroy', $log) }}" method="POST" onsubmit="return confirm('Excise attendance record from ledger? This affects fiscal settlements.')">
                                             @csrf @method('DELETE')
-                                            <button type="submit" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white text-[#660000]/40 hover:text-[#660000] border border-[#660000]/5 hover:shadow-lg transition-all" title="Purge Log">
+                                            <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white text-[#660000]/40 hover:text-[#660000] border border-[#660000]/5 hover:shadow-lg transition-all" title="Purge Log">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                             </button>
                                         </form>

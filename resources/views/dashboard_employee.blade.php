@@ -7,12 +7,12 @@
         </div>
     </x-slot>
 
-    <div class="space-y-4 animate-in-up">
+    <div class="space-y-3 animate-in-up">
         <!-- Employee Header -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div>
                 <h1 class="text-xl font-bold text-slate-900 tracking-tight">System Access <span class="text-indigo-600">Active</span></h1>
-                <p class="text-slate-500 mt-1 font-medium text-sm italic">Academic Period 2026 • AISAT Higher Education</p>
+                <p class="text-slate-500 mt-0.5 font-medium text-[11px] italic">Academic Period 2026 • AISAT Higher Education</p>
             </div>
             
             <div class="flex items-center gap-3">
@@ -92,22 +92,22 @@
             </div>
 
             {{-- Attendance --}}
-            <div class="stat-high-level group p-5 bg-white rounded-2xl">
-                <div class="stat-label font-black text-[10px] uppercase tracking-widest text-slate-400 italic">Terminal Status</div>
+            <div class="stat-high-level group p-4 bg-white rounded-xl">
+                <div class="stat-label font-black text-[9px] uppercase tracking-widest text-slate-400 italic">Terminal Status</div>
                 @if($todayLog)
-                    <div class="mt-6 flex items-center gap-3">
-                        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></div>
-                        <div class="stat-value text-xl font-black tracking-tighter text-slate-900 italic underline decoration-emerald-100 underline-offset-8">Active</div>
+                    <div class="mt-4 flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></div>
+                        <div class="stat-value text-lg font-black tracking-tighter text-slate-900 italic underline decoration-emerald-100 underline-offset-8">Active</div>
                     </div>
                 @else
-                    <div class="mt-6 flex items-center gap-3 opacity-50">
-                        <div class="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
-                        <div class="stat-value text-xl font-black tracking-tighter text-slate-300 italic">Inactive</div>
+                    <div class="mt-4 flex items-center gap-2 opacity-50">
+                        <div class="w-2 h-2 rounded-full bg-slate-200"></div>
+                        <div class="stat-value text-lg font-black tracking-tighter text-slate-300 italic">Inactive</div>
                     </div>
                 @endif
             </div>
 
-            <div class="stat-high-level group p-5 bg-slate-950 !text-white overflow-hidden relative rounded-2xl">
+            <div class="stat-high-level group p-4 bg-slate-950 !text-white overflow-hidden relative rounded-xl">
                 <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent"></div>
                 <div class="relative z-10">
                     <div class="stat-label !text-slate-500 italic uppercase tracking-widest font-black text-[10px]">Institutional Clock</div>

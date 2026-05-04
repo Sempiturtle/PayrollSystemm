@@ -52,23 +52,23 @@
 @layer components {
     /* ── Senior Card (High-Fidelity) ── */
     .card-modern {
-        @apply bg-white rounded-2xl md:rounded-[1.25rem] border border-slate-200/60 shadow-sm transition-all duration-300;
-        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.02), 0 1px 2px -1px rgb(0 0 0 / 0.03), 0 4px 6px -1px rgb(0 0 0 / 0.02);
+        @apply bg-white rounded-xl md:rounded-[1rem] border border-slate-200/60 shadow-sm transition-all duration-300;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.02), 0 1px 1px -1px rgb(0 0 0 / 0.03);
     }
     .card-modern:hover {
         @apply border-slate-300/60 -translate-y-0.5;
-        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
     }
 
     /* ── Metric Box (Stripe Style) ── */
     .stat-high-level {
-        @apply card-modern p-4 md:p-6 flex flex-col justify-between min-h-[120px] md:min-h-[140px];
+        @apply card-modern p-3 md:p-4 flex flex-col justify-between min-h-[100px] md:min-h-[110px];
     }
     .stat-label {
-        @apply text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1;
+        @apply text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-1;
     }
     .stat-value {
-        @apply text-2xl md:text-3xl font-bold text-slate-900 tracking-tighter;
+        @apply text-xl md:text-2xl font-bold text-slate-900 tracking-tighter;
     }
 
     /* ── Sidebar (Refined Light) ── */
@@ -87,18 +87,18 @@
         @apply bg-slate-50/50 border-b border-slate-100;
     }
     .pro-table th {
-        @apply px-4 py-3 md:px-6 md:py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest;
+        @apply px-3 py-2 md:px-4 md:py-2.5 text-[9px] font-bold text-slate-400 uppercase tracking-widest;
     }
     .pro-table tbody tr {
         @apply border-b border-slate-50 hover:bg-slate-50/40 transition-all duration-200;
     }
     .pro-table td {
-        @apply px-4 py-3 md:px-6 md:py-4 text-sm text-slate-600;
+        @apply px-3 py-2 md:px-4 md:py-2.5 text-[13px] text-slate-600;
     }
 
     /* ── High-Level Buttons ── */
     .btn-action {
-        @apply px-4 py-2 md:px-5 md:py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98];
+        @apply px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-semibold text-xs md:text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98];
     }
     .btn-action-primary {
         @apply btn-action bg-slate-900 text-white hover:bg-slate-800 shadow-sm hover:shadow-md;
