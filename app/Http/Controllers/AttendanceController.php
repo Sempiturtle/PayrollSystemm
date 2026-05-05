@@ -5,18 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAttendanceRequest;
 use App\Http\Requests\UpdateAttendanceRequest;
 use App\Models\AttendanceLog;
-use App\Models\User;
 use App\Models\AuditLog;
+use App\Models\User;
 use App\Services\AttendanceService;
+use App\Services\PayrollService;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
     public function __construct(
         private readonly AttendanceService $attendanceService,
-        private readonly \App\Services\PayrollService $payrollService
+        private readonly PayrollService $payrollService
     ) {}
 
     /**
@@ -26,7 +26,7 @@ class AttendanceController extends Controller
     {
         $filters = $request->only(['date_from', 'date_to', 'user_id', 'status']);
         $logs = $this->attendanceService->getFilteredLogs($filters);
-        
+
         $employees = User::where('role', '!=', 'admin')->get();
 
         return view('attendance.admin_index', compact('logs', 'employees', 'filters'));
@@ -118,12 +118,69 @@ class AttendanceController extends Controller
     {
         $filters = $request->only(['date_from', 'date_to', 'user_id', 'status']);
         $logs = $this->attendanceService->getFilteredLogs($filters);
-        
+
         $csv = $this->attendanceService->generateExport($logs);
 
         return response($csv, 200, [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="attendance_report.csv"',
+        ]);
+    }
+
+    public function recordByFinger(Request $request)
+    {
+        $request->validate([
+            'slot_id' => 'required|integer',
+            'confidence' => 'required|integer',
+            'device_uid' => 'required|string',
+        ]);
+
+        $user = User::where('fingerprint_slot', $request->slot_id)
+            ->where('fingerprint_enrolled', true)
+            ->where('is_active', true)
+            ->first();
+
+        if (! $user) {
+            return response()->json(['status' => 'not_found'], 404);
+        }
+
+        $result = $this->attendanceService->recordBiometricLog(
+            $user,
+            'fingerprint',
+            $request->device_uid
+        );
+
+        // Don't audit duplicate taps — just return early
+        if ($result['action'] === 'Duplicate') {
+            return response()->json([
+                'status' => 'duplicate',
+                'name' => $user->name,
+                'action' => 'Already logged',
+                'time' => now('Asia/Manila')->format('h:i A'),
+            ]);
+        }
+
+        AuditLog::create([
+            'user_id' => $user->id,
+            'auditable_type' => AttendanceLog::class,
+            'auditable_id' => $result['log']->id,
+            'event' => 'created (Fingerprint - '.$result['action'].')',
+            'old_values' => [],
+            'new_values' => $result['log']->toArray(),
+            'url' => $request->fullUrl(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
+        // Sync payroll for this period
+        $period = $this->payrollService->getCurrentPeriod($result['log']->date);
+        $this->payrollService->syncForUser($user, $period['start'], $period['end']);
+
+        return response()->json([
+            'status' => 'ok',
+            'name' => $user->name,
+            'action' => $result['action'],
+            'time' => now('Asia/Manila')->format('h:i A'),
         ]);
     }
 }

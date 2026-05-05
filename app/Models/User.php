@@ -3,14 +3,15 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, \App\Traits\LogsActivity;
+    /** @use HasFactory<UserFactory> */
+    use \App\Traits\LogsActivity, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -23,8 +24,9 @@ class User extends Authenticatable
         'password',
         'employee_id',
         'rfid_card_num',
-        'fingerprint_id',
-        'biometric_template',
+        'fingerprint_slot',           // add this
+        'fingerprint_enrolled',     // add this
+        'fingerprint_enrolled_at',
         'hourly_rate',
         'role',
         'schedule_file',
@@ -34,6 +36,7 @@ class User extends Authenticatable
         'pagibig_id',
         'sick_leave_credits',
         'vacation_leave_credits',
+        'is_active',
     ];
 
     /**
