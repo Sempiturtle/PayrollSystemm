@@ -8,7 +8,7 @@ php artisan view:cache
 
 # Run migrations and seeders if database is ready
 echo "Running migrations and seeders..."
-php artisan migrate --force
+php artisan migrate:fresh --force
 php artisan db:seed --force
 
 # Inject the real port into Nginx config
