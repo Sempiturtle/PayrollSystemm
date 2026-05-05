@@ -18,7 +18,7 @@ return new class extends Migration
             $table->time('time_in')->nullable();
             $table->time('time_out')->nullable();
             $table->enum('status', ['On-time', 'Late', 'Absent'])->default('On-time');
-            $table->enum('source', ['RFID', 'Biometric'])->default('RFID');
+            $table->string('source', 100)->default('RFID')->nullable();
             $table->timestamps();
         });
     }

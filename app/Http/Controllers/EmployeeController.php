@@ -2,22 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\AttendanceLog;
-use App\Models\Schedule;
-use App\Models\BiometricAction;
 use App\Imports\ProfessorScheduleImport;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Models\AttendanceLog;
+use App\Models\BiometricAction;
+use App\Models\Schedule;
+use App\Models\User;
+use App\Services\AttendanceService;
 use App\Services\PayrollService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class EmployeeController extends Controller
 {
     public function __construct(
         private readonly PayrollService $payrollService,
-        private readonly \App\Services\AttendanceService $attendanceService
+        private readonly AttendanceService $attendanceService
     ) {}
 
     /**
@@ -26,6 +32,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = User::where('role', '!=', 'admin')->get();
+
         return view('employees.index', compact('employees'));
     }
 
@@ -84,10 +91,10 @@ class EmployeeController extends Controller
             'schedule_file' => 'nullable|mimes:xlsx,xls,csv|max:10240',
         ]);
 
-        $password = 'AISAT-' . $validated['employee_id'];
+        $password = 'AISAT-'.$validated['employee_id'];
         $validated['password'] = bcrypt($password);
         unset($validated['schedule_file']);
-        
+
         $user = User::create($validated);
 
         // Handle schedule Excel upload
@@ -110,12 +117,12 @@ class EmployeeController extends Controller
             'source' => 'nullable|in:RFID,Biometric,MFA',
         ]);
 
-        $source = $request->input('source', 'RFID'); 
-        
+        $source = $request->input('source', 'RFID');
+
         try {
             if ($source === 'MFA' || ($request->has('rfid') && $request->has('fingerprint_id'))) {
                 $user = $this->attendanceService->resolveUserByMFA(
-                    $request->input('rfid'), 
+                    $request->input('rfid'),
                     $request->input('fingerprint_id')
                 );
                 $source = 'MFA'; // Force source to MFA for logging
@@ -124,7 +131,7 @@ class EmployeeController extends Controller
                 $user = $this->attendanceService->resolveUserByBiometric($identifier, $source);
             }
 
-            if (!$user) {
+            if (! $user) {
                 return response()->json(['success' => false, 'message' => 'Identity not recognized. MFA verification failed.'], 404);
             }
 
@@ -135,10 +142,10 @@ class EmployeeController extends Controller
             // Find schedule for today
             $dayName = $now->format('l'); // Monday, Tuesday, etc.
             $schedule = Schedule::where('user_id', $user->id)
-                                ->where('day_of_week', $dayName)
-                                ->first();
+                ->where('day_of_week', $dayName)
+                ->first();
 
-            if (!$schedule) {
+            if (! $schedule) {
                 return response()->json(['success' => false, 'message' => "No schedule assigned for $dayName."], 400);
             }
         } catch (\Exception $e) {
@@ -146,23 +153,23 @@ class EmployeeController extends Controller
         }
 
         $log = AttendanceLog::where('user_id', $user->id)
-                            ->where('date', $today)
-                            ->orderBy('created_at', 'desc')
-                            ->first();
+            ->where('date', $today)
+            ->orderBy('created_at', 'desc')
+            ->first();
 
         // Double-scan protection (cooldown: 5 minutes)
         if ($log && $log->created_at->diffInMinutes($now) < 5) {
             return response()->json(['success' => false, 'message' => 'Duplicate scan detected. Please wait a few minutes.'], 400);
         }
 
-        if (!$log || $log->time_out) {
+        if (! $log || $log->time_out) {
             // Check-in (New Session)
             $gracePeriodMinutes = 15;
-            $startTime = Carbon::parse($today . ' ' . $schedule->start_time);
+            $startTime = Carbon::parse($today.' '.$schedule->start_time);
             $graceTime = (clone $startTime)->addMinutes($gracePeriodMinutes);
-            
+
             $status = ($now <= $graceTime) ? 'On-time' : 'Late';
-            
+
             AttendanceLog::create([
                 'user_id' => $user->id,
                 'date' => $today,
@@ -176,18 +183,18 @@ class EmployeeController extends Controller
                 $minsLate = $now->diffInMinutes($startTime);
                 $message .= " Logged as Late ({$minsLate} mins).";
             } else {
-                $message .= " Checked in On-time.";
+                $message .= ' Checked in On-time.';
             }
 
             return response()->json([
                 'success' => true,
                 'message' => $message,
-                'time' => $currentTime
+                'time' => $currentTime,
             ]);
         } else {
             // Check-out (Close Session)
             $log->update(['time_out' => $currentTime]);
-            
+
             // Sync Payroll automatically
             $period = $this->payrollService->getCurrentPeriod($now);
             $this->payrollService->syncForUser($user, $period['start'], $period['end']);
@@ -195,7 +202,7 @@ class EmployeeController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => "Goodbye, {$user->name}! Checked out at {$currentTime}.",
-                'time' => $currentTime
+                'time' => $currentTime,
             ]);
         }
     }
@@ -206,7 +213,7 @@ class EmployeeController extends Controller
     public function batchSync(Request $request)
     {
         $token = $request->header('X-Hardware-Token') ?? $request->input('token');
-        
+
         if ($token !== config('services.biometric.token', env('BIOMETRIC_HARDWARE_TOKEN'))) {
             return response()->json(['success' => false, 'message' => 'Unauthorized hardware token.'], 401);
         }
@@ -225,7 +232,7 @@ class EmployeeController extends Controller
             'success' => true,
             'processed' => $results['success'],
             'failed' => $results['failed'],
-            'details' => $results['messages']
+            'details' => $results['messages'],
         ]);
     }
 
@@ -235,6 +242,7 @@ class EmployeeController extends Controller
     public function show(string $id)
     {
         $employee = User::findOrFail($id);
+
         return view('employees.show', compact('employee'));
     }
 
@@ -245,6 +253,7 @@ class EmployeeController extends Controller
     {
         $employee = User::findOrFail($id);
         $schedules = $employee->schedules()->orderByDay()->get();
+
         return view('employees.edit', compact('employee', 'schedules'));
     }
 
@@ -254,14 +263,14 @@ class EmployeeController extends Controller
     public function update(Request $request, string $id)
     {
         $employee = User::findOrFail($id);
-        
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
-            'employee_id' => 'required|string|unique:users,employee_id,' . $id,
-            'rfid_card_num' => 'nullable|string|unique:users,rfid_card_num,' . $id,
-            'fingerprint_id' => 'nullable|integer|unique:users,fingerprint_id,' . $id,
-            'biometric_template' => 'nullable|string|unique:users,biometric_template,' . $id,
+            'email' => 'required|email|unique:users,email,'.$id,
+            'employee_id' => 'required|string|unique:users,employee_id,'.$id,
+            'rfid_card_num' => 'nullable|string|unique:users,rfid_card_num,'.$id,
+            'fingerprint_id' => 'nullable|integer|unique:users,fingerprint_id,'.$id,
+            'biometric_template' => 'nullable|string',
             'hourly_rate' => 'required|numeric',
             'role' => 'required|in:professor,employee',
             'tin_id' => 'nullable|string|max:255',
@@ -274,16 +283,27 @@ class EmployeeController extends Controller
         ]);
 
         unset($validated['schedule_file']);
+
+        // Auto-mark enrolled if fingerprint_id is set
+        if (! empty($validated['fingerprint_id'])) {
+            $validated['fingerprint_enrolled'] = true;
+            $validated['fingerprint_enrolled_at'] = now();
+        } else {
+            $validated['fingerprint_enrolled'] = false;
+            $validated['fingerprint_enrolled_at'] = null;
+        }
+
         $employee->update($validated);
 
-        // Handle schedule Excel upload
         if ($request->hasFile('schedule_file')) {
             try {
                 $this->handleScheduleUpload($employee, $request->file('schedule_file'));
-                return redirect()->route('employees.edit', $employee->id)->with('success', 'Employee updated & schedule imported successfully!');
+
+                return redirect()->route('employees.edit', $employee->id)
+                    ->with('success', 'Employee updated & schedule imported!');
             } catch (\Exception $e) {
                 return redirect()->route('employees.edit', $employee->id)
-                    ->with('warning', 'Employee updated, but schedule import failed: ' . $e->getMessage());
+                    ->with('warning', 'Employee updated, but schedule import failed: '.$e->getMessage());
             }
         }
 
@@ -308,7 +328,7 @@ class EmployeeController extends Controller
     {
         $path = storage_path('app/example_individual_schedule.xlsx');
 
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             // Generate it on the fly if it doesn't exist
             $this->generateTemplateExcel($path);
         }
@@ -344,7 +364,7 @@ class EmployeeController extends Controller
      */
     private function generateTemplateExcel(string $path): void
     {
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Schedule');
 
@@ -373,7 +393,7 @@ class EmployeeController extends Controller
         $sheet->getStyle('A1:C1')->applyFromArray([
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
             'fill' => [
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'fillType' => Fill::FILL_SOLID,
                 'startColor' => ['rgb' => '4F46E5'],
             ],
         ]);
@@ -384,11 +404,11 @@ class EmployeeController extends Controller
 
         // Ensure directory exists
         $dir = dirname($path);
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
 
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer = new Xlsx($spreadsheet);
         $writer->save($path);
     }
 
@@ -409,13 +429,13 @@ class EmployeeController extends Controller
         $action = BiometricAction::create([
             'user_id' => $employee->id,
             'command' => 'ENROLL',
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Enrollment command issued. Waiting for hardware polling...',
-            'action_id' => $action->id
+            'action_id' => $action->id,
         ]);
     }
 
@@ -427,7 +447,7 @@ class EmployeeController extends Controller
         return response()->json([
             'status' => $action->status,
             'fingerprint_id' => $action->fingerprint_id,
-            'user' => $action->user->name
+            'user' => $action->user->name,
         ]);
     }
 
@@ -440,7 +460,7 @@ class EmployeeController extends Controller
             ->orderBy('created_at', 'asc')
             ->first();
 
-        if (!$action) {
+        if (! $action) {
             return response()->json(['command' => 'NONE']);
         }
 
@@ -448,7 +468,7 @@ class EmployeeController extends Controller
             'command' => $action->command,
             'action_id' => $action->id,
             'user_id' => $action->user_id,
-            'name' => $action->user->name
+            'name' => $action->user->name,
         ]);
     }
 
@@ -460,25 +480,69 @@ class EmployeeController extends Controller
         $validated = $request->validate([
             'action_id' => 'required|exists:biometric_actions,id',
             'fingerprint_id' => 'required|integer',
-            'status' => 'required|in:success,failed'
+            'status' => 'required|in:success,failed',
         ]);
 
         $action = BiometricAction::findOrFail($validated['action_id']);
-        
+
         if ($validated['status'] === 'success') {
             $action->update([
                 'status' => 'success',
-                'fingerprint_id' => $validated['fingerprint_id']
+                'fingerprint_id' => $validated['fingerprint_id'],
             ]);
 
             // Automatically link the ID to the user
             $action->user->update([
-                'fingerprint_id' => $validated['fingerprint_id']
+                'fingerprint_id' => $validated['fingerprint_id'],
             ]);
         } else {
             $action->update(['status' => 'failed']);
         }
 
         return response()->json(['success' => true]);
+    }
+
+    public function enroll(User $employee)
+    {
+        // If this employee already has a slot, reuse it (re-enroll same slot)
+        // so the sensor slot doesn't get wasted
+        if ($employee->fingerprint_slot) {
+            $nextSlot = $employee->fingerprint_slot;
+        } else {
+            // Assign new slot atomically
+            $nextSlot = DB::transaction(function () {
+                $max = User::whereNotNull('fingerprint_slot')
+                    ->lockForUpdate()
+                    ->max('fingerprint_slot');
+
+                return max(1, (int) $max + 1);
+            });
+        }
+
+        $actionId = uniqid('enroll_');
+
+        Cache::put('enroll_action_'.$actionId, [
+            'user_id' => $employee->id,
+            'status' => 'pending',
+        ], now()->addMinutes(5));
+
+        Cache::put('enroll_pending', [
+            'user_id' => $employee->id,
+            'slot_id' => $nextSlot,
+            'action_id' => $actionId,
+        ], now()->addMinutes(5));
+
+        return response()->json(['action_id' => $actionId]);
+    }
+
+    public function pollEnrollment($actionId)
+    {
+        $action = Cache::get('enroll_action_'.$actionId);
+
+        if (! $action) {
+            return response()->json(['status' => 'expired']);
+        }
+
+        return response()->json(['status' => $action['status']]);
     }
 }

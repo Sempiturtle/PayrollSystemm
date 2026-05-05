@@ -19,9 +19,12 @@ return new class extends Migration
             $table->string('password');
             $table->string('employee_id')->unique()->nullable();
             $table->string('rfid_card_num')->unique()->nullable();
-            $table->binary('biometric_template')->nullable();
+            $table->integer('fingerprint_slot')->nullable(); // slot ID on ZA620-M5 (0-999)
+            $table->boolean('fingerprint_enrolled')->default(false);
+            $table->string('fingerprint_enrolled_at')->nullable(); 
             $table->decimal('hourly_rate', 10, 2)->default(0);
             $table->enum('role', ['admin', 'professor', 'employee'])->default('employee');
+            $table->boolean('is_active')->default(true); // disable user without deleting
             $table->rememberToken();
             $table->timestamps();
         });

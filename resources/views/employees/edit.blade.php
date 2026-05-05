@@ -56,60 +56,101 @@
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">RFID Tag Num</label>
                             <input type="text" name="rfid_card_num" value="{{ $employee->rfid_card_num }}" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium">
                         </div>
-                        <div class="space-y-2" x-data="{ 
-                            isEnrolling: false, 
-                            status: '', 
-                            pollInterval: null,
-                            startEnroll() {
-                                this.isEnrolling = true;
-                                this.status = 'Initiating...';
-                                fetch('{{ route('employees.enroll', $employee) }}', {
-                                    method: 'POST',
-                                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    this.status = 'Waiting for Finger...';
-                                    this.pollEnrollment(data.action_id);
-                                });
-                            },
-                            pollEnrollment(actionId) {
-                                this.pollInterval = setInterval(() => {
-                                    fetch(`/biometrics/actions/${actionId}`)
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        if (data.status === 'success') {
-                                            clearInterval(this.pollInterval);
-                                            this.status = 'Success! Reloading...';
-                                            setTimeout(() => window.location.reload(), 1500);
-                                        } else if (data.status === 'failed') {
-                                            clearInterval(this.pollInterval);
-                                            this.isEnrolling = false;
-                                            alert('Enrollment failed. Please try again.');
-                                        } else if (data.status === 'expired') {
-                                            clearInterval(this.pollInterval);
-                                            this.isEnrolling = false;
-                                        }
-                                    });
-                                }, 3000);
-                            }
-                        }">
-                            <div class="flex items-center justify-between">
-                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Fingerprint ID (Hardware)</label>
-                                <button type="button" 
-                                        @click="startEnroll" 
-                                        x-show="!isEnrolling"
-                                        class="text-[10px] font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-lg hover:bg-indigo-100 transition flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
-                                    Enroll Now
-                                </button>
-                                <div x-show="isEnrolling" class="flex items-center gap-2">
-                                    <div class="w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></div>
-                                    <span class="text-[10px] font-bold text-indigo-600" x-text="status"></span>
-                                </div>
-                            </div>
-                            <input type="number" name="fingerprint_id" value="{{ $employee->fingerprint_id }}" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-bold text-indigo-600" placeholder="e.g. 1">
-                        </div>
+                      <div class="space-y-2" x-data="{
+    isEnrolling: false,
+    status: '',
+    pollInterval: null,
+    timeoutHandle: null,
+
+    startEnroll() {
+        this.isEnrolling = true;
+        this.status = 'Initiating...';
+
+        fetch('{{ route('employees.enroll', $employee) }}', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.action_id) {
+                this.isEnrolling = false;
+                this.status = 'Failed to start.';
+                return;
+            }
+            this.status = 'Waiting for finger...';
+            this.pollEnrollment(data.action_id);
+
+            // Auto-cancel after 2 minutes if ESP32 never responds
+            this.timeoutHandle = setTimeout(() => {
+                clearInterval(this.pollInterval);
+                this.isEnrolling = false;
+                this.status = 'Timed out. Try again.';
+            }, 120000);
+        })
+        .catch(() => {
+            this.isEnrolling = false;
+            this.status = 'Network error.';
+        });
+    },
+
+    pollEnrollment(actionId) {
+        this.pollInterval = setInterval(() => {
+            fetch(`/biometrics/actions/${actionId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    this.cleanup();
+                    this.status = 'Enrolled! Reloading...';
+                    setTimeout(() => window.location.reload(), 1500);
+
+                } else if (data.status === 'failed') {
+                    this.cleanup();
+                    this.isEnrolling = false;
+                    this.status = 'Enrollment failed. Try again.';
+
+                } else if (data.status === 'expired') {
+                    this.cleanup();
+                    this.isEnrolling = false;
+                    this.status = '';
+                }
+                // 'pending' → keep polling
+            })
+            .catch(() => {
+                // Network blip — keep polling, don't cancel
+            });
+        }, 3000);
+    },
+
+    cleanup() {
+        clearInterval(this.pollInterval);
+        clearTimeout(this.timeoutHandle);
+    }
+}">
+
+    <button type="button"
+            @click="startEnroll"
+            x-show="!isEnrolling"
+            class="text-[10px] font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-lg hover:bg-indigo-100 transition flex items-center gap-1">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+        </svg>
+        Enroll Now
+    </button>
+
+    <div x-show="isEnrolling" class="text-[10px] text-indigo-500 flex items-center gap-1">
+        <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+        </svg>
+        <span x-text="status"></span>
+    </div>
+
+    <p x-show="!isEnrolling && status !== ''"
+       x-text="status"
+       class="text-[10px] text-gray-400 mt-1">
+    </p>
+</div>
                         <div class="space-y-2">
                             <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Biometric Template (Legacy)</label>
                             <input type="text" name="biometric_template" value="{{ $employee->biometric_template }}" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 focus:ring-2 focus:ring-indigo-600/20 text-sm font-medium">
