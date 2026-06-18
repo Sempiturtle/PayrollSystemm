@@ -21,14 +21,33 @@ class ProfessorScheduleImport implements ToModel, WithHeadingRow, WithValidation
      */
     public function model(array $row)
     {
+        $dayMapping = [
+            'mon' => 'Monday', 'tue' => 'Tuesday', 'wed' => 'Wednesday',
+            'thu' => 'Thursday', 'fri' => 'Friday', 'sat' => 'Saturday', 'sun' => 'Sunday',
+            'm' => 'Monday', 't' => 'Tuesday', 'w' => 'Wednesday', 'th' => 'Thursday', 'f' => 'Friday',
+        ];
+
+        $dayOfWeek = $row['day_of_week'] ?? null;
+        if ($dayOfWeek) {
+            $day = strtolower(trim($dayOfWeek));
+            $dayOfWeek = $dayMapping[$day] ?? ucfirst($day);
+        }
+
+        $startTime = isset($row['start_time']) ? $this->transformTime($row['start_time']) : null;
+        $endTime = isset($row['end_time']) ? $this->transformTime($row['end_time']) : null;
+
+        if (empty($dayOfWeek) || empty($startTime) || empty($endTime)) {
+            return null;
+        }
+
         return Schedule::updateOrCreate(
             [
                 'user_id'     => $this->userId,
-                'day_of_week' => $row['day_of_week'],
+                'day_of_week' => $dayOfWeek,
             ],
             [
-                'start_time'     => $row['start_time'],
-                'end_time'       => $row['end_time'],
+                'start_time'     => $startTime,
+                'end_time'       => $endTime,
                 'effective_from' => $row['effective_date'] ?? null,
             ]
         );
