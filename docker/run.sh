@@ -6,10 +6,23 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Run migrations and seeders if database is ready
-echo "Running migrations and seeders..."
-php artisan migrate:fresh --force
-php artisan db:seed --force
+# Run migrations if database is ready
+echo "Running migrations..."
+php artisan migrate --force
+
+# Seed database only if it hasn't been seeded yet (e.g., if no users exist)
+USER_COUNT=$(php artisan tinker --execute="echo \App\Models\User::count();" | tr -d '\r\n[:space:]')
+if [ -z "$USER_COUNT" ] || [ "$USER_COUNT" -eq "0" ]; then
+    echo "First time setup: Seeding database..."
+    php artisan db:seed --force
+else
+    echo "Database already has data (Users: $USER_COUNT). Skipping seeding."
+fi
+
+# Ensure cache directories exist and have the correct ownership/permissions
+mkdir -p /app/storage/framework/cache/laravel-excel
+chown -R www-data:www-data /app/storage /app/bootstrap/cache
+chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Inject the real port into Nginx config
 echo "Configuring Nginx to listen on port ${PORT:-10000}..."
