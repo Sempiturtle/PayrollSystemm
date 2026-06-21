@@ -343,10 +343,12 @@
                                     @if($payroll->calculation_snapshot)
                                         <div class="grid grid-cols-1 gap-1 bg-slate-50 p-2.5 rounded-xl border border-slate-200/40">
                                             @foreach($payroll->calculation_snapshot as $key => $val)
-                                                <div class="flex justify-between items-center text-[10px]">
-                                                    <span class="font-medium text-slate-500 uppercase tracking-wider">{{ str_replace('_', ' ', $key) }}</span>
-                                                    <span class="font-extrabold text-slate-850 font-mono">{{ is_numeric($val) ? number_format($val, 2) : $val }}</span>
-                                                </div>
+                                                @if(!is_array($val))
+                                                    <div class="flex justify-between items-center text-[10px]">
+                                                        <span class="font-medium text-slate-500 uppercase tracking-wider">{{ str_replace('_', ' ', $key) }}</span>
+                                                        <span class="font-extrabold text-slate-850 font-mono">{{ is_numeric($val) ? number_format($val, 2) : $val }}</span>
+                                                    </div>
+                                                @endif
                                             @endforeach
                                         </div>
                                     @else

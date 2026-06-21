@@ -180,18 +180,7 @@
     .italic {
         font-style: normal !important;
     }
-    .rounded-2xl {
-        @apply rounded-lg !important;
-    }
-    .rounded-3xl {
-        @apply rounded-xl !important;
-    }
-    .hover\:-translate-y-1:hover, .hover\:-translate-y-0\.5:hover {
-        transform: none !important;
-    }
-    .shadow-xl, .shadow-2xl {
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.02) !important;
-    }
+
 
     /* ── Reference Inspired Premium Sidebar & Page Layout ── */
     .sidebar-curved {

@@ -57,13 +57,20 @@
 
                     <div class="flex items-center gap-4">
                         <!-- User Profile Action -->
-                        <div class="flex items-center gap-3">
-                            <div class="text-right">
-                                <div class="text-[11px] font-bold text-slate-400 capitalize tabular-nums tracking-widest leading-none mb-1">{{ Auth::user()->role }} Account</div>
-                                <div class="text-sm font-bold text-slate-900 tracking-tight leading-none">{{ Auth::user()->name }}</div>
+                        <div class="flex items-center gap-3.5 group cursor-pointer">
+                            <div class="text-right hidden sm:block">
+                                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1.5">{{ Auth::user()->role }} Account</div>
+                                <div class="text-xs font-extrabold text-slate-800 dark:text-slate-200 tracking-tight leading-none group-hover:text-indigo-600 transition-colors">{{ Auth::user()->name }}</div>
                             </div>
-                            <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xs font-bold shadow-md hover:bg-slate-800 transition-colors cursor-pointer border border-slate-800">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            <div class="relative">
+                                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white flex items-center justify-center text-xs font-black shadow-md shadow-indigo-100 dark:shadow-none hover:shadow-indigo-200 group-hover:scale-105 transition-all duration-200 ring-2 ring-white dark:ring-slate-900">
+                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                </div>
+                                <!-- Online Status Pulse Dot -->
+                                <span class="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-1.5 ring-white dark:ring-slate-900"></span>
+                                </span>
                             </div>
                         </div>
                     </div>
