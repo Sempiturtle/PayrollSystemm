@@ -123,7 +123,7 @@ class AttendanceService
      */
     public function getFilteredLogs(array $filters): Collection
     {
-        $query = AttendanceLog::with('user');
+        $query = AttendanceLog::with(['user.schedules']);
 
         if (! empty($filters['date_from'])) {
             $query->where('date', '>=', $filters['date_from']);
@@ -159,7 +159,27 @@ class AttendanceService
             if ($log->time_in && $log->time_out) {
                 $in = Carbon::parse($log->date->toDateString().' '.$log->time_in);
                 $out = Carbon::parse($log->date->toDateString().' '.$log->time_out);
-                $duration = number_format($in->diffInMinutes($out) / 60, 2);
+                
+                $dayName = $log->date->format('l');
+                $daySchedules = $log->user->schedules->where('day_of_week', $dayName);
+                
+                if ($daySchedules->isNotEmpty()) {
+                    $overlapHours = 0;
+                    foreach ($daySchedules as $sched) {
+                        $schedStart = Carbon::parse($log->date->toDateString().' '.$sched->start_time);
+                        $schedEnd = Carbon::parse($log->date->toDateString().' '.$sched->end_time);
+                        
+                        $overlapStart = $in->greaterThan($schedStart) ? $in : $schedStart;
+                        $overlapEnd = $out->lessThan($schedEnd) ? $out : $schedEnd;
+                        
+                        if ($overlapStart->lessThan($overlapEnd)) {
+                            $overlapHours += $overlapStart->diffInSeconds($overlapEnd) / 3600;
+                        }
+                    }
+                    $duration = number_format($overlapHours, 2);
+                } else {
+                    $duration = number_format($in->diffInMinutes($out) / 60, 2);
+                }
             }
 
             fputcsv($handle, [

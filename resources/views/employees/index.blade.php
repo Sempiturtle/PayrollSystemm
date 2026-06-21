@@ -20,9 +20,9 @@
                 <thead>
                     <tr class="bg-slate-50 dark:bg-slate-800/50 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
                         <th class="px-8 py-4">Identity</th>
-                        <th class="px-8 py-4">Role</th>
+                        <th class="px-8 py-4">Type</th>
                         <th class="px-8 py-4">RFID Card</th>
-                        <th class="px-8 py-4">Hourly Rate</th>
+                        <th class="px-8 py-4">Compensation</th>
                         <th class="px-8 py-4 text-right">Actions</th>
                     </tr>
                 </thead>
@@ -41,7 +41,14 @@
                             </div>
                         </td>
                         <td class="px-8 py-6">
-                            <x-status-badge :type="$employee->role">{{ ucfirst($employee->role) }}</x-status-badge>
+                            @php $empType = $employee->employment_type ?? 'professor'; @endphp
+                            @if($empType === 'professor')
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-violet-50 text-violet-600">Professor</span>
+                            @elseif($empType === 'staff')
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-600">Staff</span>
+                            @else
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-600">Part-Time</span>
+                            @endif
                         </td>
                         <td class="px-8 py-6">
                             <code class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold text-slate-500 tracking-tighter">
@@ -49,7 +56,11 @@
                             </code>
                         </td>
                         <td class="px-8 py-6 text-sm font-bold text-slate-600 dark:text-slate-400">
-                            ₱{{ number_format($employee->hourly_rate, 2) }}
+                            @if($empType === 'professor')
+                                ₱{{ number_format($employee->hourly_rate, 2) }}<span class="text-[10px] text-slate-400 font-medium"> /hr</span>
+                            @else
+                                ₱{{ number_format($employee->monthly_salary, 2) }}<span class="text-[10px] text-slate-400 font-medium"> /mo</span>
+                            @endif
                         </td>
                         <td class="px-8 py-6 text-right">
                             <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition">

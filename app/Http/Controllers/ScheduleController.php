@@ -88,4 +88,110 @@ class ScheduleController extends Controller
 
         return redirect()->route('schedules.index')->with('success', 'Schedule applied to ' . $users->count() . ' employees.');
     }
+
+    /**
+     * Store a manually created schedule slot.
+     */
+    public function store(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'day_of_week'    => 'required|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+            'start_time'     => 'required|date_format:H:i',
+            'end_time'       => 'required|date_format:H:i|after:start_time',
+            'effective_from' => 'nullable|date',
+        ]);
+
+        // Check for time overlap on the same day for this user
+        $hasOverlap = Schedule::where('user_id', $user->id)
+            ->where('day_of_week', $validated['day_of_week'])
+            ->where(function ($query) use ($validated) {
+                $query->where(function ($q) use ($validated) {
+                    $q->where('start_time', '<', $validated['end_time'] . ':00')
+                      ->where('end_time', '>', $validated['start_time'] . ':00');
+                });
+            })
+            ->exists();
+
+        if ($hasOverlap) {
+            return back()->withErrors(['start_time' => 'This class schedule overlaps with an existing slot for this day.']);
+        }
+
+        Schedule::create([
+            'user_id'        => $user->id,
+            'day_of_week'    => $validated['day_of_week'],
+            'start_time'     => $validated['start_time'] . ':00',
+            'end_time'       => $validated['end_time'] . ':00',
+            'effective_from' => $validated['effective_from'],
+        ]);
+
+        // Sync changes back to Excel/CSV file
+        \App\Services\ScheduleSyncService::syncDbToFile($user);
+
+        return back()->with('success', 'Class schedule slot added and synced to file.');
+    }
+
+    /**
+     * Update a manually edited schedule slot.
+     */
+    public function update(Request $request, Schedule $schedule)
+    {
+        $validated = $request->validate([
+            'day_of_week'    => 'required|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+            'start_time'     => 'required|date_format:H:i',
+            'end_time'       => 'required|date_format:H:i|after:start_time',
+            'effective_from' => 'nullable|date',
+        ]);
+
+        // Check for time overlap excluding current slot
+        $hasOverlap = Schedule::where('user_id', $schedule->user_id)
+            ->where('id', '!=', $schedule->id)
+            ->where('day_of_week', $validated['day_of_week'])
+            ->where(function ($query) use ($validated) {
+                $query->where(function ($q) use ($validated) {
+                    $q->where('start_time', '<', $validated['end_time'] . ':00')
+                      ->where('end_time', '>', $validated['start_time'] . ':00');
+                });
+            })
+            ->exists();
+
+        if ($hasOverlap) {
+            return back()->withErrors(['start_time' => 'This class schedule overlaps with an existing slot for this day.']);
+        }
+
+        $schedule->update([
+            'day_of_week'    => $validated['day_of_week'],
+            'start_time'     => $validated['start_time'] . ':00',
+            'end_time'       => $validated['end_time'] . ':00',
+            'effective_from' => $validated['effective_from'],
+        ]);
+
+        // Sync changes back to Excel/CSV file
+        \App\Services\ScheduleSyncService::syncDbToFile($schedule->user);
+
+        return back()->with('success', 'Class schedule slot updated and synced to file.');
+    }
+
+    /**
+     * Delete a single schedule slot.
+     */
+    public function destroy(Schedule $schedule)
+    {
+        $user = $schedule->user;
+        $schedule->delete();
+
+        // Sync changes back to Excel/CSV file
+        \App\Services\ScheduleSyncService::syncDbToFile($user);
+
+        return back()->with('success', 'Class schedule slot deleted and synced to file.');
+    }
+
+    /**
+     * Clear all schedules from the system (Factory Reset).
+     */
+    public function destroyAll()
+    {
+        Schedule::query()->delete();
+        User::query()->update(['schedule_file' => null]);
+        return redirect()->route('schedules.index')->with('success', 'All schedules successfully cleared from database.');
+    }
 }

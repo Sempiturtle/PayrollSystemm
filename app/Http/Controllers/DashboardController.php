@@ -163,11 +163,33 @@ class DashboardController extends Controller
                 'end' => Carbon::parse($period['end'])->format('M d'),
             ];
 
+            $userSchedules = Schedule::forUser($user->id)->get();
+
             foreach($cycleLogs as $log) {
                 if($log->time_in && $log->time_out) {
                     $in = Carbon::parse($log->date->toDateString().' '.$log->time_in);
                     $out = Carbon::parse($log->date->toDateString().' '.$log->time_out);
-                    $cycleStats['current_hours'] += max(0, $in->diffInSeconds($out) / 3600);
+                    
+                    $logDayName = Carbon::parse($log->date)->format('l');
+                    $daySchedules = $userSchedules->where('day_of_week', $logDayName);
+                    
+                    if ($daySchedules->isNotEmpty()) {
+                        $dayWorkHours = 0;
+                        foreach ($daySchedules as $sched) {
+                            $schedStart = Carbon::parse($log->date->toDateString().' '.$sched->start_time);
+                            $schedEnd = Carbon::parse($log->date->toDateString().' '.$sched->end_time);
+                            
+                            $overlapStart = $in->greaterThan($schedStart) ? $in : $schedStart;
+                            $overlapEnd = $out->lessThan($schedEnd) ? $out : $schedEnd;
+                            
+                            if ($overlapStart->lessThan($overlapEnd)) {
+                                $dayWorkHours += $overlapStart->diffInSeconds($overlapEnd) / 3600;
+                            }
+                        }
+                        $cycleStats['current_hours'] += $dayWorkHours;
+                    } else {
+                        $cycleStats['current_hours'] += max(0, $in->diffInSeconds($out) / 3600);
+                    }
                 }
             }
 

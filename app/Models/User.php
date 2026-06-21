@@ -28,6 +28,8 @@ class User extends Authenticatable
         'fingerprint_enrolled',     // add this
         'fingerprint_enrolled_at',
         'hourly_rate',
+        'monthly_salary',
+        'employment_type',
         'role',
         'schedule_file',
         'tin_id',
@@ -60,8 +62,60 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'hourly_rate' => 'decimal:2',
+            'monthly_salary' => 'decimal:2',
         ];
     }
+
+    // ──────────────────────────────────────
+    // Employment Type Helpers
+    // ──────────────────────────────────────
+
+    public function isProfessor(): bool
+    {
+        return $this->employment_type === 'professor';
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->employment_type === 'staff';
+    }
+
+    public function isPartTime(): bool
+    {
+        return $this->employment_type === 'part_time';
+    }
+
+    /**
+     * Get the effective hourly rate.
+     * Professors: use hourly_rate directly.
+     * Staff/Part-time: derive from monthly_salary / total scheduled hours per month.
+     */
+    public function getEffectiveHourlyRate(): float
+    {
+        if ($this->isProfessor()) {
+            return (float) $this->hourly_rate;
+        }
+
+        // Calculate total scheduled hours per week
+        $weeklyHours = $this->schedules->sum(function ($schedule) {
+            $start = \Carbon\Carbon::parse($schedule->start_time);
+            $end = \Carbon\Carbon::parse($schedule->end_time);
+            return $end->diffInMinutes($start) / 60;
+        });
+
+        // Approximate monthly hours = weekly hours × 4.33 (average weeks per month)
+        $monthlyHours = $weeklyHours * 4.33;
+
+        if ($monthlyHours <= 0) {
+            return 0;
+        }
+
+        return (float) $this->monthly_salary / $monthlyHours;
+    }
+
+    // ──────────────────────────────────────
+    // Relationships
+    // ──────────────────────────────────────
 
     public function schedules()
     {

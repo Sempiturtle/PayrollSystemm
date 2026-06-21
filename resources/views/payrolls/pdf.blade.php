@@ -54,10 +54,16 @@
             <td class="value">{{ ucfirst($payroll->user->role) }}</td>
         </tr>
         <tr>
-            <td class="label">Tax Status</td>
-            <td class="value">S / ME (TRAIN)</td>
-            <td class="label">Rate of Pay</td>
-            <td class="value">₱{{ number_format($payroll->user->hourly_rate, 2) }} / Hr</td>
+            <td class="label">Employment Type</td>
+            <td class="value">{{ $payroll->user->employment_type === 'part_time' ? 'Part-Time' : ucfirst($payroll->user->employment_type ?? 'Professor') }}</td>
+            <td class="label">{{ ($payroll->user->employment_type ?? 'professor') === 'professor' ? 'Rate of Pay' : 'Monthly Salary' }}</td>
+            <td class="value">
+                @if(($payroll->user->employment_type ?? 'professor') === 'professor')
+                    ₱{{ number_format($payroll->user->hourly_rate, 2) }} / Hr
+                @else
+                    ₱{{ number_format($payroll->user->monthly_salary, 2) }} / Mo
+                @endif
+            </td>
         </tr>
     </table>
 
@@ -68,15 +74,49 @@
                 <td>
                     <div class="section-title">Earnings Breakdown</div>
                     <table class="entry-table">
+                        @if(($payroll->user->employment_type ?? 'professor') === 'professor')
                         <tr>
                             <td>
                                 <strong>Regular Pay</strong>
-                                <span class="sub-label">Hours Worked: {{ number_format($payroll->total_hours, 2) }} hrs</span>
+                                <span class="sub-label">Hours Worked: {{ number_format($payroll->total_hours, 2) }} hrs × ₱{{ number_format($payroll->user->hourly_rate, 2) }}</span>
                             </td>
                             <td class="amount">₱{{ number_format($payroll->gross_pay, 2) }}</td>
                         </tr>
-                        {{-- Future Overtime/Allowances can go here --}}
-                        <tr style="height: 100px;"><td></td><td></td></tr>
+                        @else
+                        <tr>
+                            <td>
+                                <strong>Base Salary (Semi-Monthly)</strong>
+                                <span class="sub-label">₱{{ number_format($payroll->user->monthly_salary, 2) }} ÷ 2</span>
+                            </td>
+                            <td class="amount">₱{{ number_format(($payroll->user->monthly_salary ?? 0) / 2, 2) }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Hours Attended</strong>
+                                <span class="sub-label">Regular hours within schedule</span>
+                            </td>
+                            <td class="amount">{{ number_format($payroll->total_hours, 2) }} hrs</td>
+                        </tr>
+                        @if($payroll->overtime_pay > 0)
+                        <tr>
+                            <td>
+                                <strong>Overtime Pay</strong>
+                                <span class="sub-label">{{ number_format($payroll->overtime_hours, 2) }} hrs × 1.25× rate</span>
+                            </td>
+                            <td class="amount" style="color: #16a34a;">+₱{{ number_format($payroll->overtime_pay, 2) }}</td>
+                        </tr>
+                        @endif
+                        @if($payroll->absence_deduction > 0)
+                        <tr>
+                            <td>
+                                <strong>Absence Deduction</strong>
+                                <span class="sub-label">Missed scheduled hours</span>
+                            </td>
+                            <td class="amount" style="color: #ef4444;">-₱{{ number_format($payroll->absence_deduction, 2) }}</td>
+                        </tr>
+                        @endif
+                        @endif
+                        <tr style="height: 40px;"><td></td><td></td></tr>
                     </table>
                 </td>
 

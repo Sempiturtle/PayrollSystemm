@@ -61,7 +61,10 @@ Route::middleware('auth')->group(function () {
         // Schedule Management
         Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
         Route::get('/schedules/{user}', [ScheduleController::class, 'show'])->name('schedules.show');
-        Route::delete('/schedules', [ScheduleController::class, 'destroy'])->name('schedules.destroy');
+        Route::post('/schedules/{user}/store', [ScheduleController::class, 'store'])->name('schedules.store');
+        Route::patch('/schedules/item/{schedule}', [ScheduleController::class, 'update'])->name('schedules.update');
+        Route::delete('/schedules/item/{schedule}', [ScheduleController::class, 'destroy'])->name('schedules.destroy_item');
+        Route::delete('/schedules', [ScheduleController::class, 'destroyAll'])->name('schedules.destroy');
         Route::delete('/schedules/clear-bulk', [ScheduleController::class, 'bulkDestroy'])->name('schedules.bulkDestroy');
         Route::post('/schedules/bulk-upload', [ScheduleController::class, 'bulkUpload'])->name('schedules.bulkUpload');
 

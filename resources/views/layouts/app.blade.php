@@ -11,15 +11,10 @@
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="h-full bg-slate-50 text-slate-800 antialiased" 
+    <body class="h-full bg-main-reference text-slate-800 antialiased" 
           x-data="{ 
               sidebarOpen: localStorage.getItem('sidebarOpen') !== 'false', 
               mobileSidebar: false,
@@ -75,7 +70,7 @@
                 </header>
 
                 <!-- Page Content -->
-                <main class="flex-1 overflow-y-auto p-3 md:p-8 bg-slate-50">
+                <main class="flex-1 overflow-y-auto p-3 md:p-8 bg-main-reference">
                     <div class="max-w-[120rem] mx-auto space-y-6">
                         <!-- Premium Toast Notifications -->
                         <div x-data="{ 

@@ -13,6 +13,55 @@ export default {
 
     theme: {
         extend: {
+            colors: {
+                indigo: {
+                    50: '#f4f6fc',
+                    100: '#e2e8f5',
+                    200: '#cbd5f0',
+                    300: '#9bb8ff',
+                    400: '#7487d6',
+                    500: '#465cbd',
+                    600: '#1f2ba5', // Logo Blue
+                    700: '#171e87',
+                    800: '#171c6d',
+                    900: '#171b5a',
+                    950: '#0e0f37',
+                },
+                slate: {
+                    50: '#f4f6fc',
+                    100: '#e2e8f5',
+                    200: '#cbd5f0',
+                    300: '#9bb8ff',
+                    400: '#7487d6',
+                    500: '#465cbd',
+                    600: '#1f2ba5',
+                    700: '#171e87',
+                    800: '#171c6d',
+                    900: '#171b5a',
+                    950: '#0e0f37',
+                },
+                emerald: {
+                    50: '#f4f6fc',
+                    100: '#cbd5f0',
+                    200: '#9bb8ff',
+                    500: '#465cbd',
+                    600: '#1f2ba5',
+                },
+                rose: {
+                    50: '#f4f6fc',
+                    100: '#cbd5f0',
+                    200: '#9bb8ff',
+                    500: '#465cbd',
+                    600: '#1f2ba5',
+                },
+                amber: {
+                    50: '#f4f6fc',
+                    100: '#cbd5f0',
+                    200: '#9bb8ff',
+                    500: '#465cbd',
+                    600: '#1f2ba5',
+                }
+            },
             fontFamily: {
                 sans: ['Inter', 'Outfit', ...defaultTheme.fontFamily.sans],
             },

@@ -29,6 +29,32 @@ class PayrollController extends Controller
         return view('payrolls.index', compact('payrolls'));
     }
 
+    /**
+     * Display the detailed payroll breakdown including holiday pay.
+     */
+    public function show(Payroll $payroll)
+    {
+        // Security: Non-admins can only view their own payroll
+        if (!auth()->user()->isAdmin() && $payroll->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $payroll->load('user');
+
+        // Extract holiday details from the calculation snapshot
+        $snapshot = $payroll->calculation_snapshot ?? [];
+        $holidayDetails = $snapshot['holiday_details'] ?? [];
+        $holidayPayMethod = $snapshot['holiday_pay_method'] ?? 'N/A';
+
+        // Get holidays that fall within this payroll period for context
+        $periodHolidays = \App\Models\Holiday::whereBetween('date', [
+            $payroll->period_start,
+            $payroll->period_end,
+        ])->orderBy('date')->get();
+
+        return view('payrolls.show', compact('payroll', 'holidayDetails', 'holidayPayMethod', 'periodHolidays'));
+    }
+
     public function generate(Request $request)
     {
         // If dates are provided, use them; otherwise, use the current fixed period

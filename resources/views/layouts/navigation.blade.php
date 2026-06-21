@@ -5,7 +5,7 @@
      x-transition:leave="transition ease-in duration-300"
      x-transition:leave-start="translate-x-0"
      x-transition:leave-end="-translate-x-full"
-     class="sidebar-refined w-64 h-screen hidden lg:flex lg:flex-col fixed left-0 top-0 z-40">
+     class="sidebar-curved w-64 h-screen hidden lg:flex lg:flex-col fixed left-0 top-0 z-40">
     
     <!-- Sidebar Header -->
     <div class="h-16 px-6 border-b border-slate-100 flex items-center gap-3">
@@ -14,13 +14,13 @@
                 <img src="{{ asset('images/logo.png') }}" alt="AISAT Logo" class="w-full h-full object-contain">
             </div>
             <div>
-                <span class="text-xs font-bold text-slate-900 tracking-tighter uppercase italic">AISAT <span class="text-indigo-600">Payroll</span></span>
+                <span class="text-xs font-bold text-slate-800 tracking-tighter uppercase italic">AISAT <span class="text-indigo-600">Payroll</span></span>
             </div>
         </a>
     </div>
 
     <!-- Navigation Links -->
-    <div class="flex-1 p-4 space-y-7 overflow-y-auto">
+    <div class="flex-1 p-4 space-y-7 overflow-y-auto sidebar-scrollbar">
         {{-- Overview Section --}}
         <div class="space-y-1">
             <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Intelligence</div>
@@ -110,8 +110,8 @@
     </div>
 
     <!-- Sidebar Footer -->
-    <div class="p-4 border-t border-slate-50 mt-auto">
-        <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 border border-slate-100/50">
+    <div class="p-4 border-t border-slate-100 mt-auto">
+        <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-100">
             <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-sm">
                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
             </div>
@@ -121,7 +121,7 @@
             </div>
             <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0">
                 @csrf
-                <button type="submit" class="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all" title="Sign out">
+                <button type="submit" class="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all" title="Sign out">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 </button>
             </form>

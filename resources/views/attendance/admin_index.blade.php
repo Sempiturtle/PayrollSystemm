@@ -118,7 +118,27 @@
                                             @php
                                                 $in = \Carbon\Carbon::parse($log->date->toDateString() . ' ' . $log->time_in);
                                                 $out = \Carbon\Carbon::parse($log->date->toDateString() . ' ' . $log->time_out);
-                                                $hrs = number_format($in->diffInMinutes($out) / 60, 2);
+                                                
+                                                $dayName = $log->date->format('l');
+                                                $daySchedules = $log->user->schedules->where('day_of_week', $dayName);
+                                                
+                                                if ($daySchedules->isNotEmpty()) {
+                                                    $overlapHours = 0;
+                                                    foreach ($daySchedules as $sched) {
+                                                        $schedStart = \Carbon\Carbon::parse($log->date->toDateString() . ' ' . $sched->start_time);
+                                                        $schedEnd = \Carbon\Carbon::parse($log->date->toDateString() . ' ' . $sched->end_time);
+                                                        
+                                                        $overlapStart = $in->greaterThan($schedStart) ? $in : $schedStart;
+                                                        $overlapEnd = $out->lessThan($schedEnd) ? $out : $schedEnd;
+                                                        
+                                                        if ($overlapStart->lessThan($overlapEnd)) {
+                                                            $overlapHours += $overlapStart->diffInSeconds($overlapEnd) / 3600;
+                                                        }
+                                                    }
+                                                    $hrs = number_format($overlapHours, 2);
+                                                } else {
+                                                    $hrs = number_format($in->diffInMinutes($out) / 60, 2);
+                                                }
                                             @endphp
                                             <div class="text-sm font-bold text-slate-600">{{ $hrs }} <small class="text-[10px] text-slate-400 uppercase">Hrs</small></div>
                                         @else
