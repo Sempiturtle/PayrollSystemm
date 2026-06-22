@@ -21,7 +21,7 @@ class PayrollController extends Controller
     {
         $query = Payroll::with('user')->orderBy('period_end', 'desc');
         
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user()->isStaffOrAdmin()) {
             $query->where('user_id', auth()->id());
         }
 
@@ -34,8 +34,8 @@ class PayrollController extends Controller
      */
     public function show(Payroll $payroll)
     {
-        // Security: Non-admins can only view their own payroll
-        if (!auth()->user()->isAdmin() && $payroll->user_id !== auth()->id()) {
+        // Security: Non-admins/non-moderators can only view their own payroll
+        if (!auth()->user()->isStaffOrAdmin() && $payroll->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -78,8 +78,8 @@ class PayrollController extends Controller
 
     public function downloadPayslip(Payroll $payroll)
     {
-        // Security: Non-admins can only download their own payslips
-        if (!auth()->user()->isAdmin() && $payroll->user_id !== auth()->id()) {
+        // Security: Non-admins/non-moderators can only download their own payslips
+        if (!auth()->user()->isStaffOrAdmin() && $payroll->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
 

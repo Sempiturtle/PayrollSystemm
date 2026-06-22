@@ -29,9 +29,9 @@ class DashboardController extends Controller
 
         $todayHoliday = \App\Models\Holiday::where('date', $today)->first();
 
-        if ($user->isAdmin()) {
+        if ($user->isStaffOrAdmin()) {
             // Admin Stats
-            $totalEmployees = User::where('role', '!=', 'admin')->count();
+            $totalEmployees = User::whereNotIn('role', ['admin', 'moderator'])->count();
             $presentToday = AttendanceLog::where('date', $today)->where('status', 'On-time')->count();
             $lateToday = AttendanceLog::where('date', $today)->where('status', 'Late')->count();
             

@@ -45,7 +45,10 @@ class DatabaseSeeder extends Seeder
             'hourly_rate' => 350.00,
         ]);
 
-        // 2. Schedules and System Data
+        // 2. Moderator Account
+        $this->call(ModeratorSeeder::class);
+
+        // 3. Schedules and System Data
         $this->call([
             ScheduleSeeder::class,
             HolidaySeeder::class,

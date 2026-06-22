@@ -25,13 +25,14 @@
                 <!-- Input Area -->
                 <div class="flex-1 p-6 flex flex-col items-center justify-center space-y-6">
                     <div class="w-full space-y-3 text-center" x-data="{ rfid: '', fingerprint: '', lastUsed: '' }">
-                        <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-4">Flexible Dual-Factor Authorization</label>
+                        <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-4">Terminal Identification</label>
                         
                         <div class="grid grid-cols-2 gap-3">
                             <!-- RFID Slot -->
                             <div @click="lastUsed = 'rfid'" :class="lastUsed === 'rfid' ? 'ring-2 ring-indigo-500/50' : ''" class="relative bg-slate-50 dark:bg-slate-800 rounded-xl p-4 transition cursor-pointer group">
                                 <div class="text-[8px] font-bold text-slate-400 uppercase mb-2 group-hover:text-indigo-500 transition">Identity Card</div>
                                 <input type="text" x-model="rfid" @focus="lastUsed = 'rfid'"
+                                       @keyup.enter="if(rfid) { processScan(rfid, ''); rfid=''; }"
                                        class="w-full bg-transparent border-none p-0 text-center text-sm font-bold tracking-widest text-indigo-600 focus:ring-0 placeholder:text-slate-300" 
                                        placeholder="SCAN OR ID">
                                 <div x-show="rfid" class="absolute top-2 right-2 text-indigo-500 animate-pulse">●</div>
@@ -41,6 +42,7 @@
                             <div @click="lastUsed = 'fp'" :class="lastUsed === 'fp' ? 'ring-2 ring-emerald-500/50' : ''" class="relative bg-slate-50 dark:bg-slate-800 rounded-xl p-4 transition cursor-pointer group">
                                 <div class="text-[8px] font-bold text-slate-400 uppercase mb-2 group-hover:text-emerald-500 transition">Biometric</div>
                                 <input type="number" x-model="fingerprint" @focus="lastUsed = 'fp'"
+                                       @keyup.enter="if(fingerprint) { processScan('', fingerprint); fingerprint=''; }"
                                        class="w-full bg-transparent border-none p-0 text-center text-sm font-bold tracking-widest text-emerald-600 focus:ring-0 placeholder:text-slate-300" 
                                        placeholder="ID 1-127">
                                 <div x-show="fingerprint" class="absolute top-2 right-2 text-emerald-500 animate-pulse">●</div>
@@ -48,19 +50,19 @@
                         </div>
 
                         <div class="mt-6">
-                            <button x-show="rfid && fingerprint" 
-                                    @click="processMFA(rfid, fingerprint); rfid=''; fingerprint='';" 
+                            <button x-show="rfid || fingerprint" 
+                                    @click="processScan(rfid, fingerprint); rfid=''; fingerprint='';" 
                                     class="w-full py-3 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-black shadow-lg transition animate-in zoom-in-95 duration-300">
                                 Authorize Terminal
                             </button>
-                            <div x-show="!rfid || !fingerprint" class="py-3 text-[9px] font-bold text-slate-300 uppercase tracking-widest bg-slate-50/50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
-                                Waiting for <span x-text="!rfid ? 'Identity' : 'Fingerprint'"></span>...
+                            <div x-show="!rfid && !fingerprint" class="py-3 text-[9px] font-bold text-slate-300 uppercase tracking-widest bg-slate-50/50 dark:bg-slate-800/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+                                Waiting for Scan...
                             </div>
                         </div>
 
                         <button @click="lastUsed = 'rfid'; $nextTick(() => document.querySelector('input[x-model=rfid]').focus())" 
                                 class="text-[9px] text-slate-400 mt-6 leading-relaxed italic hover:text-indigo-500 transition-colors cursor-pointer">
-                            Forgot Card? Use Employee ID + Biometrics.
+                            Forgot Card? Type Employee ID or use Biometrics.
                         </button>
                     </div>
                 </div>
@@ -132,18 +134,27 @@
     </div>
 
     <script>
-        function processMFA(rfid, fingerprint) {
+        function processScan(rfid, fingerprint) {
+            let bodyData = {};
+            let scanTypeLabel = '';
+
+            if (rfid) {
+                bodyData = { rfid: rfid, source: 'RFID' };
+                scanTypeLabel = 'RFID Card';
+            } else if (fingerprint) {
+                bodyData = { fingerprint_id: fingerprint, source: 'Biometric' };
+                scanTypeLabel = 'Biometric Fingerprint';
+            } else {
+                return;
+            }
+
             fetch('{{ route('attendance.scan') }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                body: JSON.stringify({
-                    rfid: rfid,
-                    fingerprint_id: fingerprint,
-                    source: 'MFA'
-                })
+                body: JSON.stringify(bodyData)
             })
             .then(response => response.json())
             .then(data => {
@@ -158,7 +169,7 @@
                     banner.classList.add('bg-emerald-600', 'text-white');
                     icon.innerHTML = '✓';
                     icon.className = 'w-12 h-12 rounded-2xl flex items-center justify-center text-2xl bg-white/20';
-                    title.innerText = 'MFA Verified';
+                    title.innerText = 'Scan Verified';
                     msg.innerText = data.message;
 
                     // Update recent scans list
@@ -172,7 +183,7 @@
                             <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-xs uppercase underline">NEW</div>
                             <div>
                                 <div class="text-xs font-bold text-slate-700 dark:text-slate-300">Scan Recorded</div>
-                                <div class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">MFA (RFID + Biometric)</div>
+                                <div class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">${scanTypeLabel}</div>
                             </div>
                         </div>
                         <div class="text-right">
@@ -184,7 +195,7 @@
                     banner.classList.add('bg-rose-600', 'text-white');
                     icon.innerHTML = '✕';
                     icon.className = 'w-12 h-12 rounded-2xl flex items-center justify-center text-2xl bg-white/20';
-                    title.innerText = 'MFA Failed';
+                    title.innerText = 'Scan Failed';
                     msg.innerText = data.message;
                 }
 

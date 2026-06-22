@@ -8,7 +8,7 @@ class UpdateAttendanceRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->user()->isAdmin();
+        return auth()->user()->isStaffOrAdmin();
     }
 
     public function rules(): array

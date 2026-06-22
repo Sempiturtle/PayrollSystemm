@@ -15,7 +15,7 @@ class LeaveController extends Controller
     {
         $user = Auth::user();
         
-        if ($user->isAdmin()) {
+        if ($user->isStaffOrAdmin()) {
             $leaves = Leave::with('user')->orderBy('created_at', 'desc')->get();
         } else {
             $leaves = $user->leaves()->orderBy('created_at', 'desc')->get();
@@ -52,7 +52,7 @@ class LeaveController extends Controller
      */
     public function update(Request $request, Leave $leave)
     {
-        if (!Auth::user()->isAdmin()) {
+        if (!Auth::user()->isStaffOrAdmin()) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -73,7 +73,7 @@ class LeaveController extends Controller
      */
     public function bulkUpdate(Request $request)
     {
-        if (!Auth::user()->isAdmin()) {
+        if (!Auth::user()->isStaffOrAdmin()) {
             abort(403, 'Unauthorized action.');
         }
 

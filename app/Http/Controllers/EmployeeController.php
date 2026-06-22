@@ -78,8 +78,8 @@ class EmployeeController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'employee_id' => 'required|string|unique:users',
             'rfid_card_num' => 'nullable|string|unique:users',
-            'fingerprint_id' => 'nullable|integer|unique:users',
-            'biometric_template' => 'nullable|string|unique:users',
+            'fingerprint_id' => 'nullable|integer|unique:users,fingerprint_slot',
+            'biometric_template' => 'nullable|string',
             'employment_type' => 'required|in:professor,staff,part_time',
             'hourly_rate' => 'nullable|numeric|min:0',
             'monthly_salary' => 'nullable|numeric|min:0',
@@ -96,6 +96,16 @@ class EmployeeController extends Controller
         $password = 'AISAT-'.$validated['employee_id'];
         $validated['password'] = bcrypt($password);
         unset($validated['schedule_file']);
+
+        // Default non-nullable decimal columns to 0 if not provided
+        $validated['hourly_rate'] = $validated['hourly_rate'] ?? 0;
+        $validated['monthly_salary'] = $validated['monthly_salary'] ?? 0;
+
+        // Map fingerprint_id input to the fingerprint_slot column
+        if (array_key_exists('fingerprint_id', $validated)) {
+            $validated['fingerprint_slot'] = $validated['fingerprint_id'];
+            unset($validated['fingerprint_id']);
+        }
 
         $user = User::create($validated);
 
@@ -271,7 +281,7 @@ class EmployeeController extends Controller
             'email' => 'required|email|unique:users,email,'.$id,
             'employee_id' => 'required|string|unique:users,employee_id,'.$id,
             'rfid_card_num' => 'nullable|string|unique:users,rfid_card_num,'.$id,
-            'fingerprint_id' => 'nullable|integer|unique:users,fingerprint_id,'.$id,
+            'fingerprint_id' => 'nullable|integer|unique:users,fingerprint_slot,'.$id,
             'biometric_template' => 'nullable|string',
             'employment_type' => 'required|in:professor,staff,part_time',
             'hourly_rate' => 'nullable|numeric|min:0',
@@ -288,6 +298,10 @@ class EmployeeController extends Controller
 
         unset($validated['schedule_file']);
 
+        // Default non-nullable decimal columns to 0 if not provided
+        $validated['hourly_rate'] = $validated['hourly_rate'] ?? 0;
+        $validated['monthly_salary'] = $validated['monthly_salary'] ?? 0;
+
         // Auto-mark enrolled if fingerprint_id is set
         if (! empty($validated['fingerprint_id'])) {
             $validated['fingerprint_enrolled'] = true;
@@ -295,6 +309,12 @@ class EmployeeController extends Controller
         } else {
             $validated['fingerprint_enrolled'] = false;
             $validated['fingerprint_enrolled_at'] = null;
+        }
+
+        // Map fingerprint_id input to the fingerprint_slot column
+        if (array_key_exists('fingerprint_id', $validated)) {
+            $validated['fingerprint_slot'] = $validated['fingerprint_id'];
+            unset($validated['fingerprint_id']);
         }
 
         $employee->update($validated);
@@ -495,9 +515,9 @@ class EmployeeController extends Controller
                 'fingerprint_id' => $validated['fingerprint_id'],
             ]);
 
-            // Automatically link the ID to the user
+            // Automatically link the ID to the user (saving to fingerprint_slot column)
             $action->user->update([
-                'fingerprint_id' => $validated['fingerprint_id'],
+                'fingerprint_slot' => $validated['fingerprint_id'],
             ]);
         } else {
             $action->update(['status' => 'failed']);

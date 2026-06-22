@@ -38,7 +38,7 @@
         }" class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden relative">
             
             {{-- Bulk Actions Toolbar --}}
-            @if(auth()->user()->isAdmin())
+            @if(auth()->user()->isStaffOrAdmin())
             <div x-show="selected.length > 0" 
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0 translate-y-4"
@@ -80,13 +80,13 @@
                 <div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 italic tracking-tight">Leave Requests</h3>
                     <p class="text-sm text-slate-500 mt-1">
-                        {{ auth()->user()->isAdmin() ? 'Manage employee time-off requests.' : 'View and request your time off.' }}
+                        {{ auth()->user()->isStaffOrAdmin() ? 'Manage employee time-off requests.' : 'View and request your time off.' }}
                     </p>
                 </div>
-                @if(!auth()->user()->isAdmin())
+                @if(!auth()->user()->isStaffOrAdmin())
                 <div x-data="{ showModal: false }">
-                    <button @click="showModal = true" class="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold flex items-center gap-2 hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 dark:shadow-none hover:-translate-y-1">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    <button @click="showModal = true" class="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 dark:shadow-none active:scale-95 text-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         Request Leave
                     </button>
 
@@ -141,80 +141,69 @@
                 @endif
             </div>
 
-            <!-- Table -->
-            <div class="overflow-x-auto">
+            {{-- Desktop Table --}}
+            <div class="hidden sm:block overflow-x-auto">
                 <table class="w-full text-left text-sm whitespace-nowrap">
                     <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[11px]">
                         <tr>
-                            @if(auth()->user()->isAdmin())
-                                <th class="px-8 py-4 w-4">
+                            @if(auth()->user()->isStaffOrAdmin())
+                                <th class="px-6 py-4 w-4">
                                     <input type="checkbox" @click="toggleAll" :checked="allSelected" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
                                 </th>
-                                <th class="px-8 py-4">Employee</th>
+                                <th class="px-6 py-4">Employee</th>
                             @endif
-                            <th class="px-8 py-4">Type</th>
-                            <th class="px-8 py-4">Duration</th>
-                            <th class="px-8 py-4">Reason</th>
-                            <th class="px-8 py-4">Status</th>
-                            @if(auth()->user()->isAdmin())
-                                <th class="px-8 py-4 text-right">Actions</th>
+                            <th class="px-6 py-4">Type</th>
+                            <th class="px-6 py-4">Duration</th>
+                            <th class="px-6 py-4">Status</th>
+                            @if(auth()->user()->isStaffOrAdmin())
+                                <th class="px-6 py-4 text-right">Actions</th>
                             @endif
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
                         @forelse($leaves as $leave)
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition shadow-sm" :class="selected.includes('{{ $leave->id }}') ? 'bg-indigo-50/30 dark:bg-indigo-900/10' : ''">
-                                @if(auth()->user()->isAdmin())
-                                    <td class="px-8 py-4">
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition" :class="selected.includes('{{ $leave->id }}') ? 'bg-indigo-50/30' : ''">
+                                @if(auth()->user()->isStaffOrAdmin())
+                                    <td class="px-6 py-4">
                                         @if($leave->status === 'Pending')
                                             <input type="checkbox" name="leave_ids[]" value="{{ $leave->id }}" x-model="selected" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
                                         @endif
                                     </td>
-                                    <td class="px-8 py-4">
-                                        <div class="font-bold text-slate-900 dark:text-slate-100">{{ $leave->user->name }}</div>
+                                    <td class="px-6 py-4">
+                                        <div class="font-bold text-slate-900">{{ $leave->user->name }}</div>
                                         <div class="text-xs text-slate-400">{{ $leave->user->employee_id }}</div>
                                     </td>
                                 @endif
-                                <td class="px-8 py-4">
+                                <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold
-                                        {{ $leave->type === 'Sick' ? 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400' : '' }}
-                                        {{ $leave->type === 'Vacation' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' : '' }}
-                                        {{ $leave->type === 'Personal' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' : '' }}
-                                    ">
+                                        {{ $leave->type === 'Sick' ? 'bg-rose-100 text-rose-800' : '' }}
+                                        {{ $leave->type === 'Vacation' ? 'bg-blue-100 text-blue-800' : '' }}
+                                        {{ $leave->type === 'Personal' ? 'bg-purple-100 text-purple-800' : '' }}">
                                         {{ $leave->type }}
                                     </span>
                                 </td>
-                                <td class="px-8 py-4">
-                                    <div class="font-medium text-slate-700 dark:text-slate-300">
-                                        {{ $leave->start_date->format('M d, Y') }} - {{ $leave->end_date->format('M d, Y') }}
-                                    </div>
-                                    <div class="text-xs text-slate-400">
-                                        {{ $leave->start_date->diffInDays($leave->end_date) + 1 }} day(s)
-                                    </div>
+                                <td class="px-6 py-4">
+                                    <div class="font-medium text-slate-700">{{ $leave->start_date->format('M d') }} – {{ $leave->end_date->format('M d, Y') }}</div>
+                                    <div class="text-xs text-slate-400">{{ $leave->start_date->diffInDays($leave->end_date) + 1 }} day(s)</div>
                                 </td>
-                                <td class="px-8 py-4 text-slate-500 dark:text-slate-400">
-                                    {{ Str::limit($leave->reason, 30) ?? 'N/A' }}
-                                </td>
-                                <td class="px-8 py-4">
+                                <td class="px-6 py-4">
                                     <x-status-badge :status="$leave->status" />
                                 </td>
-                                @if(auth()->user()->isAdmin())
-                                    <td class="px-8 py-4 text-right">
+                                @if(auth()->user()->isStaffOrAdmin())
+                                    <td class="px-6 py-4 text-right">
                                         @if($leave->status === 'Pending')
                                             <div class="flex items-center justify-end gap-2">
                                                 <form action="{{ route('leaves.update', $leave) }}" method="POST">
-                                                    @csrf
-                                                    @method('PATCH')
+                                                    @csrf @method('PATCH')
                                                     <input type="hidden" name="status" value="Approved">
-                                                    <button type="submit" class="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/40 transition tooltip" title="Approve">
+                                                    <button type="submit" class="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition" title="Approve">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                                     </button>
                                                 </form>
                                                 <form action="{{ route('leaves.update', $leave) }}" method="POST">
-                                                    @csrf
-                                                    @method('PATCH')
+                                                    @csrf @method('PATCH')
                                                     <input type="hidden" name="status" value="Rejected">
-                                                    <button type="submit" class="p-2 bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-100 dark:bg-rose-900/20 dark:text-rose-400 dark:hover:bg-rose-900/40 transition tooltip" title="Reject">
+                                                    <button type="submit" class="p-2 bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-100 transition" title="Reject">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                                     </button>
                                                 </form>
@@ -225,13 +214,61 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ auth()->user()->isAdmin() ? 7 : 5 }}" class="px-8 py-12 text-center text-slate-500">
-                                    No leave requests found.
-                                </td>
+                                <td colspan="6" class="px-6 py-12 text-center text-slate-400 italic text-sm">No leave requests found.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            {{-- Mobile Card List --}}
+            <div class="sm:hidden divide-y divide-slate-100">
+                @forelse($leaves as $leave)
+                <div class="p-4 space-y-2" :class="selected.includes('{{ $leave->id }}') ? 'bg-indigo-50/30' : ''">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            @if(auth()->user()->isStaffOrAdmin() && $leave->status === 'Pending')
+                                <input type="checkbox" name="leave_ids[]" value="{{ $leave->id }}" x-model="selected" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 mt-0.5">
+                            @endif
+                            <div>
+                                @if(auth()->user()->isStaffOrAdmin())
+                                    <div class="text-sm font-bold text-slate-900">{{ $leave->user->name }}</div>
+                                    <div class="text-[10px] text-slate-400 uppercase">{{ $leave->user->employee_id }}</div>
+                                @else
+                                    <div class="text-sm font-bold text-slate-900">Leave Request</div>
+                                @endif
+                            </div>
+                        </div>
+                        <x-status-badge :status="$leave->status" />
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold
+                            {{ $leave->type === 'Sick' ? 'bg-rose-100 text-rose-700' : '' }}
+                            {{ $leave->type === 'Vacation' ? 'bg-blue-100 text-blue-700' : '' }}
+                            {{ $leave->type === 'Personal' ? 'bg-purple-100 text-purple-700' : '' }}">
+                            {{ $leave->type }}
+                        </span>
+                        <span class="text-xs text-slate-500">{{ $leave->start_date->format('M d') }} – {{ $leave->end_date->format('M d, Y') }}</span>
+                        <span class="text-[10px] text-slate-400">({{ $leave->start_date->diffInDays($leave->end_date) + 1 }}d)</span>
+                    </div>
+                    @if(auth()->user()->isStaffOrAdmin() && $leave->status === 'Pending')
+                    <div class="flex gap-2 pt-1">
+                        <form action="{{ route('leaves.update', $leave) }}" method="POST" class="flex-1">
+                            @csrf @method('PATCH')
+                            <input type="hidden" name="status" value="Approved">
+                            <button type="submit" class="w-full py-2 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-bold hover:bg-emerald-100 transition">Approve</button>
+                        </form>
+                        <form action="{{ route('leaves.update', $leave) }}" method="POST" class="flex-1">
+                            @csrf @method('PATCH')
+                            <input type="hidden" name="status" value="Rejected">
+                            <button type="submit" class="w-full py-2 bg-rose-50 text-rose-600 rounded-lg text-xs font-bold hover:bg-rose-100 transition">Reject</button>
+                        </form>
+                    </div>
+                    @endif
+                </div>
+                @empty
+                <div class="p-12 text-center text-slate-400 italic text-sm">No leave requests found.</div>
+                @endforelse
             </div>
         </div>
     </div>

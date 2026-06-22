@@ -48,7 +48,7 @@ class DiscrepancyReportController extends Controller
             'user_agent' => $request->userAgent(),
         ]);
 
-        return back()->with('success', 'Discrepancy reported successfully. An administrator will review it.');
+        return back()->with('success', 'Discrepancy reported successfully. An administrator or moderator will review it.');
     }
 
     /**
@@ -56,7 +56,7 @@ class DiscrepancyReportController extends Controller
      */
     public function index()
     {
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user()->isStaffOrAdmin()) {
             abort(403);
         }
 
@@ -85,7 +85,7 @@ class DiscrepancyReportController extends Controller
      */
     public function update(Request $request, DiscrepancyReport $report)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user()->isStaffOrAdmin()) {
             abort(403);
         }
 

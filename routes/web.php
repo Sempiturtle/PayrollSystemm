@@ -53,7 +53,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/discrepancies', [DiscrepancyReportController::class, 'store'])->name('discrepancies.store');
     Route::get('/my-disputes', [DiscrepancyReportController::class, 'myDisputes'])->name('discrepancies.mine');
 
-    // Admin Only Routes
+    // Admin & Moderator Routes
     Route::middleware('admin')->group(function () {
         // Employee Management
         Route::resource('employees', EmployeeController::class);
@@ -70,18 +70,6 @@ Route::middleware('auth')->group(function () {
 
         // Holiday Management
         Route::resource('holidays', HolidayController::class)->only(['index', 'store', 'update', 'destroy']);
-
-        // Payroll Management
-        Route::post('/payrolls/generate', [PayrollController::class, 'generate'])->name('payrolls.generate');
-        Route::patch('/payrolls/{payroll}/finalize', [PayrollController::class, 'finalize'])->name('payrolls.finalize');
-
-        // Settings & Configurations
-        Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
-        Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
-        Route::post('/settings/create', [SettingsController::class, 'store'])->name('settings.store');
-        Route::post('/settings/sync', [SettingsController::class, 'syncDefaults'])->name('settings.sync');
-        Route::resource('admins', AdminManagementController::class)->except(['show']);
-        Route::get('/audit-logs', AuditLogController::class)->name('audit-logs.index');
 
         // Discrepancy Reports (Admin)
         Route::get('/admin/discrepancies', [DiscrepancyReportController::class, 'index'])->name('admin.discrepancies.index');
@@ -113,6 +101,21 @@ Route::middleware('auth')->group(function () {
         Route::get('/exports/attendance-today', [ExportController::class, 'attendanceToday'])->name('exports.attendance-today');
         Route::get('/exports/payroll-insight', [ExportController::class, 'payrollInsight'])->name('exports.payroll-insight');
         Route::get('/exports/period-summary', [ExportController::class, 'periodSummary'])->name('exports.period-summary');
+
+        // Super-Admin Only Routes (Admin only, restricted from Moderator)
+        Route::middleware('super_admin')->group(function () {
+            // Payroll Generation
+            Route::post('/payrolls/generate', [PayrollController::class, 'generate'])->name('payrolls.generate');
+            Route::patch('/payrolls/{payroll}/finalize', [PayrollController::class, 'finalize'])->name('payrolls.finalize');
+
+            // Settings & Configurations
+            Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+            Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
+            Route::post('/settings/create', [SettingsController::class, 'store'])->name('settings.store');
+            Route::post('/settings/sync', [SettingsController::class, 'syncDefaults'])->name('settings.sync');
+            Route::resource('admins', AdminManagementController::class)->except(['show']);
+            Route::get('/audit-logs', AuditLogController::class)->name('audit-logs.index');
+        });
     });
 });
 

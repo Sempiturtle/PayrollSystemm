@@ -33,7 +33,7 @@ class AttendanceService
             $q->where('rfid_card_num', $rfid)
                 ->orWhere('employee_id', $rfid);
         })
-            ->where('fingerprint_id', $fingerprintId)
+            ->where('fingerprint_slot', $fingerprintId)
             ->first();
     }
 

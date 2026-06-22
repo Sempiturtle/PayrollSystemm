@@ -23,7 +23,7 @@ return new class extends Migration
             $table->boolean('fingerprint_enrolled')->default(false);
             $table->string('fingerprint_enrolled_at')->nullable(); 
             $table->decimal('hourly_rate', 10, 2)->default(0);
-            $table->enum('role', ['admin', 'professor', 'employee'])->default('employee');
+            $table->enum('role', ['admin', 'moderator', 'professor', 'employee'])->default('employee');
             $table->boolean('is_active')->default(true); // disable user without deleting
             $table->rememberToken();
             $table->timestamps();

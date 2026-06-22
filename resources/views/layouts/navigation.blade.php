@@ -31,7 +31,7 @@
 
         {{-- Management Section --}}
         <div class="space-y-1">
-            @if(Auth::user()->isAdmin())
+            @if(Auth::user()->isStaffOrAdmin())
                 <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Organization</div>
                 
                 <x-sidebar-link :href="route('employees.index')" :active="request()->routeIs('employees.*')" icon="users">
@@ -92,10 +92,12 @@
 
         <div class="space-y-1">
             <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Configurations</div>
-            @if(Auth::user()->isAdmin())
+            @if(Auth::user()->isStaffOrAdmin())
                 <x-sidebar-link :href="route('attendance.scanner')" :active="request()->routeIs('attendance.scanner')" icon="scanner">
                     Identity Terminal
                 </x-sidebar-link>
+            @endif
+            @if(Auth::user()->isAdmin())
                 <x-sidebar-link :href="route('admins.index')" :active="request()->routeIs('admins.*')" icon="users">
                     Manage Admins
                 </x-sidebar-link>
@@ -174,7 +176,7 @@
 
             {{-- Management Section --}}
             <div class="space-y-1">
-                @if(Auth::user()->isAdmin())
+                @if(Auth::user()->isStaffOrAdmin())
                     <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Organization</div>
                     
                     <x-sidebar-link :href="route('employees.index')" :active="request()->routeIs('employees.*')" icon="users">
@@ -233,12 +235,14 @@
                 @endif
             </div>
 
-            <div class="space-y-1">
+             <div class="space-y-1">
                 <div class="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Configurations</div>
-                @if(Auth::user()->isAdmin())
+                @if(Auth::user()->isStaffOrAdmin())
                     <x-sidebar-link :href="route('attendance.scanner')" :active="request()->routeIs('attendance.scanner')" icon="scanner">
                         Identity Terminal
                     </x-sidebar-link>
+                @endif
+                @if(Auth::user()->isAdmin())
                     <x-sidebar-link :href="route('admins.index')" :active="request()->routeIs('admins.*')" icon="users">
                         Manage Admins
                     </x-sidebar-link>

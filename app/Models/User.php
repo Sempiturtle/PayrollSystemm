@@ -85,6 +85,16 @@ class User extends Authenticatable
         return $this->employment_type === 'part_time';
     }
 
+    public function isModerator(): bool
+    {
+        return $this->role === 'moderator';
+    }
+
+    public function isStaffOrAdmin(): bool
+    {
+        return in_array($this->role, ['admin', 'moderator']);
+    }
+
     /**
      * Get the effective hourly rate.
      * Professors: use hourly_rate directly.
