@@ -10,8 +10,10 @@ class HolidayController extends Controller
 {
     public function index()
     {
-        $holidays = Holiday::orderBy('date', 'desc')->get();
-        return view('holidays.index', compact('holidays'));
+        $holidays = Holiday::orderBy('date', 'desc')->paginate(15);
+        // All holidays needed for the FullCalendar JS rendering (not paginated)
+        $allHolidays = Holiday::orderBy('date', 'desc')->get();
+        return view('holidays.index', compact('holidays', 'allHolidays'));
     }
 
     public function store(Request $request)

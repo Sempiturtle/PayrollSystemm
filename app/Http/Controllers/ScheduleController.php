@@ -26,7 +26,7 @@ class ScheduleController extends Controller
             });
         }
 
-        $employees = $query->orderBy('name')->get();
+        $employees = $query->orderBy('name')->paginate(10);
 
         // Summary stats
         $totalScheduled  = Schedule::distinct('user_id')->count('user_id');

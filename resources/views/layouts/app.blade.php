@@ -77,8 +77,8 @@
                 </header>
 
                 <!-- Page Content -->
-                <main class="flex-1 overflow-y-auto p-3 md:p-8 bg-main-reference">
-                    <div class="max-w-[120rem] mx-auto space-y-6">
+                <main class="flex-1 overflow-y-auto p-2 md:p-4 bg-main-reference">
+                    <div class="max-w-[120rem] mx-auto space-y-4">
                         <!-- Premium Toast Notifications -->
                         <div x-data="{ 
                             show: {{ session('success') ? 'true' : 'false' }},

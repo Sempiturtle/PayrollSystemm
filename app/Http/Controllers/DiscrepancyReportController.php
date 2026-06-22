@@ -64,7 +64,14 @@ class DiscrepancyReportController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('admin.discrepancies.index', compact('reports'));
+        // Accurate counts across all records (not just current page)
+        $statusCounts = [
+            'pending'   => DiscrepancyReport::where('status', 'Pending')->count(),
+            'reviewing' => DiscrepancyReport::where('status', 'Reviewing')->count(),
+            'resolved'  => DiscrepancyReport::where('status', 'Resolved')->count(),
+        ];
+
+        return view('admin.discrepancies.index', compact('reports', 'statusCounts'));
     }
 
     /**
@@ -75,7 +82,7 @@ class DiscrepancyReportController extends Controller
         $reports = DiscrepancyReport::with('payroll')
             ->where('user_id', auth()->id())
             ->latest()
-            ->get();
+            ->paginate(10);
 
         return view('discrepancies.my_disputes', compact('reports'));
     }

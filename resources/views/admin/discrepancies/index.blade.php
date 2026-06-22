@@ -15,9 +15,9 @@
         <!-- Stats Bar -->
         <div class="flex gap-3">
             @php
-                $pending = $reports->where('status', 'Pending')->count();
-                $reviewing = $reports->where('status', 'Reviewing')->count();
-                $resolved = $reports->where('status', 'Resolved')->count();
+                $pending = $statusCounts['pending'];
+                $reviewing = $statusCounts['reviewing'];
+                $resolved = $statusCounts['resolved'];
             @endphp
             <div class="flex-1 bg-white rounded-xl border border-slate-100 p-3 flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600"><span class="text-sm font-black">{{ $pending }}</span></div>

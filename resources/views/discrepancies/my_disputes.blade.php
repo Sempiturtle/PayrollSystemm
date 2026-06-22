@@ -28,7 +28,7 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
                     <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest">Active Tickets</h3>
                 </div>
-                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest tabular-nums">{{ count($reports) }} Total</div>
+                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest tabular-nums">{{ $reports->total() }} Total</div>
             </div>
 
             <div class="overflow-x-auto">
@@ -97,6 +97,17 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            @if($reports->hasPages())
+                <div class="px-4 py-3 border-t border-slate-100 bg-slate-50/30">
+                    {{ $reports->links() }}
+                </div>
+            @endif
+
+            <div class="px-4 py-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Dispute Resolution Tracker</div>
+                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest tabular-nums">{{ $reports->total() }} Total Cases</div>
             </div>
         </div>
 

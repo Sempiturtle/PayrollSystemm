@@ -16,9 +16,9 @@ class LeaveController extends Controller
         $user = Auth::user();
         
         if ($user->isStaffOrAdmin()) {
-            $leaves = Leave::with('user')->orderBy('created_at', 'desc')->get();
+            $leaves = Leave::with('user')->orderBy('created_at', 'desc')->paginate(10);
         } else {
-            $leaves = $user->leaves()->orderBy('created_at', 'desc')->get();
+            $leaves = $user->leaves()->orderBy('created_at', 'desc')->paginate(10);
         }
 
         return view('leaves.index', compact('leaves'));

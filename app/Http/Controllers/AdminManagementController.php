@@ -16,7 +16,7 @@ class AdminManagementController extends Controller
     {
         $admins = User::whereIn('role', ['admin', 'moderator'])
                       ->orderByRaw("CASE role WHEN 'admin' THEN 0 ELSE 1 END")
-                      ->get();
+                      ->paginate(10);
 
         return view('admins.index', compact('admins'));
     }

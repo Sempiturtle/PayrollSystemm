@@ -137,7 +137,7 @@
 
     /* ── High-Fidelity & Clean Design System ── */
     body {
-        @apply text-xs bg-slate-50/50;
+        @apply text-[11px] bg-slate-50/50;
     }
     
     .glass-header {
@@ -148,29 +148,29 @@
 
     .card-modern {
         @apply rounded-xl bg-white border border-slate-200/60 !important;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.02) !important;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
         transition: border-color 0.2s, box-shadow 0.2s !important;
     }
     .card-modern:hover {
         @apply border-slate-300/80 !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -2px rgba(0, 0, 0, 0.03) !important;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.02) !important;
         transform: none !important;
     }
 
     table th {
-        @apply px-4 py-2.5 text-[10px] font-semibold text-slate-400 tracking-wider uppercase border-b border-slate-100 !important;
+        @apply px-3 py-1.5 text-[9px] font-semibold text-slate-400 tracking-wider uppercase border-b border-slate-100 !important;
     }
     table td {
-        @apply px-4 py-2.5 text-xs text-slate-600 !important;
+        @apply px-3 py-1.5 text-[11px] text-slate-600 !important;
     }
     .px-8.py-6, .px-8.py-4 {
-        padding: 0.5rem 1rem !important;
+        padding: 0.35rem 0.75rem !important;
     }
     .p-6, .p-5, .p-4 {
-        padding: 0.75rem !important;
+        padding: 0.5rem !important;
     }
     .py-3.px-6, .px-6.py-3 {
-        padding: 0.375rem 0.875rem !important;
+        padding: 0.25rem 0.5rem !important;
     }
     h1, h2, h3, h4, h5, h6 {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
@@ -185,15 +185,15 @@
     /* ── Reference Inspired Premium Sidebar & Page Layout ── */
     .sidebar-curved {
         background: #ffffff !important;
-        border-top-right-radius: 2.5rem !important;
-        border-bottom-right-radius: 2.5rem !important;
+        border-top-right-radius: 1.5rem !important;
+        border-bottom-right-radius: 1.5rem !important;
         border-right: 1px solid rgba(226, 232, 240, 0.8) !important;
     }
     
     .sidebar-curved-link-active {
         color: #5334F6 !important;
         background: rgba(83, 52, 246, 0.08) !important;
-        border-radius: 1rem !important;
+        border-radius: 0.75rem !important;
     }
 
     .sidebar-curved-link-inactive {
@@ -203,12 +203,12 @@
     .sidebar-curved-link-inactive:hover {
         color: #1E293B !important;
         background: rgba(0, 0, 0, 0.03) !important;
-        border-radius: 1rem !important;
+        border-radius: 0.75rem !important;
     }
 
     /* Clean scrollbar for sidebar */
     .sidebar-scrollbar::-webkit-scrollbar {
-        width: 4px;
+        width: 3px;
     }
     .sidebar-scrollbar::-webkit-scrollbar-track {
         background: transparent;
@@ -222,29 +222,27 @@
     .bg-main-reference {
         background-color: #F8FAFC !important;
         background-image: 
-            radial-gradient(at 0% 0%, rgba(83, 52, 246, 0.03) 0px, transparent 50%),
-            radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.02) 0px, transparent 50%),
-            radial-gradient(at 50% 50%, rgba(99, 102, 241, 0.01) 0px, transparent 50%) !important;
+            radial-gradient(at 0% 0%, rgba(83, 52, 246, 0.02) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.01) 0px, transparent 50%),
+            radial-gradient(at 50% 50%, rgba(99, 102, 241, 0.005) 0px, transparent 50%) !important;
     }
 
     /* Premium Glass/Soft Floating Cards */
     .card-reference {
         background: rgba(255, 255, 255, 0.85) !important;
-        backdrop-filter: blur(12px) !important;
-        border: 1px solid rgba(226, 232, 240, 0.7) !important;
-        border-radius: 1.5rem !important;
+        backdrop-filter: blur(8px) !important;
+        border: 1px solid rgba(226, 232, 240, 0.6) !important;
+        border-radius: 1rem !important;
         box-shadow: 
-            0 4px 6px -1px rgba(0, 0, 0, 0.01),
-            0 10px 30px -10px rgba(83, 52, 246, 0.04),
-            0 20px 40px -15px rgba(0, 0, 0, 0.02) !important;
-        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s !important;
+            0 2px 4px -1px rgba(0, 0, 0, 0.01),
+            0 4px 15px -5px rgba(83, 52, 246, 0.02) !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s !important;
     }
     .card-reference:hover {
-        transform: translateY(-4px) !important;
-        border-color: rgba(83, 52, 246, 0.3) !important;
+        transform: translateY(-2px) !important;
+        border-color: rgba(83, 52, 246, 0.25) !important;
         box-shadow: 
-            0 20px 40px -10px rgba(83, 52, 246, 0.08),
-            0 10px 15px -3px rgba(83, 52, 246, 0.02) !important;
+            0 8px 20px -5px rgba(83, 52, 246, 0.05) !important;
     }
 
     /* Enforce modern reference styles globally to index/directory lists */
@@ -255,35 +253,34 @@
     .card-modern, 
     main .bg-white.border {
         background: rgba(255, 255, 255, 0.85) !important;
-        backdrop-filter: blur(12px) !important;
-        border: 1px solid rgba(226, 232, 240, 0.7) !important;
-        border-radius: 1.5rem !important;
+        backdrop-filter: blur(8px) !important;
+        border: 1px solid rgba(226, 232, 240, 0.6) !important;
+        border-radius: 1rem !important;
         box-shadow: 
-            0 10px 30px -10px rgba(83, 52, 246, 0.03),
-            0 20px 40px -15px rgba(0, 0, 0, 0.02) !important;
+            0 4px 15px -5px rgba(83, 52, 246, 0.02) !important;
         overflow: hidden !important;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: all 0.2s ease !important;
     }
     .bg-white.rounded-xl:hover, 
     .bg-white.rounded-2xl:hover, 
     .card-modern:hover {
-        border-color: rgba(83, 52, 246, 0.2) !important;
+        border-color: rgba(83, 52, 246, 0.15) !important;
         box-shadow: 
-            0 20px 40px -10px rgba(83, 52, 246, 0.06) !important;
+            0 8px 20px -5px rgba(83, 52, 246, 0.04) !important;
     }
 
     /* Style indigo buttons modernly with glow */
     .bg-indigo-600, .btn-action-indigo {
         background: linear-gradient(135deg, #5334F6 0%, #3F29C3 100%) !important;
-        border-radius: 0.75rem !important;
-        box-shadow: 0 4px 14px 0 rgba(83, 52, 246, 0.35) !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        border-radius: 0.5rem !important;
+        box-shadow: 0 2px 8px 0 rgba(83, 52, 246, 0.2) !important;
+        transition: all 0.15s ease !important;
         border: none !important;
     }
     .bg-indigo-600:hover, .btn-action-indigo:hover {
         background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px 0 rgba(83, 52, 246, 0.45) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px 0 rgba(83, 52, 246, 0.25) !important;
     }
     .bg-indigo-600:active, .btn-action-indigo:active {
         transform: translateY(0) !important;
@@ -292,35 +289,38 @@
     /* Table styles with floating header look */
     table thead tr {
         background-color: #F8FAFC !important;
-        border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.6) !important;
     }
     table th {
         color: #64748B !important;
         font-weight: 700 !important;
-        font-size: 10px !important;
-        letter-spacing: 0.08em !important;
+        font-size: 9px !important;
+        letter-spacing: 0.06em !important;
         text-transform: uppercase !important;
-        padding: 1rem 1.5rem !important;
+        padding: 0.5rem 0.75rem !important;
         border-bottom: none !important;
     }
     table tbody tr {
         border-bottom: 1px solid #F1F5F9 !important;
-        transition: background-color 0.15s ease, transform 0.15s ease !important;
+        transition: background-color 0.1s ease !important;
     }
     table tbody tr:hover {
-        background-color: rgba(83, 52, 246, 0.02) !important;
+        background-color: rgba(83, 52, 246, 0.015) !important;
     }
     table td {
-        padding: 1rem 1.5rem !important;
+        padding: 0.5rem 0.75rem !important;
     }
 
     /* Premium inputs with subtle ring glow */
     input[type="text"], input[type="email"], input[type="number"], select {
         border: 1px solid #E2E8F0 !important;
-        transition: all 0.2s ease !important;
+        transition: all 0.15s ease !important;
+        padding-top: 0.375rem !important;
+        padding-bottom: 0.375rem !important;
+        border-radius: 0.5rem !important;
     }
     input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, select:focus {
         border-color: #5334F6 !important;
-        box-shadow: 0 0 0 3px rgba(83, 52, 246, 0.15) !important;
+        box-shadow: 0 0 0 2px rgba(83, 52, 246, 0.1) !important;
     }
 }

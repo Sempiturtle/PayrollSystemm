@@ -118,10 +118,7 @@ class AttendanceService
         return $results;
     }
 
-    /**
-     * Fetch filtered attendance logs with necessary relations.
-     */
-    public function getFilteredLogs(array $filters): Collection
+    public function getFilteredLogs(array $filters, bool $paginate = true)
     {
         $query = AttendanceLog::with(['user.schedules']);
 
@@ -141,9 +138,10 @@ class AttendanceService
             $query->where('status', $filters['status']);
         }
 
-        return $query->orderBy('date', 'desc')
-            ->orderBy('time_in', 'desc')
-            ->get();
+        $query->orderBy('date', 'desc')
+            ->orderBy('time_in', 'desc');
+
+        return $paginate ? $query->paginate(10) : $query->get();
     }
 
     /**

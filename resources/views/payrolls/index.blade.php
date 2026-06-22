@@ -1,25 +1,29 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-100">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </div>
-            <div>
-                <h2 class="text-lg font-bold text-slate-900 leading-none tracking-tight">Payroll Engine</h2>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Disbursement & Settlement Grid</p>
-            </div>
+            <span class="text-slate-400 font-medium">Organization</span>
+            <span class="text-slate-300">/</span>
+            <span class="font-bold text-slate-800">Disbursement History</span>
         </div>
     </x-slot>
 
-    <div class="space-y-4">
+    <div class="space-y-6">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Payroll Engine</h1>
+                <p class="text-sm text-slate-500 mt-1">Initialize automated calculations, review statutory records, and finalize pay disbursements.</p>
+            </div>
+        </div>
+
         <!-- Command Console (Payroll Generation) -->
         @if(auth()->user()->isAdmin())
-        <div class="bg-slate-950 rounded-xl border border-slate-800 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between p-1.5 gap-4">
+        <div class="bg-slate-950 rounded-2xl border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between p-2 gap-4">
             <!-- Subtle backdrop glow -->
-            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-blue-500/10 pointer-events-none"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 pointer-events-none"></div>
             
-            <div class="flex items-center gap-6 px-4 py-3 relative z-10 w-full md:w-auto">
-                <div class="w-10 h-10 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-indigo-400 shadow-inner">
+            <div class="flex items-center gap-4 px-4 py-3 relative z-10 w-full md:w-auto">
+                <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-indigo-400 shadow-inner">
                     <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 </div>
                 <div>
@@ -28,9 +32,9 @@
                 </div>
             </div>
 
-            <div class="w-full md:w-auto flex flex-col sm:flex-row items-center gap-3 bg-slate-900/80 p-2 rounded-lg border border-slate-800 relative z-10 shrink-0">
-                <div class="px-4 text-center sm:text-left">
-                    <label class="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-0.5">Active Cycle</label>
+            <div class="w-full md:w-auto flex flex-col sm:flex-row items-center gap-4 bg-slate-900/60 p-3 rounded-xl border border-slate-800/80 relative z-10 shrink-0">
+                <div class="px-2 text-center sm:text-left">
+                    <label class="block text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-1">Active Cycle Period</label>
                     @php
                         $period = app(App\Services\PayrollService::class)->getCurrentPeriod();
                     @endphp
@@ -38,105 +42,104 @@
                 </div>
                 <form action="{{ route('payrolls.generate') }}" method="POST" class="w-full sm:w-auto">
                     @csrf
-                    <button class="w-full sm:w-auto px-6 py-2.5 bg-white text-slate-950 rounded-md font-bold text-xs hover:bg-indigo-50 hover:text-indigo-600 transition shadow-[0_0_15px_-3px_rgba(255,255,255,0.3)] whitespace-nowrap tracking-tight">Compile Records</button>
+                    <button class="w-full sm:w-auto px-6 py-2.5 bg-white text-slate-950 rounded-xl font-bold text-xs hover:bg-indigo-50 hover:text-indigo-600 transition duration-200 whitespace-nowrap tracking-tight shadow-lg shadow-white/5">Compile Records</button>
                 </form>
             </div>
         </div>
         @endif
 
         <!-- High-Density Registry Layout -->
-        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div class="card-reference overflow-hidden bg-white/95 backdrop-blur-xl border border-slate-200/60 shadow-lg">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div class="flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest">Master Payout Registry</h3>
+                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                    <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Master Payout Registry</h3>
                 </div>
-                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Read-Only Logs</div>
+                <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Active Stream</span>
             </div>
             
             {{-- Desktop View --}}
             <div class="hidden md:block overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-white border-b border-slate-100">
-                            <th class="px-5 py-2.5 text-[9px] font-black text-slate-400 uppercase tracking-widest w-1/4">Beneficiary</th>
-                            <th class="px-5 py-2.5 text-[9px] font-black text-slate-400 uppercase tracking-widest">Cycle Span</th>
-                            <th class="px-5 py-2.5 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Logged</th>
-                            <th class="px-5 py-2.5 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Late Ded.</th>
-                            <th class="px-5 py-2.5 text-[9px] font-black text-slate-400 uppercase tracking-widest text-center">State</th>
-                            <th class="px-5 py-2.5 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right whitespace-nowrap">Net Payout</th>
-                            <th class="px-5 py-2.5 text-[9px] font-black text-slate-400 uppercase tracking-widest text-center w-24">Auth</th>
+                        <tr class="bg-slate-50/50 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                            <th class="px-6 py-4 w-1/4">Beneficiary</th>
+                            <th class="px-6 py-4">Cycle Span</th>
+                            <th class="px-6 py-4 text-right">Logged Time</th>
+                            <th class="px-6 py-4 text-right">Late Ded.</th>
+                            <th class="px-6 py-4 text-center">State</th>
+                            <th class="px-6 py-4 text-right whitespace-nowrap">Net Payout</th>
+                            <th class="px-6 py-4 text-center w-24">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-50">
+                    <tbody class="divide-y divide-slate-100">
                         @forelse($payrolls as $payroll)
-                        <tr class="hover:bg-slate-50/80 transition-colors group">
-                            <td class="px-5 py-3">
+                        <tr class="hover:bg-indigo-50/10 transition group">
+                            <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-md bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-inner shrink-0">
+                                    <div class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-sm text-indigo-600 shadow-sm group-hover:bg-gradient-to-tr group-hover:from-indigo-600 group-hover:to-violet-500 group-hover:text-white group-hover:border-transparent transition-all duration-300 shrink-0">
                                         {{ substr($payroll->user->name, 0, 1) }}
                                     </div>
                                     <div class="min-w-0">
-                                        <div class="font-bold text-slate-900 text-xs tracking-tight truncate">{{ $payroll->user->name }}</div>
-                                        <div class="text-[9px] text-indigo-600 font-bold uppercase tracking-widest mt-0.5 truncate">{{ $payroll->user->role }}</div>
+                                        <div class="font-extrabold text-slate-900 text-xs tracking-tight truncate">{{ $payroll->user->name }}</div>
+                                        <div class="text-[9px] text-indigo-600 font-bold uppercase tracking-wider mt-0.5 truncate">{{ $payroll->user->role }}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-5 py-3">
+                            <td class="px-6 py-4">
                                 <div class="text-[11px] font-bold text-slate-600 font-mono tracking-tighter">
-                                    {{ $payroll->period_start->format('M d') }} <span class="text-slate-300">-</span> {{ $payroll->period_end->format('M d') }}
+                                    {{ $payroll->period_start->format('M d') }} <span class="text-slate-350">-</span> {{ $payroll->period_end->format('M d') }}
                                 </div>
                                 <div class="text-[8px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-0.5">{{ $payroll->period_start->format('Y') }}</div>
                             </td>
-                            <td class="px-5 py-3 text-right">
-                                <span class="text-xs font-bold text-slate-800 font-mono bg-slate-50 px-2 py-1 rounded border border-slate-100">{{ number_format($payroll->total_hours, 1) }}<span class="text-[9px] text-slate-400 ml-0.5 uppercase tracking-widest">h</span></span>
+                            <td class="px-6 py-4 text-right">
+                                <span class="text-xs font-bold text-slate-700 font-mono bg-slate-50 border border-slate-100 px-2 py-1 rounded-lg">{{ number_format($payroll->total_hours, 1) }}<span class="text-[9px] text-slate-400 ml-0.5 uppercase tracking-widest">h</span></span>
                             </td>
-                            <td class="px-5 py-3 text-right">
+                            <td class="px-6 py-4 text-right">
                                 <div class="text-xs font-bold text-rose-600 font-mono">-₱{{ number_format($payroll->late_deduction, 2) }}</div>
                                 <div class="text-[8px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">{{ number_format($payroll->late_minutes, 0) }}m Tardy</div>
                             </td>
-                            <td class="px-5 py-3 text-center">
+                            <td class="px-6 py-4 text-center">
                                 <div class="flex flex-col items-center gap-1">
-                                    <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-[4px] text-[8px] font-black uppercase tracking-[0.2em] {{ strtolower($payroll->status) === 'finalized' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100' }}">
+                                    <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider {{ strtolower($payroll->status) === 'finalized' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100' }}">
                                         {{ $payroll->status }}
                                     </span>
-                                    <div class="text-[7px] font-bold text-slate-300 uppercase tracking-tighter">PH-2025 COMPLIANT</div>
                                 </div>
                             </td>
-                            <td class="px-5 py-3 text-right whitespace-nowrap">
+                            <td class="px-6 py-4 text-right whitespace-nowrap">
                                 <span class="text-sm font-black {{ strtolower($payroll->status) === 'finalized' ? 'text-slate-900' : 'text-slate-500' }} tabular-nums tracking-tighter">₱{{ number_format($payroll->net_pay, 2) }}</span>
                             </td>
-                            <td class="px-5 py-3">
-                                <div class="flex items-center justify-center gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity">
-                                    <a href="{{ route('payrolls.show', $payroll) }}" class="inline-flex items-center justify-center w-7 h-7 rounded border border-indigo-200 bg-indigo-50 text-indigo-600 hover:bg-indigo-500 hover:text-white transition" title="View Details & Holiday Pay">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition duration-200">
+                                    <a href="{{ route('payrolls.show', $payroll) }}" class="p-2 text-indigo-600 hover:bg-indigo-50 border border-transparent hover:border-indigo-100 rounded-xl transition-all" title="View Details">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                     </a>
-                                    <a href="{{ route('payrolls.download', $payroll) }}" class="inline-flex items-center justify-center w-7 h-7 rounded border border-slate-200 bg-white text-slate-500 hover:text-indigo-600 hover:border-indigo-200 transition" title="Export File">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                    <a href="{{ route('payrolls.download', $payroll) }}" class="p-2 text-slate-500 hover:bg-slate-50 border border-transparent hover:border-slate-200 rounded-xl transition-all" title="Export File">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                                     </a>
 
                                     @if(!auth()->user()->isStaffOrAdmin())
                                         {{-- Employee Dispute Button --}}
                                         <div x-data="{ disputeOpen: false }" class="relative">
-                                            <button @click="disputeOpen = true" class="inline-flex items-center justify-center w-7 h-7 rounded border border-amber-200 bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white transition" title="File Dispute">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>
+                                            <button @click="disputeOpen = true" class="p-2 text-amber-600 hover:bg-amber-50 border border-transparent hover:border-amber-100 rounded-xl transition-all" title="File Dispute">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>
                                             </button>
-                                            {{-- Inline Dispute Modal --}}
+                                            {{-- Dispute Modal --}}
                                             <div x-show="disputeOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
                                                 <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="disputeOpen = false"></div>
-                                                <div class="bg-white rounded-xl shadow-2xl w-full max-w-md relative p-5 border border-slate-100">
+                                                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md relative p-6 border border-slate-100">
                                                     <h3 class="text-sm font-bold text-slate-900 mb-1 tracking-tight">File Discrepancy</h3>
                                                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Payroll Cycle: {{ $payroll->period_start->format('M d') }} - {{ $payroll->period_end->format('M d, Y') }}</p>
                                                     <form action="{{ route('discrepancies.store') }}" method="POST" class="space-y-4">
                                                         @csrf
                                                         <input type="hidden" name="payroll_id" value="{{ $payroll->id }}">
                                                         <div>
-                                                            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Describe the Issue</label>
-                                                            <textarea name="description" rows="4" required maxlength="1000" class="w-full bg-slate-50 border-slate-100 rounded-lg text-xs focus:ring-indigo-500" placeholder="e.g. I was present but marked absent on April 15..."></textarea>
+                                                            <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Describe the Issue</label>
+                                                            <textarea name="description" rows="4" required maxlength="1000" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-semibold" placeholder="Describe the discrepancy..."></textarea>
                                                         </div>
                                                         <div class="flex gap-3">
-                                                            <button type="button" @click="disputeOpen = false" class="flex-1 py-2.5 px-4 bg-slate-100 text-slate-600 rounded-lg font-bold text-xs hover:bg-slate-200 transition">Cancel</button>
-                                                            <button type="submit" class="flex-1 py-2.5 px-4 bg-amber-500 text-white rounded-lg font-bold text-xs shadow-lg shadow-amber-100 hover:bg-amber-600 transition">Submit Dispute</button>
+                                                            <button type="button" @click="disputeOpen = false" class="flex-1 btn-action-secondary py-2.5 text-xs">Cancel</button>
+                                                            <button type="submit" class="flex-1 btn-action-indigo py-2.5 text-xs">Submit Dispute</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -148,13 +151,13 @@
                                         <form action="{{ route('payrolls.finalize', $payroll) }}" method="POST" onsubmit="return confirm('WARNING: Lock sequence initiated. This permanently finalizes statutory and deduction values. Proceed?')">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="inline-flex items-center justify-center w-7 h-7 rounded border border-emerald-200 bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition" title="Finalize Core">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                            <button type="submit" class="p-2 text-emerald-600 hover:bg-emerald-50 border border-transparent hover:border-emerald-100 rounded-xl transition-all" title="Finalize Core">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                                             </button>
                                         </form>
                                     @else
-                                        <div class="inline-flex items-center justify-center w-7 h-7 rounded bg-slate-50 text-slate-300" title="Locked">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                        <div class="p-2 text-slate-300 cursor-not-allowed" title="Locked">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                                         </div>
                                     @endif
                                 </div>
@@ -162,7 +165,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="px-5 py-12 text-center">
+                            <td colspan="7" class="px-6 py-12 text-center">
                                 <div class="text-slate-400 text-xs font-bold uppercase tracking-widest">No active payouts generated</div>
                             </td>
                         </tr>
@@ -177,71 +180,70 @@
                 <div class="p-4 space-y-3">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 rounded-md bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-inner">
+                            <div class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-xs text-indigo-600">
                                 {{ substr($payroll->user->name, 0, 1) }}
                             </div>
                             <div>
-                                <div class="font-bold text-slate-900 text-xs tracking-tight">{{ $payroll->user->name }}</div>
-                                <div class="text-[9px] text-indigo-600 font-bold uppercase tracking-widest mt-0.5">{{ $payroll->user->role }}</div>
+                                <div class="font-extrabold text-slate-900 text-xs tracking-tight">{{ $payroll->user->name }}</div>
+                                <div class="text-[9px] text-indigo-600 font-bold uppercase tracking-wider mt-0.5">{{ $payroll->user->role }}</div>
                             </div>
                         </div>
-                        <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-[4px] text-[8px] font-black uppercase tracking-[0.2em] {{ strtolower($payroll->status) === 'finalized' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100' }}">
+                        <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider {{ strtolower($payroll->status) === 'finalized' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100' }}">
                             {{ $payroll->status }}
                         </span>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-[11px]">
+                    <div class="grid grid-cols-2 gap-2 bg-slate-50 border border-slate-100 p-3 rounded-xl text-[11px]">
                         <div>
-                            <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Cycle Span</span>
+                            <span class="block text-[8px] font-bold text-slate-450 uppercase tracking-widest mb-1">Cycle Span</span>
                             <span class="font-bold text-slate-700 font-mono">
                                 {{ $payroll->period_start->format('M d') }} - {{ $payroll->period_end->format('M d, Y') }}
                             </span>
                         </div>
                         <div class="text-right">
-                            <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Logged Hours</span>
+                            <span class="block text-[8px] font-bold text-slate-450 uppercase tracking-widest mb-1">Logged Hours</span>
                             <span class="font-bold text-slate-800 font-mono">{{ number_format($payroll->total_hours, 1) }}h</span>
                         </div>
                         <div>
-                            <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Late Deduction</span>
+                            <span class="block text-[8px] font-bold text-slate-450 uppercase tracking-widest mb-1">Late Deduction</span>
                             <span class="font-bold text-rose-600 font-mono">-₱{{ number_format($payroll->late_deduction, 2) }} <span class="text-[9px] text-slate-400 font-normal">({{ number_format($payroll->late_minutes, 0) }}m)</span></span>
                         </div>
                         <div class="text-right">
-                            <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Net Payout</span>
+                            <span class="block text-[8px] font-bold text-slate-450 uppercase tracking-widest mb-1">Net Payout</span>
                             <span class="font-black text-slate-900 font-mono">₱{{ number_format($payroll->net_pay, 2) }}</span>
                         </div>
                     </div>
 
                     <div class="flex items-center justify-end gap-2 pt-1">
-                        <a href="{{ route('payrolls.show', $payroll) }}" class="inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded border border-indigo-200 bg-indigo-50 text-indigo-600 font-bold text-[10px] uppercase tracking-widest hover:bg-indigo-500 hover:text-white transition">
+                        <a href="{{ route('payrolls.show', $payroll) }}" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-650 font-bold text-[10px] uppercase tracking-wider hover:bg-indigo-600 hover:text-white transition-all">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                            View
+                            View Details
                         </a>
-                        <a href="{{ route('payrolls.download', $payroll) }}" class="inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded border border-slate-200 bg-white text-slate-600 font-bold text-[10px] uppercase tracking-widest hover:text-indigo-600 hover:border-indigo-200 transition">
+                        <a href="{{ route('payrolls.download', $payroll) }}" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-600 font-bold text-[10px] uppercase tracking-wider hover:text-indigo-600 hover:border-indigo-100 transition-all">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                             Export
                         </a>
 
                         @if(!auth()->user()->isStaffOrAdmin())
                             <div x-data="{ disputeOpen: false }" class="inline-block">
-                                <button @click="disputeOpen = true" class="inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded border border-amber-200 bg-amber-50 text-amber-600 font-bold text-[10px] uppercase tracking-widest hover:bg-amber-500 hover:text-white transition">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>
+                                <button @click="disputeOpen = true" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-100 bg-amber-50 text-amber-650 font-bold text-[10px] uppercase tracking-wider hover:bg-amber-600 hover:text-white transition-all">
                                     Dispute
                                 </button>
                                 <div x-show="disputeOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
                                     <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="disputeOpen = false"></div>
-                                    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md relative p-5 border border-slate-100">
+                                    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md relative p-6 border border-slate-100">
                                         <h3 class="text-sm font-bold text-slate-900 mb-1 tracking-tight">File Discrepancy</h3>
                                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Payroll Cycle: {{ $payroll->period_start->format('M d') }} - {{ $payroll->period_end->format('M d, Y') }}</p>
                                         <form action="{{ route('discrepancies.store') }}" method="POST" class="space-y-4">
                                             @csrf
                                             <input type="hidden" name="payroll_id" value="{{ $payroll->id }}">
                                             <div>
-                                                <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Describe the Issue</label>
-                                                <textarea name="description" rows="4" required maxlength="1000" class="w-full bg-slate-50 border-slate-100 rounded-lg text-xs focus:ring-indigo-500" placeholder="e.g. I was present but marked absent on April 15..."></textarea>
+                                                <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Describe the Issue</label>
+                                                <textarea name="description" rows="4" required maxlength="1000" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-semibold" placeholder="Describe the discrepancy..."></textarea>
                                             </div>
                                             <div class="flex gap-3">
-                                                <button type="button" @click="disputeOpen = false" class="flex-1 py-2.5 px-4 bg-slate-100 text-slate-600 rounded-lg font-bold text-xs hover:bg-slate-200 transition">Cancel</button>
-                                                <button type="submit" class="flex-1 py-2.5 px-4 bg-amber-500 text-white rounded-lg font-bold text-xs shadow-lg shadow-amber-100 hover:bg-amber-600 transition">Submit Dispute</button>
+                                                <button type="button" @click="disputeOpen = false" class="flex-1 btn-action-secondary py-2.5 text-xs">Cancel</button>
+                                                <button type="submit" class="flex-1 btn-action-indigo py-2.5 text-xs">Submit Dispute</button>
                                             </div>
                                         </form>
                                     </div>
@@ -253,8 +255,7 @@
                             <form action="{{ route('payrolls.finalize', $payroll) }}" method="POST" onsubmit="return confirm('WARNING: Lock sequence initiated. This permanently finalizes statutory and deduction values. Proceed?')">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded border border-emerald-200 bg-emerald-50 text-emerald-600 font-bold text-[10px] uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                <button type="submit" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-650 font-bold text-[10px] uppercase tracking-wider hover:bg-emerald-600 hover:text-white transition-all">
                                     Finalize
                                 </button>
                             </form>
@@ -267,10 +268,16 @@
                 </div>
                 @endforelse
             </div>
+
+            @if($payrolls->hasPages())
+                <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+                    {{ $payrolls->links() }}
+                </div>
+            @endif
             
-            <div class="px-4 py-3 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
-                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Data dynamically synced via Identity Auth.</div>
-                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest tabular-nums">{{ count($payrolls) }} Registry Entries</div>
+            <div class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-[9px] font-bold text-slate-450 uppercase tracking-widest">Data dynamically synced via Identity Auth.</div>
+                <div class="text-[9px] font-bold text-slate-450 uppercase tracking-widest tabular-nums">{{ $payrolls->total() }} Registry Entries</div>
             </div>
         </div>
     </div>

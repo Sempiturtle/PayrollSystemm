@@ -117,7 +117,7 @@ class AttendanceController extends Controller
     public function export(Request $request)
     {
         $filters = $request->only(['date_from', 'date_to', 'user_id', 'status']);
-        $logs = $this->attendanceService->getFilteredLogs($filters);
+        $logs = $this->attendanceService->getFilteredLogs($filters, false);
 
         $csv = $this->attendanceService->generateExport($logs);
 

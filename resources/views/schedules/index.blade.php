@@ -211,5 +211,16 @@
             <p class="text-xs text-slate-400 mt-1.5">No schedules have been uploaded for any employee yet.</p>
         </div>
         @endforelse
+
+        @if($employees->hasPages())
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-800 shadow-sm px-6 py-4">
+                {{ $employees->appends(['search' => $search])->links() }}
+            </div>
+        @endif
+
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-800 shadow-sm px-6 py-3 flex items-center justify-between">
+            <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Schedule Registry</div>
+            <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest tabular-nums">{{ $employees->total() }} Employees with Schedules</div>
+        </div>
     </div>
 </x-app-layout>

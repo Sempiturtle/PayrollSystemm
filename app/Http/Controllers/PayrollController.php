@@ -25,7 +25,7 @@ class PayrollController extends Controller
             $query->where('user_id', auth()->id());
         }
 
-        $payrolls = $query->get();
+        $payrolls = $query->paginate(10);
         return view('payrolls.index', compact('payrolls'));
     }
 
