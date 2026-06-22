@@ -240,7 +240,7 @@
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                height: 380,
+                height: 'auto',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
@@ -288,43 +288,83 @@
     <style>
         .fc-event {
             border: none;
-            padding: 1px 3px;
-            border-radius: 4px;
+            padding: 2px 4px;
+            border-radius: 6px;
             font-size: 0.65rem;
             font-weight: 600;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         .fc .fc-toolbar-title {
-            font-size: 1rem;
-            font-weight: 700;
+            font-size: 0.95rem;
+            font-weight: 800;
             color: #1e293b;
+            letter-spacing: -0.02em;
         }
+        /* Style FullCalendar buttons to match modern theme */
         .fc .fc-button-primary {
-            background-color: #4f46e5;
-            border-color: #4f46e5;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            color: #475569 !important;
+            padding: 0.35rem 0.7rem !important;
+            font-size: 0.7rem !important;
+            font-weight: 700 !important;
+            border-radius: 0.5rem !important;
+            transition: all 0.15s ease !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+            text-transform: capitalize;
         }
         .fc .fc-button-primary:hover {
-            background-color: #4338ca;
-            border-color: #4338ca;
+            background-color: #f8fafc !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
         }
-        .fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:not(:disabled):active {
-            background-color: #3730a3;
-            border-color: #3730A3;
+        .fc .fc-button-primary:focus {
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
         }
+        .fc .fc-button-primary:not(:disabled).fc-button-active, 
+        .fc .fc-button-primary:not(:disabled):active {
+            background-color: #e0e7ff !important;
+            border-color: #c7d2fe !important;
+            color: #4338ca !important;
+            box-shadow: none !important;
+        }
+        .fc .fc-button-group {
+            gap: 1px;
+        }
+        .fc .fc-button-group > .fc-button {
+            border-radius: 0.5rem !important;
+        }
+        /* Custom scrollgrid and headers */
         .fc-theme-standard .fc-scrollgrid {
-            border: 1px solid #f1f5f9;
-            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
             overflow: hidden;
         }
+        .fc-theme-standard td, .fc-theme-standard th {
+            border: 1px solid #f1f5f9 !important;
+        }
+        .fc .fc-col-header-cell-cushion {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 0.05em;
+            padding: 8px 4px !important;
+        }
         .fc-daygrid-day {
-            transition: background-color 0.2s;
+            transition: background-color 0.15s ease;
         }
         .fc-daygrid-day:hover {
             background-color: #f8fafc;
         }
+        .fc .fc-day-today {
+            background-color: #f5f3ff !important;
+        }
+        .fc .fc-day-today .fc-daygrid-day-number {
+            color: #4f46e5;
+            font-weight: 800;
+        }
         .fc .fc-daygrid-body-unrestricted .fc-daygrid-day-frame {
-            min-height: 30px !important;
+            min-height: 50px !important;
         }
     </style>
     @endpush
