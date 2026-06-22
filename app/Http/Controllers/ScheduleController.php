@@ -124,10 +124,7 @@ class ScheduleController extends Controller
             'effective_from' => $validated['effective_from'],
         ]);
 
-        // Sync changes back to Excel/CSV file
-        \App\Services\ScheduleSyncService::syncDbToFile($user);
-
-        return back()->with('success', 'Class schedule slot added and synced to file.');
+        return back()->with('success', 'Class schedule slot added.');
     }
 
     /**
@@ -165,10 +162,7 @@ class ScheduleController extends Controller
             'effective_from' => $validated['effective_from'],
         ]);
 
-        // Sync changes back to Excel/CSV file
-        \App\Services\ScheduleSyncService::syncDbToFile($schedule->user);
-
-        return back()->with('success', 'Class schedule slot updated and synced to file.');
+        return back()->with('success', 'Class schedule slot updated.');
     }
 
     /**
@@ -179,10 +173,7 @@ class ScheduleController extends Controller
         $user = $schedule->user;
         $schedule->delete();
 
-        // Sync changes back to Excel/CSV file
-        \App\Services\ScheduleSyncService::syncDbToFile($user);
-
-        return back()->with('success', 'Class schedule slot deleted and synced to file.');
+        return back()->with('success', 'Class schedule slot deleted.');
     }
 
     /**

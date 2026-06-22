@@ -7,6 +7,7 @@ use App\Models\Schedule;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ScheduleSyncService
 {
@@ -77,5 +78,55 @@ class ScheduleSyncService
             }
             $writer->save($path);
         }
+    }
+
+    /**
+     * Generate the schedule Excel file in-memory and stream it on the fly.
+     */
+    public static function downloadScheduleOnTheFly(User $user): StreamedResponse
+    {
+        $schedules = Schedule::where('user_id', $user->id)
+            ->orderByDay()
+            ->orderBy('start_time')
+            ->get();
+
+        $data = [
+            ['day_of_week', 'start_time', 'end_time']
+        ];
+
+        foreach ($schedules as $sched) {
+            $start = \Carbon\Carbon::parse($sched->start_time)->format('h:i A');
+            $end = \Carbon\Carbon::parse($sched->end_time)->format('h:i A');
+            $data[] = [
+                $sched->day_of_week,
+                $start,
+                $end
+            ];
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        $rowNum = 1;
+        foreach ($data as $row) {
+            $sheet->setCellValue('A' . $rowNum, $row[0]);
+            $sheet->setCellValue('B' . $rowNum, $row[1]);
+            $sheet->setCellValue('C' . $rowNum, $row[2]);
+            $rowNum++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+
+        return response()->stream(
+            function () use ($writer) {
+                $writer->save('php://output');
+            },
+            200,
+            [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition' => 'attachment; filename="Your_Schedule_' . $user->employee_id . '.xlsx"',
+                'Cache-Control' => 'max-age=0',
+            ]
+        );
     }
 }
