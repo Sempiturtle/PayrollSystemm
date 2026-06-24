@@ -181,16 +181,20 @@ class EmployeeController extends Controller
         }
 
         $log = AttendanceLog::where('user_id', $user->id)
-            ->where('date', $today)
+            ->whereDate('date', $today)
             ->orderBy('created_at', 'desc')
             ->first();
 
         // Double-scan protection (cooldown: 5 minutes)
-        if ($log && $log->created_at->diffInMinutes($now) < 5) {
+        if ($log && !$log->time_out && $log->created_at->diffInMinutes($now) < 5) {
             return response()->json(['success' => false, 'message' => 'Duplicate scan detected. Please wait a few minutes.'], 400);
         }
 
-        if (! $log || $log->time_out) {
+        if ($log && $log->time_out) {
+            return response()->json(['success' => false, 'message' => 'Attendance completed for today. Cannot check in again.'], 400);
+        }
+
+        if (! $log) {
             // Check-in (New Session)
             $gracePeriodMinutes = 15;
             $startTime = Carbon::parse($today.' '.$schedule->start_time);

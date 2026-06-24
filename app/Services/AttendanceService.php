@@ -207,32 +207,41 @@ class AttendanceService
         $now = Carbon::now('Asia/Manila');
         $today = $now->toDateString();
 
-        // ── DUPLICATE CHECK ─────────────────────────────────
-        // Prevent double-tap within 1 minute
-        $recentLog = AttendanceLog::where('user_id', $user->id)
-            ->where('date', $today)
-            ->where(function ($q) use ($now) {
-                $q->where('time_in', '>=', $now->copy()->subMinute()->toTimeString())
-                    ->where('time_in', '<=', $now->copy()->addMinute()->toTimeString());
-            })
+        // Check if there is an existing log for today
+        $existingLog = AttendanceLog::where('user_id', $user->id)
+            ->whereDate('date', $today)
             ->first();
 
-        if ($recentLog) {
+        // ── DUPLICATE CHECK ─────────────────────────────────
+        // Prevent double-tap within 1 minute
+        if ($existingLog && !$existingLog->time_out) {
+            $recentLog = AttendanceLog::where('user_id', $user->id)
+                ->whereDate('date', $today)
+                ->where(function ($q) use ($now) {
+                    $q->where('time_in', '>=', $now->copy()->subMinute()->toTimeString())
+                        ->where('time_in', '<=', $now->copy()->addMinute()->toTimeString());
+                })
+                ->first();
+
+            if ($recentLog) {
+                return [
+                    'log' => $recentLog,
+                    'action' => 'Duplicate',
+                ];
+            }
+        }
+
+        // If they have already completed a time out, reject any additional taps
+        if ($existingLog && $existingLog->time_out) {
             return [
-                'log' => $recentLog,
+                'log' => $existingLog,
                 'action' => 'Duplicate',
             ];
         }
 
         // ── TIME OUT CHECK ───────────────────────────────────
         // If already has time_in today with no time_out → this is a Time Out
-        $existingLog = AttendanceLog::where('user_id', $user->id)
-            ->where('date', $today)
-            ->whereNotNull('time_in')
-            ->whereNull('time_out')
-            ->first();
-
-        if ($existingLog) {
+        if ($existingLog && $existingLog->time_in && !$existingLog->time_out) {
             $existingLog->update([
                 'time_out' => $now->toTimeString(),
                 'source' => $existingLog->source.' / FP Time-Out ('.$deviceUid.')',
