@@ -150,22 +150,26 @@
                                             $dayName = $log->date->format('l');
                                             $daySchedules = $log->user->schedules->where('day_of_week', $dayName);
                                             if ($daySchedules->isNotEmpty()) {
-                                                $overlapHours = 0;
+                                                $overlapSeconds = 0;
                                                 foreach ($daySchedules as $sched) {
                                                     $schedStart = \Carbon\Carbon::parse($log->date->toDateString() . ' ' . $sched->start_time);
                                                     $schedEnd = \Carbon\Carbon::parse($log->date->toDateString() . ' ' . $sched->end_time);
                                                     $overlapStart = $in->greaterThan($schedStart) ? $in : $schedStart;
                                                     $overlapEnd = $out->lessThan($schedEnd) ? $out : $schedEnd;
                                                     if ($overlapStart->lessThan($overlapEnd)) {
-                                                        $overlapHours += $overlapStart->diffInSeconds($overlapEnd) / 3600;
+                                                        $overlapSeconds += $overlapStart->diffInSeconds($overlapEnd);
                                                     }
                                                 }
-                                                $hrs = number_format($overlapHours, 2);
+                                                $totalMinutes = (int) floor($overlapSeconds / 60);
                                             } else {
-                                                $hrs = number_format($in->diffInMinutes($out) / 60, 2);
+                                                $totalMinutes = (int) $in->diffInMinutes($out);
                                             }
+                                            $displayHours = (int) floor($totalMinutes / 60);
+                                            $displayMinutes = $totalMinutes % 60;
                                         @endphp
-                                        <div class="text-sm font-extrabold text-slate-700">{{ $hrs }} <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Hrs</span></div>
+                                        <div class="text-sm font-extrabold text-slate-700">
+                                            {{ $displayHours }}<span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">h</span> {{ $displayMinutes }}<span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">m</span>
+                                        </div>
                                     @else
                                         <span class="text-slate-300 font-bold">—</span>
                                     @endif
