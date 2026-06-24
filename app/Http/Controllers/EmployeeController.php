@@ -29,9 +29,23 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $employees = User::where('role', '!=', 'admin')->paginate(10);
+        $query = User::where('role', '!=', 'admin');
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('employee_id', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($type = $request->input('type')) {
+            $query->where('employment_type', $type);
+        }
+
+        $employees = $query->orderBy('name')->paginate(10)->withQueryString();
 
         return view('employees.index', compact('employees'));
     }
@@ -80,9 +94,10 @@ class EmployeeController extends Controller
             'rfid_card_num' => 'nullable|string|unique:users',
             'fingerprint_id' => 'nullable|integer|unique:users,fingerprint_slot',
             'biometric_template' => 'nullable|string',
-            'employment_type' => 'required|in:professor,staff,part_time',
+            'employment_type' => 'required|in:professor,staff',
             'hourly_rate' => 'nullable|numeric|min:0',
             'monthly_salary' => 'nullable|numeric|min:0',
+            'overtime_rate' => 'nullable|numeric|min:0',
             'role' => 'required|in:professor,employee',
             'tin_id' => 'nullable|string|max:255',
             'sss_id' => 'nullable|string|max:255',
@@ -100,6 +115,7 @@ class EmployeeController extends Controller
         // Default non-nullable decimal columns to 0 if not provided
         $validated['hourly_rate'] = $validated['hourly_rate'] ?? 0;
         $validated['monthly_salary'] = $validated['monthly_salary'] ?? 0;
+        $validated['overtime_rate'] = $validated['overtime_rate'] ?? 0;
 
         // Map fingerprint_id input to the fingerprint_slot column
         if (array_key_exists('fingerprint_id', $validated)) {
@@ -283,9 +299,10 @@ class EmployeeController extends Controller
             'rfid_card_num' => 'nullable|string|unique:users,rfid_card_num,'.$id,
             'fingerprint_id' => 'nullable|integer|unique:users,fingerprint_slot,'.$id,
             'biometric_template' => 'nullable|string',
-            'employment_type' => 'required|in:professor,staff,part_time',
+            'employment_type' => 'required|in:professor,staff',
             'hourly_rate' => 'nullable|numeric|min:0',
             'monthly_salary' => 'nullable|numeric|min:0',
+            'overtime_rate' => 'nullable|numeric|min:0',
             'role' => 'required|in:professor,employee',
             'tin_id' => 'nullable|string|max:255',
             'sss_id' => 'nullable|string|max:255',
@@ -301,6 +318,7 @@ class EmployeeController extends Controller
         // Default non-nullable decimal columns to 0 if not provided
         $validated['hourly_rate'] = $validated['hourly_rate'] ?? 0;
         $validated['monthly_salary'] = $validated['monthly_salary'] ?? 0;
+        $validated['overtime_rate'] = $validated['overtime_rate'] ?? 0;
 
         // Auto-mark enrolled if fingerprint_id is set
         if (! empty($validated['fingerprint_id'])) {

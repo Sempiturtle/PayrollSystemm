@@ -66,7 +66,6 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 
 $professors = User::where('employment_type', 'professor')->count();
 $staff = User::where('employment_type', 'staff')->count();
-$partTime = User::where('employment_type', 'part_time')->count();
 $unset = User::whereNull('employment_type')->orWhere('employment_type', '')->count();
 $holidays = Holiday::count();
 $paidHolidays = Holiday::where('is_paid', true)->count();
@@ -74,7 +73,6 @@ $paidHolidays = Holiday::where('is_paid', true)->count();
 echo "  Employees by type:\n";
 echo "    Professors:  $professors\n";
 echo "    Staff:       $staff\n";
-echo "    Part-time:   $partTime\n";
 echo "    Unset/blank: $unset (will default to 'professor')\n";
 echo "\n";
 echo "  Holidays configured: $holidays (paid: $paidHolidays)\n";

@@ -21,7 +21,7 @@
                 </div>
                 <div>
                     <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Type</div>
-                    <div class="text-sm font-bold text-indigo-600 mt-0.5">{{ $payroll->user->employment_type === 'part_time' ? 'Part-Time' : ucfirst($payroll->user->employment_type ?? 'Professor') }}</div>
+                    <div class="text-sm font-bold text-indigo-600 mt-0.5">{{ ucfirst($payroll->user->employment_type ?? 'Professor') }}</div>
                 </div>
                 <div>
                     <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Period</div>
@@ -76,8 +76,8 @@
                     <div class="flex items-start gap-2">
                         <svg class="w-4 h-4 text-blue-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <p class="text-[11px] text-slate-600 leading-relaxed">
-                            <span class="font-bold text-blue-700">Staff / Part-Time Holiday Pay Rule:</span> 
-                            When a staff or part-time employee does not work on a paid holiday, they receive pay based on their 
+                            <span class="font-bold text-blue-700">Staff Holiday Pay Rule:</span> 
+                            When a staff employee does not work on a paid holiday, they receive pay based on their 
                             <span class="font-bold text-slate-900">normal scheduled hours</span> for that day.
                         </p>
                     </div>
@@ -217,7 +217,7 @@
                     <div class="px-4 py-3 flex items-center justify-between">
                         <div>
                             <div class="text-xs font-bold text-slate-800">Overtime Pay</div>
-                            <div class="text-[9px] text-slate-400">{{ number_format($payroll->overtime_hours, 2) }} hrs × 1.25×</div>
+                            <div class="text-[9px] text-slate-400">{{ number_format($payroll->overtime_hours, 2) }} hrs × ₱{{ number_format($payroll->user->overtime_rate, 2) }}/hr</div>
                         </div>
                         <span class="text-sm font-bold text-emerald-600 font-mono">+₱{{ number_format($payroll->overtime_pay, 2) }}</span>
                     </div>

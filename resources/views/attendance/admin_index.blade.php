@@ -9,7 +9,7 @@
 
     <div x-data="{ 
         editModal: false, 
-        addModal: false,
+        addModal: {{ $errors->any() ? 'true' : 'false' }},
         activeLog: { id: '', user_id: '', date: '', time_in: '', time_out: '', status: '' },
         openEdit(log) {
             this.activeLog = { ...log };
@@ -192,6 +192,7 @@
                             </tr>
                         @endforelse
                     </tbody>
+                </table>
             </div>
 
             @if($logs->hasPages())
@@ -267,45 +268,63 @@
         {{-- Add Manual Log Modal --}}
         <div x-show="addModal" x-cloak class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="addModal = false"></div>
-            <div class="bg-white/95 backdrop-blur-xl border border-slate-100 rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md relative p-6 max-h-[90vh] overflow-y-auto">
-                <h3 class="text-lg font-bold text-slate-900 mb-5">Manual Entry Log</h3>
-                <form action="{{ route('attendance.store') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Employee</label>
-                        <select name="user_id" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold">
-                            @foreach($employees as $emp)
-                                <option value="{{ $emp->id }}">{{ $emp->name }}</option>
+            <div class="bg-white/95 backdrop-blur-xl border border-slate-100 rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md relative p-6">
+                <h3 class="text-lg font-bold text-slate-900 mb-4">Manual Entry Log</h3>
+
+                {{-- Validation Errors --}}
+                @if($errors->any())
+                    <div class="mb-3 p-3 bg-rose-50 border border-rose-200 rounded-xl">
+                        <ul class="text-[11px] font-semibold text-rose-600 space-y-0.5">
+                            @foreach($errors->all() as $error)
+                                <li>• {{ $error }}</li>
                             @endforeach
-                        </select>
+                        </ul>
                     </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Date</label>
-                        <input type="date" name="date" required value="{{ date('Y-m-d') }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-semibold">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Time In</label>
-                            <input type="time" name="time_in_input" step="1" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold" @change="$nextTick(() => { $el.parentElement.querySelector('input[name=time_in]').value = $el.value + ':00' })">
-                            <input type="hidden" name="time_in">
+                @endif
+
+                <form action="{{ route('attendance.store') }}" method="POST" class="space-y-3"
+                      @submit="
+                          let ti = $refs.addTimeIn.value;
+                          $refs.addTimeInHidden.value = ti && ti.split(':').length === 2 ? ti + ':00' : ti;
+                          let to = $refs.addTimeOut.value;
+                          $refs.addTimeOutHidden.value = to && to.split(':').length === 2 ? to + ':00' : (to || '');
+                      ">
+                    @csrf
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="col-span-2">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Employee</label>
+                            <select name="user_id" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold">
+                                @foreach($employees as $emp)
+                                    <option value="{{ $emp->id }}" {{ old('user_id') == $emp->id ? 'selected' : '' }}>{{ $emp->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Time Out</label>
-                            <input type="time" name="time_out_input" step="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold" @change="$nextTick(() => { $el.parentElement.querySelector('input[name=time_out]').value = $el.value ? $el.value + ':00' : '' })">
-                            <input type="hidden" name="time_out">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Date</label>
+                            <input type="date" name="date" required value="{{ old('date', date('Y-m-d')) }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-semibold">
                         </div>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Override Status</label>
-                        <select name="status" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold">
-                            <option value="On-time">On-time</option>
-                            <option value="Late">Late</option>
-                        </select>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status</label>
+                            <select name="status" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold">
+                                <option value="On-time" {{ old('status') == 'On-time' ? 'selected' : '' }}>On-time</option>
+                                <option value="Late" {{ old('status') == 'Late' ? 'selected' : '' }}>Late</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Time In</label>
+                            <input type="time" x-ref="addTimeIn" step="1" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold">
+                            <input type="hidden" name="time_in" x-ref="addTimeInHidden">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Time Out</label>
+                            <input type="time" x-ref="addTimeOut" step="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold">
+                            <input type="hidden" name="time_out" x-ref="addTimeOutHidden">
+                        </div>
                     </div>
                     <input type="hidden" name="source" value="Admin Manual">
-                    <div class="pt-3 flex gap-3">
-                        <button type="button" @click="addModal = false" class="flex-1 btn-action-secondary py-3 text-xs">Cancel</button>
-                        <button type="submit" class="flex-1 btn-action-indigo py-3 text-xs">Save Log</button>
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" @click="addModal = false" class="flex-1 btn-action-secondary py-2.5 text-xs">Cancel</button>
+                        <button type="submit" class="flex-1 btn-action-indigo py-2.5 text-xs">Save Log</button>
                     </div>
                 </form>
             </div>
@@ -314,36 +333,42 @@
         {{-- Edit Modal --}}
         <div x-show="editModal" x-cloak class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" @click="editModal = false"></div>
-            <div class="bg-white/95 backdrop-blur-xl border border-slate-100 rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md relative p-6 max-h-[90vh] overflow-y-auto">
-                <h3 class="text-lg font-bold text-slate-900 mb-5">Adjust Presence Log</h3>
-                <form :action="'{{ url('attendance') }}/' + activeLog.id" method="POST" class="space-y-4">
+            <div class="bg-white/95 backdrop-blur-xl border border-slate-100 rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md relative p-6">
+                <h3 class="text-lg font-bold text-slate-900 mb-4">Adjust Presence Log</h3>
+                <form :action="'{{ url('attendance') }}/' + activeLog.id" method="POST" class="space-y-3"
+                      @submit="
+                          let ti = $refs.editTimeIn.value;
+                          $refs.editTimeInHidden.value = ti && ti.split(':').length === 2 ? ti + ':00' : ti;
+                          let to = $refs.editTimeOut.value;
+                          $refs.editTimeOutHidden.value = to && to.split(':').length === 2 ? to + ':00' : (to || '');
+                      ">
                     @csrf @method('PATCH')
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Employee (Read-only)</label>
-                        <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-extrabold text-slate-600" x-text="activeLog.user?.name"></div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Employee (Read-only)</label>
+                        <div class="p-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-extrabold text-slate-600" x-text="activeLog.user?.name"></div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Time In</label>
-                            <input type="time" step="1" name="time_in_raw" x-model="activeLog.time_in" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold" @change="$nextTick(() => { $el.parentElement.querySelector('input[name=time_in]').value = $el.value.includes(':') && $el.value.split(':').length == 2 ? $el.value + ':00' : $el.value })">
-                            <input type="hidden" name="time_in" x-model="activeLog.time_in">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Time In</label>
+                            <input type="time" step="1" x-ref="editTimeIn" :value="activeLog.time_in" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold">
+                            <input type="hidden" name="time_in" x-ref="editTimeInHidden">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Time Out</label>
-                            <input type="time" step="1" name="time_out_raw" x-model="activeLog.time_out" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold" @change="$nextTick(() => { $el.parentElement.querySelector('input[name=time_out]').value = $el.value && $el.value.split(':').length == 2 ? $el.value + ':00' : $el.value })">
-                            <input type="hidden" name="time_out" x-model="activeLog.time_out">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Time Out</label>
+                            <input type="time" step="1" x-ref="editTimeOut" :value="activeLog.time_out" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold">
+                            <input type="hidden" name="time_out" x-ref="editTimeOutHidden">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Status</label>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status</label>
                         <select name="status" x-model="activeLog.status" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold">
                             <option value="On-time">On-time</option>
                             <option value="Late">Late</option>
                         </select>
                     </div>
-                    <div class="pt-3 flex gap-3">
-                        <button type="button" @click="editModal = false" class="flex-1 btn-action-secondary py-3 text-xs">Cancel</button>
-                        <button type="submit" class="flex-1 btn-action-indigo py-3 text-xs">Save Changes</button>
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" @click="editModal = false" class="flex-1 btn-action-secondary py-2.5 text-xs">Cancel</button>
+                        <button type="submit" class="flex-1 btn-action-indigo py-2.5 text-xs">Save Changes</button>
                     </div>
                 </form>
             </div>

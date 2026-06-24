@@ -29,6 +29,7 @@ class User extends Authenticatable
         'fingerprint_enrolled_at',
         'hourly_rate',
         'monthly_salary',
+        'overtime_rate',
         'employment_type',
         'role',
         'schedule_file',
@@ -63,6 +64,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'hourly_rate' => 'decimal:2',
             'monthly_salary' => 'decimal:2',
+            'overtime_rate' => 'decimal:2',
         ];
     }
 
@@ -80,10 +82,6 @@ class User extends Authenticatable
         return $this->employment_type === 'staff';
     }
 
-    public function isPartTime(): bool
-    {
-        return $this->employment_type === 'part_time';
-    }
 
     public function isModerator(): bool
     {

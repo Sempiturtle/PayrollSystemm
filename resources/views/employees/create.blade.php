@@ -66,20 +66,21 @@
                                     <select name="employment_type" x-model="empType" class="w-full bg-slate-50/50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold">
                                         <option value="professor">Professor</option>
                                         <option value="staff">Staff</option>
-                                        <option value="part_time">Part-Time</option>
                                     </select>
                                 </div>
 
                                 {{-- Dynamic Rate/Salary --}}
-                                <div class="space-y-1">
-                                    <div x-show="empType === 'professor'">
-                                        <label class="text-[11px] font-bold text-slate-700">Rate (₱)</label>
-                                        <input type="number" step="0.01" name="hourly_rate" class="w-full bg-slate-50/50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold" :required="empType === 'professor'">
-                                    </div>
-                                    <div x-show="empType !== 'professor'" style="display:none;">
-                                        <label class="text-[11px] font-bold text-slate-700">Salary (₱)</label>
-                                        <input type="number" step="0.01" name="monthly_salary" class="w-full bg-slate-50/50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold text-emerald-600" :required="empType !== 'professor'">
-                                    </div>
+                                <div class="space-y-1" x-show="empType === 'professor'">
+                                    <label class="text-[11px] font-bold text-slate-700">Rate (₱)</label>
+                                    <input type="number" step="0.01" name="hourly_rate" class="w-full bg-slate-50/50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold" :required="empType === 'professor'">
+                                </div>
+                                <div class="space-y-1" x-show="empType === 'staff'" style="display:none;">
+                                    <label class="text-[11px] font-bold text-slate-700">Salary (₱)</label>
+                                    <input type="number" step="0.01" name="monthly_salary" class="w-full bg-slate-50/50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold text-emerald-600" :required="empType === 'staff'">
+                                </div>
+                                <div class="space-y-1 sm:col-span-2" x-show="empType === 'staff'" style="display:none;">
+                                    <label class="text-[11px] font-bold text-slate-700">Overtime Rate (₱/hr)</label>
+                                    <input type="number" step="0.01" name="overtime_rate" class="w-full bg-slate-50/50 border border-slate-200 rounded-xl py-2 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold text-indigo-600" :required="empType === 'staff'">
                                 </div>
 
                                 {{-- Personnel Role --}}
@@ -94,11 +95,10 @@
 
                             {{-- Info Badge --}}
                             <div class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[10px] font-semibold transition-all border"
-                                 :class="empType === 'professor' ? 'bg-violet-50 text-violet-600 border-violet-100' : (empType === 'staff' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100')">
+                                 :class="empType === 'professor' ? 'bg-violet-50 text-violet-600 border-violet-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'">
                                 <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
                                 <span x-show="empType === 'professor'">Paid hourly. No overtime.</span>
-                                <span x-show="empType === 'staff'">Fixed salary. Overtime at 1.25×.</span>
-                                <span x-show="empType === 'part_time'">Fixed salary. No overtime.</span>
+                                <span x-show="empType === 'staff'">Fixed salary. Custom overtime rate.</span>
                             </div>
                         </div>
 

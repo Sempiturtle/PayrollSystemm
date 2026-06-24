@@ -40,17 +40,19 @@ class ProfessorScheduleImport implements ToModel, WithHeadingRow, WithValidation
             return null;
         }
 
-        return Schedule::updateOrCreate(
+        Schedule::updateOrCreate(
             [
                 'user_id'     => $this->userId,
                 'day_of_week' => $dayOfWeek,
+                'start_time'  => $startTime,
             ],
             [
-                'start_time'     => $startTime,
                 'end_time'       => $endTime,
                 'effective_from' => $row['effective_date'] ?? null,
             ]
         );
+
+        return null;
     }
 
     /**

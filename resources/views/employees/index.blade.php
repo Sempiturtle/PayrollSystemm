@@ -20,6 +20,30 @@
             </a>
         </div>
 
+        <!-- Search & Filter Bar -->
+        <form action="{{ route('employees.index') }}" method="GET" class="card-reference p-4 bg-white/95 backdrop-blur-xl border border-slate-200/60 shadow-lg">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex-1 relative">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name, ID, or email..." class="w-full bg-slate-50/50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-semibold placeholder:text-slate-400">
+                </div>
+                <select name="type" class="bg-slate-50/50 border border-slate-200 rounded-xl py-2.5 px-3 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 text-xs font-bold sm:w-40">
+                    <option value="">All Types</option>
+                    <option value="professor" {{ request('type') == 'professor' ? 'selected' : '' }}>Professor</option>
+                    <option value="staff" {{ request('type') == 'staff' ? 'selected' : '' }}>Staff</option>
+                </select>
+                <div class="flex items-center gap-2">
+                    <button type="submit" class="btn-action-indigo text-xs py-2.5 px-4 shadow-sm">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        Search
+                    </button>
+                    @if(request('search') || request('type'))
+                        <a href="{{ route('employees.index') }}" class="text-xs font-bold text-slate-400 hover:text-rose-500 transition-colors whitespace-nowrap">Clear</a>
+                    @endif
+                </div>
+            </div>
+        </form>
+
         <!-- Directory Card Grid -->
         <div class="card-reference overflow-hidden">
             {{-- Desktop Table --}}
@@ -35,7 +59,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        @foreach($employees as $employee)
+                        @forelse($employees as $employee)
                         @php $empType = $employee->employment_type ?? 'professor'; @endphp
                         <tr class="hover:bg-indigo-50/10 transition group">
                             <td class="px-6 py-4">
@@ -52,10 +76,8 @@
                             <td class="px-6 py-4">
                                 @if($empType === 'professor')
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-violet-50 text-violet-600 border border-violet-100">Professor</span>
-                                @elseif($empType === 'staff')
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100">Staff</span>
                                 @else
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100">Part-Time</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100">Staff</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4">
@@ -84,14 +106,20 @@
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-16 text-center">
+                                <div class="text-slate-400 italic text-sm">No personnel found{{ request('search') ? ' matching "' . request('search') . '"' : '' }}.</div>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
 
             {{-- Mobile Card List --}}
             <div class="md:hidden divide-y divide-slate-100">
-                @foreach($employees as $employee)
+                @forelse($employees as $employee)
                 @php $empType = $employee->employment_type ?? 'professor'; @endphp
                 <div class="p-4 flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-slate-55 flex items-center justify-center text-indigo-600 border border-slate-100 font-black text-base shrink-0">
@@ -103,10 +131,8 @@
                           <span class="text-[10px] text-slate-400 font-bold uppercase">{{ $employee->employee_id }}</span>
                           @if($empType === 'professor')
                               <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-violet-50 text-violet-600">Professor</span>
-                          @elseif($empType === 'staff')
-                              <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-600">Staff</span>
                           @else
-                              <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-amber-50 text-amber-600">Part-Time</span>
+                              <span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-600">Staff</span>
                           @endif
                           <span class="text-[10px] font-extrabold text-slate-700">
                               @if($empType === 'professor')
@@ -129,7 +155,11 @@
                         </form>
                     </div>
                 </div>
-                @endforeach
+                @empty
+                <div class="p-12 text-center text-slate-400 italic text-sm">
+                    No personnel found{{ request('search') ? ' matching "' . request('search') . '"' : '' }}.
+                </div>
+                @endforelse
             </div>
 
             @if($employees->hasPages())

@@ -55,7 +55,7 @@
         </tr>
         <tr>
             <td class="label">Employment Type</td>
-            <td class="value">{{ $payroll->user->employment_type === 'part_time' ? 'Part-Time' : ucfirst($payroll->user->employment_type ?? 'Professor') }}</td>
+            <td class="value">{{ ucfirst($payroll->user->employment_type ?? 'Professor') }}</td>
             <td class="label">{{ ($payroll->user->employment_type ?? 'professor') === 'professor' ? 'Rate of Pay' : 'Monthly Salary' }}</td>
             <td class="value">
                 @if(($payroll->user->employment_type ?? 'professor') === 'professor')
@@ -101,7 +101,7 @@
                         <tr>
                             <td>
                                 <strong>Overtime Pay</strong>
-                                <span class="sub-label">{{ number_format($payroll->overtime_hours, 2) }} hrs × 1.25× rate</span>
+                                <span class="sub-label">{{ number_format($payroll->overtime_hours, 2) }} hrs × ₱{{ number_format($payroll->user->overtime_rate, 2) }}/hr</span>
                             </td>
                             <td class="amount" style="color: #16a34a;">+₱{{ number_format($payroll->overtime_pay, 2) }}</td>
                         </tr>

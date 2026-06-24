@@ -38,7 +38,7 @@ class PayrollService
 
     /**
      * Calculate and sync payroll for a specific user and period.
-     * Branches logic based on employment_type: professor (hourly), staff (fixed + OT), part_time (fixed).
+     * Branches logic based on employment_type: professor (hourly), staff (fixed + OT).
      */
     public function syncForUser(User $user, $startDate, $endDate): Payroll
     {
@@ -398,7 +398,7 @@ class PayrollService
     }
 
     /**
-     * Staff / Part-time payroll: fixed salary base.
+     * Staff payroll: fixed salary base.
      * base_pay = monthly_salary ÷ 2
      * absence_deduction = missed_hours × effective_hourly_rate
      * overtime_pay = overtime_hours × effective_hourly_rate × 1.25 (staff only)
@@ -418,11 +418,11 @@ class PayrollService
         $missedHours = max(0, $totalExpectedHours - $totalRegularHours);
         $absenceDeduction = $missedHours * $effectiveRate;
 
-        // Overtime: staff only, 1.25× multiplier
+        // Overtime: staff only, using custom overtime rate
         $overtimePay = 0;
         if ($user->isStaff() && $totalOvertimeHours > 0) {
-            $otMultiplier = 1.25; // Standard Philippine OT rate
-            $overtimePay = $totalOvertimeHours * $effectiveRate * $otMultiplier;
+            $otRate = (float) ($user->overtime_rate ?? 0);
+            $overtimePay = $totalOvertimeHours * $otRate;
         }
 
         // Late deduction (per minute, based on effective rate)
