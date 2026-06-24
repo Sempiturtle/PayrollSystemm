@@ -98,7 +98,7 @@
                         @if($daySchedules->count() > 0)
                             <div class="space-y-3 py-1 flex-1 flex flex-col justify-center">
                                 @foreach($daySchedules as $sched)
-                                    <div class="space-y-0.5 relative group/slot">
+                                    <div @click="openEdit({{ $sched->toJson() }})" class="space-y-0.5 relative group/slot cursor-pointer hover:bg-indigo-100/30 hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 p-2 rounded-xl border border-transparent hover:border-indigo-100/50">
                                         <div class="font-extrabold text-xs text-slate-800 tracking-tight leading-none">
                                             {{ \Carbon\Carbon::parse($sched->start_time)->format('h:i') }} <span class="text-[8px] font-semibold text-slate-400">{{ \Carbon\Carbon::parse($sched->start_time)->format('A') }}</span>
                                         </div>
@@ -172,7 +172,7 @@
                                     {{ $sched->effective_from ? $sched->effective_from->format('M d, Y') : 'N/A' }}
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
                                         <button @click="openEdit({{ $sched->toJson() }})" class="p-1.5 text-slate-400 hover:text-indigo-650 hover:bg-slate-50 rounded-lg transition">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-5M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                                         </button>
@@ -285,9 +285,15 @@
                             <input type="date" name="effective_from" x-model="editSlot.effective_from" class="w-full bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-850 p-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none">
                         </div>
                         <div class="flex gap-3 pt-2">
+                            <button type="button" onclick="if(confirm('Are you sure you want to delete this schedule slot?')) document.getElementById('delete-slot-modal-form').submit()" class="px-4 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl font-bold text-[10px] uppercase tracking-wider transition">Delete</button>
                             <button type="button" @click="showEditModal = false" class="flex-1 py-3 bg-slate-100 text-slate-650 hover:bg-slate-200/60 rounded-xl font-bold text-[10px] uppercase tracking-wider transition">Cancel</button>
-                            <button type="submit" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-[10px] uppercase tracking-wider shadow-md transition">Update Slot</button>
+                            <button type="submit" class="flex-grow py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-[10px] uppercase tracking-wider shadow-md transition">Update Slot</button>
                         </div>
+                    </form>
+                    <!-- Delete Form for Modal Action -->
+                    <form id="delete-slot-modal-form" :action="'{{ url('/schedules/item') }}/' + editSlot.id" method="POST" class="hidden">
+                        @csrf
+                        @method('DELETE')
                     </form>
                 </div>
             </div>
